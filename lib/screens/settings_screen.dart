@@ -7,6 +7,9 @@ import '../services/pos_integration_service.dart';
 import 'backup_screen.dart';
 import 'business_profile_screen.dart';
 import 'diagnostics_screen.dart';
+import 'history_screen.dart';
+import 'printers_screen.dart';
+import 'queue_screen.dart';
 import 'test_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -23,6 +26,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String? _posResult;
   List<PrinterDevice> _printers = [];
   String? _fallbackPrinterId;
+  int _dayStartHour = 0;
 
   @override
   void initState() {
@@ -36,9 +40,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final storage = await StorageService.getInstance();
     final printers = await storage.getSavedPrinters();
     final fallback = await storage.settings.getFallbackPrinterId();
+    final dayStart = await storage.orders.getDayStartHour();
     if (mounted) {
       setState(() {
         _printers = printers;
+        _dayStartHour = dayStart;
         _fallbackPrinterId = printers.any((p) => p.id == fallback)
             ? fallback
             : null;
@@ -96,6 +102,58 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: 'Backup',
           subtitle: 'Save a verified copy of all local data and share it.',
           page: () => const BackupScreen(),
+        ),
+        _navTile(
+          icon: Icons.print_rounded,
+          color: const Color(0xFF1E293B),
+          title: 'Printers',
+          subtitle: 'Bluetooth, USB and Wi-Fi/LAN printers.',
+          page: () => const PrintersScreen(),
+        ),
+        _navTile(
+          icon: Icons.queue_rounded,
+          color: const Color(0xFF2563EB),
+          title: 'Print queue',
+          subtitle: 'Pending and failed print jobs, retry.',
+          page: () => const QueueScreen(),
+        ),
+        _navTile(
+          icon: Icons.history_rounded,
+          color: const Color(0xFF475569),
+          title: 'Print history',
+          subtitle: 'Every print attempt and its result.',
+          page: () => const HistoryScreen(),
+        ),
+        const SizedBox(height: 16),
+        const Text(
+          'Business day starts at',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 4),
+        const Text(
+          'Order numbers restart each business day. If you serve after '
+          'midnight, start the day later so late orders count towards the '
+          'evening they belong to.',
+          style: TextStyle(color: Color(0xFF64748B), fontSize: 13),
+        ),
+        const SizedBox(height: 8),
+        DropdownButtonFormField<int>(
+          key: ValueKey('day-$_dayStartHour'),
+          initialValue: _dayStartHour,
+          decoration: const InputDecoration(border: OutlineInputBorder()),
+          items: [
+            for (var h = 0; h <= 6; h++)
+              DropdownMenuItem(
+                value: h,
+                child: Text(h == 0 ? 'Midnight (12:00 am)' : '$h:00 am'),
+              ),
+          ],
+          onChanged: (v) async {
+            if (v == null) return;
+            final storage = await StorageService.getInstance();
+            await storage.orders.setDayStartHour(v);
+            if (mounted) setState(() => _dayStartHour = v);
+          },
         ),
         const SizedBox(height: 16),
         const Text(
@@ -208,7 +266,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Printer Settings & Integration')),
+      appBar: AppBar(title: const Text('Settings')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(

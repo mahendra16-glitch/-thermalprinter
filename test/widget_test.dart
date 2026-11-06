@@ -11,7 +11,8 @@ void main() {
 
     await tester.pumpWidget(const ThermalPrinterApp());
     expect(find.byType(ThermalPrinterApp), findsOneWidget);
-    expect(find.text('Printers'), findsWidgets);
+    expect(find.text('Tables'), findsWidgets);
+    expect(find.text('Orders'), findsWidgets);
 
     // Let pending database work finish before closing it.
     await tester.runAsync(() async {

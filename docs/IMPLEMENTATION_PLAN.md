@@ -227,7 +227,7 @@ Baseline results (2026-11-06):
 - [x] Phase 0 — audit and plan (this document)
 - [x] Phase 1 — git baseline; format-only commit; AGP build-blocker fix; Drift DB v1 + legacy import; repositories; business profile/settings; DB backup; fixes D3/D4/D5/D13; tests (see §10)
 - [x] Phase 2 — Menu (see §11)
-- [ ] Phase 3 — Tables & orders
+- [x] Phase 3 — Tables & orders (see §12)
 - [ ] Phase 4 — KOT + printer fixes D1, D2, D6–D12, D14
 - [ ] Phase 5 — Billing & tax
 - [ ] Phase 6 — Payments
@@ -394,4 +394,93 @@ Manual hardware tests are still required for every transport (BT, USB, LAN) at 5
 - **Deferred:** Excel `.xlsx` import (CSV only; Excel can save as "CSV UTF-8").
 - **Deferred:** menu-only backup/restore. The full database backup from Phase 1 already includes the menu; restore is Phase 11.
 - **Permissions:** there are no staff permissions yet (Phase 9), so anyone can edit the menu.
-- **Phase 3 rule to add:** once orders exist, check that a turned-off item's past orders still show it. The snapshot design covers this.
+- **Phase 3 rule to add:** once orders exist, check that a turned-off item's past orders still show it. The snapshot design covers this. (Done in Phase 3: order lines keep their own copy; see the "menu edits after ordering" test.)
+
+---
+
+## 12. Phase 3 completion report (2026-11-06)
+
+### Commits
+- `Phase 3a` — schema v3, order rules, table and order repositories (with tests).
+- `Phase 3b` — navigation, tables, order-taking and orders screens, widget tests and this report.
+
+### Database migration v2 → v3
+- New tables: `dining_areas`, `restaurant_tables`, `orders`, `order_lines`, `order_line_options`, plus indexes. Only tables are created, so existing data is untouched. Migration tests now cover v1 → v3 with data.
+- **Order numbers:** `orders.order_no` restarts at 1 every business day. A unique index on (business_date, order_no) stops two orders getting the same number.
+- **Double taps:** `orders.client_request_id` is unique, so creating the same order twice returns the first one.
+- **Line snapshots:** each order line stores its own copy of the item name, variant text, base and unit price (paise), tax profile, rate, inclusive flag and split mode, and station. `order_line_options` stores each chosen option's group, name and price. Editing the menu later never changes an existing order.
+- **Kitchen tracking:** `sent_qty` and `voided_qty` exist now so the KOT module can track what went to the kitchen. In Phase 3 nothing sets them yet.
+
+### Order rules (`OrderRepository`, all transactional and audited)
+- **Starting an order:**
+  - Dine-in needs an active table. Takeaway and delivery have no table.
+  - **One running order per table.** A second order on a busy table needs an explicit "Start another order" choice. Without it the app offers to open the existing order.
+- **Adding items:** adding the same item with the same options, price and instructions increases the existing line's quantity instead of adding a new line.
+- **Quantity:** 1 to 999.
+- **Items already sent to the kitchen:**
+  - Their quantity can't go below the sent amount.
+  - They can't be removed and their instructions can't be changed; they must be voided, which comes with KOT in Phase 4.
+  - An order with such items can't be cancelled.
+- **Cancel:** needs a reason. The lines are kept on record and the table is freed.
+- **Discount:** whole-order, percent or ₹ amount, with a required reason. Percent rounds half up to the paisa. The discount never exceeds the items total.
+- **Other actions:**
+  - Hold and resume.
+  - Move to another table; a busy target needs explicit sharing.
+  - Merge into another running order: lines move along with their kitchen progress, and the source is closed with the reason "Merged into order #N". This is blocked if the source has a discount.
+  - Split chosen whole lines into a new takeaway or dine-in order.
+- **Timeline:** every change writes an audit row (entity `orders`). The order's timeline screen reads from these.
+- **Business day start** (Settings): choose midnight to 6 am. Orders before that hour count towards the previous day.
+- **Totals while ordering:** the screen shows the items total, discount and "Amount before tax", labelled "Taxes and charges are added when the bill is generated". Tax, service charge and rounding are Phase 5.
+
+### Screens
+- **Navigation:** tabs are now **Tables, Orders, Menu, Settings**: a bottom bar on phones, a side rail on screens 840 px or wider. Printers, Print queue and Print history moved into Settings, unchanged.
+- **Tables:**
+  - Area filter with a busy/total count.
+  - Table cards show Available / Running / On hold / *n* orders, the order number, the running amount, elapsed time and guests/seats.
+  - Tapping a free table starts a dine-in order. Tapping a busy table opens its order, or offers a choice when it has several.
+  - A Takeaway button.
+- **Manage areas & tables:**
+  - Add, rename and switch off areas.
+  - Add, edit, move and switch off tables, and add a run of tables at once (e.g. T1–T10).
+  - A table or area with a running order can't be switched off.
+- **Order screen:**
+  - **Menu side:**
+    - Search; Enter adds the item whose short code matches, so keyboards and barcode scanners can add items.
+    - Quick (favourites) / All / category chips.
+    - Item buttons with veg marks.
+    - Items not offered for the order type are hidden.
+    - Long-press any item to add instructions or a quantity.
+  - **Options sheet:** single- and multi-select groups with live rule messages and price. Add is disabled until the choices are valid. One-tap instructions (Less spicy, No onion, Jain…) plus free text.
+  - **Order side:**
+    - Lines with variant, add-ons, highlighted instructions and a quantity stepper.
+    - Tap a line to edit it or remove it.
+    - Customer, phone, guests and order note.
+    - Discount and Hold buttons.
+    - ⋮ menu: move table, merge, split, timeline, cancel (with reason).
+  - **Layout:** side by side on tablets; Menu / Order tabs with a running-total bar on phones.
+  - **Read-only:** cancelled orders show a banner and their timeline.
+- **Orders:** running orders filtered by All / Dine-in / Takeaway / On hold, with buttons to start a dine-in or takeaway order, and today's closed (cancelled) orders.
+
+### Tests and commands
+| Command | Result |
+|---|---|
+| `dart format --set-exit-if-changed lib test` | 0 files changed |
+| `flutter analyze` | 14 infos, same as baseline; no new issues |
+| `flutter test` | **113/113 passed**. New: order totals and business date (7), order repository (19), table repository (3), order flow widgets (3); migration tests extended to v3. |
+| `flutter build apk --debug` | builds |
+
+### Not done / limitations
+- **Not run on a device:** no Android device or emulator was connected. Check by hand on a phone and a tablet:
+  - touch sizes, the phone tab layout and the tablet split layout;
+  - a hardware keyboard or barcode scanner typing a short code and Enter;
+  - the v2 → v3 upgrade with Phase 2 data.
+- **Not built yet (next phases):**
+  - **Send to kitchen, KOT reprint, void items (Phase 4).** No KOT button is shown yet; there are no placeholder buttons.
+  - Generate bill (Phase 5).
+  - Payments (Phase 6).
+  - The "Bill requested" and "Payment pending" table states come with billing.
+- **Discounts:** order-level only. Item-level discounts are left for Phase 5, where the bill calculation spreads the discount across tax rates.
+- **Split:** moves whole lines only; splitting one line's quantity is not supported.
+- **Staff and permissions (Phase 9):** discounts and cancellations require a reason but no permission check yet. `staff_id` / `staff_name` columns exist on orders and are empty until then.
+- **Delivery:** the order type exists in the data model, but there is no delivery button or address field.
+- **Reservations** are not implemented (optional in the brief).
