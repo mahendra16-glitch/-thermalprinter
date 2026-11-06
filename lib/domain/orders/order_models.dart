@@ -20,16 +20,18 @@ extension OrderTypeX on OrderType {
 /// `open` and `held` orders are active: they can be edited. A `billed`
 /// order has a finalized bill and waits for payment; it still occupies its
 /// table but cannot be edited unless the bill is voided. `settled` is set
-/// by the payment module. `cancelled` orders are kept, read-only, with
-/// their reason.
-enum OrderStatus { open, held, billed, settled, cancelled }
+/// when payments cover the bill. `due` is a billed order closed with money
+/// still owed (the table is free; the balance stays visible until paid).
+/// `cancelled` orders are kept, read-only, with their reason.
+enum OrderStatus { open, held, billed, settled, due, cancelled }
 
 extension OrderStatusX on OrderStatus {
   String get label => switch (this) {
     OrderStatus.open => 'Running',
     OrderStatus.held => 'On hold',
     OrderStatus.billed => 'Payment pending',
-    OrderStatus.settled => 'Settled',
+    OrderStatus.settled => 'Paid',
+    OrderStatus.due => 'Due',
     OrderStatus.cancelled => 'Cancelled',
   };
 
@@ -171,6 +173,9 @@ class Order {
   final String notes;
   final OrderDiscount discount;
   final String cancelReason;
+
+  /// Why the order was closed with money still due.
+  final String dueNote;
   final DateTime createdAt;
   final DateTime updatedAt;
   final DateTime? closedAt;
@@ -189,6 +194,7 @@ class Order {
     this.notes = '',
     this.discount = OrderDiscount.none,
     this.cancelReason = '',
+    this.dueNote = '',
     required this.createdAt,
     required this.updatedAt,
     this.closedAt,

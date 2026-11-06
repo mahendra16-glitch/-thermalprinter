@@ -432,7 +432,14 @@ class OrderRepository {
     required String notes,
   }) {
     return _db.transaction(() async {
-      final o = await _requireEditable(orderId);
+      // Customer and notes do not change any amount, so they can still be
+      // filled in on a billed or due order (e.g. before moving it to dues).
+      // The finalized bill keeps the details it was made with.
+      final o = await _requireOrder(orderId);
+      final st = OrderStatusX.parse(o.status);
+      if (!st.isActive && st != OrderStatus.billed && st != OrderStatus.due) {
+        await _requireEditable(orderId);
+      }
       final phone = customerPhone.replaceAll(RegExp(r'[\s\-]'), '');
       if (phone.isNotEmpty && !RegExp(r'^\+?\d{6,15}$').hasMatch(phone)) {
         throw ValidationException('Phone number must be 6 to 15 digits.');
@@ -901,6 +908,7 @@ class OrderRepository {
       reason: r.discountReason,
     ),
     cancelReason: r.cancelReason,
+    dueNote: r.dueNote,
     createdAt: Clock.toLocal(r.createdAt),
     updatedAt: Clock.toLocal(r.updatedAt),
     closedAt: r.closedAt == null ? null : Clock.toLocal(r.closedAt!),

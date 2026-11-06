@@ -9,10 +9,12 @@ import '../../domain/billing/bill_calculator.dart';
 import '../../domain/billing/bill_models.dart';
 import '../../domain/billing/billing_settings.dart';
 import '../../domain/menu/menu_models.dart';
+import '../../domain/payments/payment_models.dart';
 import '../../models/print_job.dart';
 import '../../queue/print_queue_manager.dart';
 import '../../services/storage_service.dart';
 import '../menu/menu_widgets.dart';
+import '../payments/payment_actions.dart';
 
 /// One printed row of a bill breakdown.
 class BreakdownRow {
@@ -376,45 +378,57 @@ Future<void> showBill(BuildContext context, String billId) async {
       expand: false,
       initialChildSize: 0.85,
       builder: (ctx, scroll) => StreamBuilder<void>(
-        stream: storage.bills.watchChanges(),
-        builder: (ctx, _) => FutureBuilder<(Bill?, List<PrintJob>)>(
-          future: _loadBill(storage, billId),
-          builder: (ctx, snap) {
-            final data = snap.data;
-            if (data == null) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            final (bill, jobs) = data;
-            if (bill == null) {
-              return const MessageState(
-                icon: Icons.error_outline_rounded,
-                title: 'Bill not found',
-              );
-            }
-            return _BillView(bill: bill, jobs: jobs, scroll: scroll);
-          },
-        ),
+        stream: storage.payments.watchChanges(),
+        builder: (ctx, _) =>
+            FutureBuilder<(Bill?, List<PrintJob>, BillPaymentSummary?)>(
+              future: _loadBill(storage, billId),
+              builder: (ctx, snap) {
+                final data = snap.data;
+                if (data == null) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                final (bill, jobs, pay) = data;
+                if (bill == null) {
+                  return const MessageState(
+                    icon: Icons.error_outline_rounded,
+                    title: 'Bill not found',
+                  );
+                }
+                return _BillView(
+                  bill: bill,
+                  jobs: jobs,
+                  pay: pay,
+                  scroll: scroll,
+                );
+              },
+            ),
       ),
     ),
   );
 }
 
-Future<(Bill?, List<PrintJob>)> _loadBill(
+Future<(Bill?, List<PrintJob>, BillPaymentSummary?)> _loadBill(
   StorageService storage,
   String billId,
-) async => (
-  await storage.bills.getBill(billId),
-  await storage.bills.printJobsFor(billId),
-);
+) async {
+  final bill = await storage.bills.getBill(billId);
+  return (
+    bill,
+    await storage.bills.printJobsFor(billId),
+    bill == null ? null : await storage.payments.summaryFor(billId),
+  );
+}
 
 class _BillView extends StatelessWidget {
   final Bill bill;
   final List<PrintJob> jobs;
+  final BillPaymentSummary? pay;
   final ScrollController scroll;
 
   const _BillView({
     required this.bill,
     required this.jobs,
+    required this.pay,
     required this.scroll,
   });
 
@@ -524,6 +538,10 @@ class _BillView extends StatelessWidget {
           ),
         const Divider(height: 24),
         BreakdownView(rowsForBill(b)),
+        if (pay != null && !b.isVoided) ...[
+          const Divider(height: 24),
+          PaymentHistory(pay!),
+        ],
         const SizedBox(height: 16),
         if (!b.isVoided)
           Wrap(
@@ -546,12 +564,19 @@ class _BillView extends StatelessWidget {
                 label: Text(jobs.isEmpty ? 'Print' : 'Reprint (duplicate)'),
                 onPressed: () => _reprint(context),
               ),
-              OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(foregroundColor: Colors.red),
-                icon: const Icon(Icons.block_rounded, size: 18),
-                label: const Text('Void bill'),
-                onPressed: () => voidBill(context, b),
-              ),
+              if (pay != null && pay!.balance.paise > 0)
+                FilledButton.icon(
+                  icon: const Icon(Icons.payments_rounded, size: 18),
+                  label: Text('Collect ${pay!.balance.format()}'),
+                  onPressed: () => collectPayment(context, b.id),
+                ),
+              if (pay == null || pay!.paid.isZero)
+                OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(foregroundColor: Colors.red),
+                  icon: const Icon(Icons.block_rounded, size: 18),
+                  label: const Text('Void bill'),
+                  onPressed: () => voidBill(context, b),
+                ),
             ],
           ),
       ],

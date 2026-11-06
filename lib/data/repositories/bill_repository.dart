@@ -11,6 +11,7 @@ import '../../domain/billing/bill_models.dart';
 import '../../domain/billing/billing_settings.dart';
 import '../../domain/menu/menu_models.dart';
 import '../../domain/orders/order_models.dart';
+import '../../domain/payments/payment_models.dart';
 import '../../models/pos_order.dart';
 import '../../models/print_job.dart';
 import '../../models/printer_device.dart';
@@ -18,6 +19,7 @@ import '../db/app_database.dart';
 import 'audit_repository.dart';
 import 'business_profile_repository.dart';
 import 'order_repository.dart';
+import 'payment_repository.dart';
 import 'print_job_repository.dart';
 import 'settings_repository.dart';
 
@@ -273,9 +275,14 @@ class BillRepository {
               ),
             );
       }
+      // A ₹0 bill (e.g. 100% discount) has nothing to collect.
+      final settled = calc.grandTotal.isZero;
       await (_db.update(_db.orders)..where((r) => r.id.equals(orderId))).write(
         OrdersCompanion(
-          status: Value(OrderStatus.billed.name),
+          status: Value(
+            settled ? OrderStatus.settled.name : OrderStatus.billed.name,
+          ),
+          closedAt: settled ? Value(now) : const Value.absent(),
           updatedAt: Value(now),
         ),
       );
@@ -320,11 +327,24 @@ class BillRepository {
       final order = await (_db.select(
         _db.orders,
       )..where((o) => o.id.equals(b.orderId))).getSingle();
-      if (order.status != OrderStatus.billed.name) {
+      if (order.status != OrderStatus.billed.name &&
+          order.status != OrderStatus.due.name &&
+          !(order.status == OrderStatus.settled.name &&
+              b.grandTotalPaise == 0)) {
         throw ValidationException(
           'Order #${order.orderNo} is '
           '${OrderStatusX.parse(order.status).label.toLowerCase()}; this bill '
           'cannot be voided.',
+        );
+      }
+      final paid = BillPaymentSummary(
+        Money(b.grandTotalPaise),
+        await loadLedger(_db, billId),
+      ).paid;
+      if (paid.paise > 0) {
+        throw ValidationException(
+          '${paid.format()} has been paid on this bill. Reverse the payments '
+          'first, then void the bill.',
         );
       }
       final now = Clock.nowMs();
@@ -340,6 +360,8 @@ class BillRepository {
       )..where((r) => r.id.equals(b.orderId))).write(
         OrdersCompanion(
           status: Value(OrderStatus.open.name),
+          closedAt: const Value(null),
+          dueNote: const Value(''),
           updatedAt: Value(now),
         ),
       );
@@ -443,7 +465,25 @@ class BillRepository {
   // ---------------------------------------------------------------- helpers
 
   Future<void> _queuePrint(String billId, {bool reprint = false}) async {
-    final bill = (await getBill(billId))!;
+    final stored = (await getBill(billId))!;
+    final ledger = await loadLedger(_db, billId);
+    final summary = BillPaymentSummary(stored.grandTotal, ledger);
+    final profile = await _profile.get();
+    final settings = await getSettings();
+    final bill = stored.withPrintExtras(
+      payments: printedPaymentLines(ledger),
+      upiQr:
+          settings.printUpiQr &&
+              profile.upiId.trim().isNotEmpty &&
+              summary.balance.paise > 0
+          ? upiPayLink(
+              upiId: profile.upiId,
+              payeeName: profile.name,
+              amount: summary.balance,
+              note: 'Bill ${stored.billNumber}',
+            )
+          : '',
+    );
     final pos = PosOrder(
       orderId: '${bill.orderNo}',
       billNo: bill.billNumber,

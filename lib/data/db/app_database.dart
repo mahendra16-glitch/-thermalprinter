@@ -24,6 +24,7 @@ part 'app_database.g.dart';
 /// - v4: printer_profiles print-setting columns; station_printers,
 ///   kitchen_tickets, kitchen_ticket_lines.
 /// - v5: bills, bill_lines, bill_taxes.
+/// - v6: payments (ledger); orders.due_note.
 @DriftDatabase(
   tables: [
     MigrationLog,
@@ -51,6 +52,7 @@ part 'app_database.g.dart';
     Bills,
     BillLines,
     BillTaxes,
+    Payments,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -59,7 +61,7 @@ class AppDatabase extends _$AppDatabase {
   static const String fileName = 'pos.db';
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -71,6 +73,7 @@ class AppDatabase extends _$AppDatabase {
       await _logMigration(3, 'tables and orders (fresh install)');
       await _logMigration(4, 'kitchen tickets (fresh install)');
       await _logMigration(5, 'bills (fresh install)');
+      await _logMigration(6, 'payments (fresh install)');
     },
     onUpgrade: stepByStep(
       from1To2: (m, schema) async {
@@ -126,6 +129,14 @@ class AppDatabase extends _$AppDatabase {
         await m.createIndex(schema.idxBillLinesBill);
         await m.createIndex(schema.idxBillTaxesBill);
         await _logMigration(5, 'bills');
+      },
+      from5To6: (m, schema) async {
+        await m.addColumn(schema.orders, schema.orders.dueNote);
+        await m.createTable(schema.payments);
+        await m.createIndex(schema.idxPaymentsBill);
+        await m.createIndex(schema.idxPaymentsOrder);
+        await m.createIndex(schema.idxPaymentsBusinessDate);
+        await _logMigration(6, 'payments');
       },
     ),
     beforeOpen: (details) async {

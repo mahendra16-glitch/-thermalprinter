@@ -21,6 +21,8 @@ class ReceiptLayouts {
         return testPage(o, device);
       case 'BILL' when o.bill != null:
         return taxBill(Bill.fromJson(o.bill!), duplicate: o.isReprint);
+      case 'PAYMENT_RECEIPT' when o.bill != null:
+        return paymentReceipt(o.bill!, duplicate: o.isReprint);
       default:
         return bill(o);
     }
@@ -186,12 +188,126 @@ class ReceiptLayouts {
       size: ReceiptTextSize.tall,
     );
     d.divider('=');
+    if (b.payments.isNotEmpty) {
+      _paymentLines(d, b);
+      d.divider();
+    }
     if (hasInclusive) {
       d.text('"Incl." tax is already in the item prices.');
+    }
+    if (b.upiQr.isNotEmpty) {
+      d.feed();
+      d.text(
+        'Scan to pay ${b.balance.format()} by UPI',
+        align: ReceiptAlign.center,
+        bold: true,
+      );
+      d.qr(b.upiQr);
+      d.text(
+        'Please show the payment to our staff.',
+        align: ReceiptAlign.center,
+      );
     }
     if (h.footer.isNotEmpty) {
       d.feed();
       d.text(h.footer, align: ReceiptAlign.center);
+    }
+    return d;
+  }
+
+  static void _paymentLines(ReceiptDocument d, Bill b) {
+    String amt(Money m) => m.format(symbol: false);
+    for (final p in b.payments) {
+      d.columns([p.label, amt(p.amount)], flex: const [3, 1]);
+      if (p.reference.isNotEmpty) d.text('  Ref: ${p.reference}');
+    }
+    d.columns(['Total paid', amt(b.paid)], flex: const [3, 1], bold: true);
+    if (b.balance.paise > 0) {
+      d.columns(
+        ['BALANCE DUE', b.balance.format()],
+        flex: const [1, 1],
+        bold: true,
+      );
+    } else {
+      d.text('Paid in full', align: ReceiptAlign.center, bold: true);
+    }
+  }
+
+  /// Receipt for one payment or reversal: what was collected now, what was
+  /// paid before and what is still due. UPI/card are marked as recorded by
+  /// staff, because the app cannot see the bank.
+  static ReceiptDocument paymentReceipt(
+    Map<String, dynamic> json, {
+    bool duplicate = false,
+  }) {
+    final b = Bill.fromJson(json);
+    final r = (json['receipt'] as Map?)?.cast<String, dynamic>() ?? const {};
+    Money m(String k) => Money((r[k] as num?)?.toInt() ?? 0);
+    String amt(Money x) => x.format(symbol: false);
+    final d = ReceiptDocument();
+    if (duplicate) {
+      d.text('*** DUPLICATE ***', align: ReceiptAlign.center, bold: true);
+    }
+    d.text(
+      b.header.name,
+      align: ReceiptAlign.center,
+      size: ReceiptTextSize.tall,
+      bold: true,
+    );
+    if (b.header.phone.isNotEmpty) {
+      d.text('Ph: ${b.header.phone}', align: ReceiptAlign.center);
+    }
+    d.text(
+      r['label'] as String? ?? 'PAYMENT RECEIPT',
+      align: ReceiptAlign.center,
+      bold: true,
+    );
+    d.divider();
+    d.text('Bill No: ${b.billNumber}', bold: true);
+    final at = DateTime.tryParse(r['at'] as String? ?? '');
+    if (at != null) d.text(DateFormat('dd-MM-yyyy hh:mm a').format(at));
+    d.text(
+      [
+        'Order #${b.orderNo}',
+        if (b.tableLabel.isNotEmpty) 'Table ${b.tableLabel}',
+      ].join(' | '),
+    );
+    if (b.customerName.isNotEmpty) d.text('Customer: ${b.customerName}');
+    d.divider();
+    d.columns(['Bill total', amt(b.grandTotal)], flex: const [3, 1]);
+    d.columns(
+      [
+        'This ${r['method'] ?? ''} ${m('amount').isNegative ? 'reversal' : 'payment'}',
+        amt(m('amount')),
+      ],
+      flex: const [3, 1],
+      bold: true,
+    );
+    if (r['tendered'] != null) {
+      d.columns(['Cash received', amt(m('tendered'))], flex: const [3, 1]);
+      d.columns(['Change', amt(m('change'))], flex: const [3, 1]);
+    }
+    final ref = r['reference'] as String? ?? '';
+    if (ref.isNotEmpty) d.text('Ref: $ref');
+    final reason = r['reason'] as String? ?? '';
+    if (reason.isNotEmpty) d.text('Reason: $reason');
+    if (r['staffConfirmed'] == true) {
+      d.text('Recorded by staff (not bank-verified).');
+    }
+    d.divider();
+    d.columns(['Total paid', amt(b.paid)], flex: const [3, 1]);
+    if (b.balance.paise > 0) {
+      d.columns(
+        ['BALANCE DUE', b.balance.format()],
+        flex: const [1, 1],
+        bold: true,
+      );
+    } else {
+      d.text('Paid in full', align: ReceiptAlign.center, bold: true);
+    }
+    if (b.header.footer.isNotEmpty) {
+      d.feed();
+      d.text(b.header.footer, align: ReceiptAlign.center);
     }
     return d;
   }

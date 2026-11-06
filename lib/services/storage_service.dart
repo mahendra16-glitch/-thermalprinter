@@ -9,6 +9,7 @@ import '../data/repositories/business_profile_repository.dart';
 import '../data/repositories/kitchen_repository.dart';
 import '../data/repositories/menu_repository.dart';
 import '../data/repositories/order_repository.dart';
+import '../data/repositories/payment_repository.dart';
 import '../data/repositories/print_job_repository.dart';
 import '../data/repositories/printer_repository.dart';
 import '../data/repositories/settings_repository.dart';
@@ -44,6 +45,14 @@ class StorageService {
     audit,
     settings,
     orders,
+    businessProfile,
+    printJobs,
+  );
+  late final PaymentRepository payments = PaymentRepository(
+    db,
+    audit,
+    orders,
+    bills,
     businessProfile,
     printJobs,
   );

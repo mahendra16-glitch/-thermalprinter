@@ -248,7 +248,7 @@ void main() {
     await settle(tester);
     await settle(tester);
 
-    expect(find.text('Bill 1 · ₹40.00 · waiting for payment'), findsOneWidget);
+    expect(find.text('Bill 1 · ₹40.00 · Unpaid'), findsOneWidget);
     expect(find.text('Generate bill'), findsNothing);
     final bills = (await tester.runAsync(
       () => storage.bills.billsForOrder(orderId),
@@ -272,6 +272,88 @@ void main() {
     ))!;
     expect(after.single.isVoided, isTrue);
     expect(after.single.voidReason, 'Wrong item billed');
+  });
+
+  testWidgets('part cash, then UPI only after staff confirm', (tester) async {
+    tester.view.physicalSize = const Size(1200, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await seed(tester);
+    late String orderId;
+    await tester.runAsync(() async {
+      orderId = await storage.orders.createOrder(
+        const NewOrderRequest(
+          clientRequestId: 'w6',
+          type: OrderType.dineIn,
+          tableId: 't1',
+        ),
+      );
+      final tea = (await storage.menu.loadSnapshot()).items.firstWhere(
+        (i) => i.id == 'tea',
+      );
+      await storage.orders.addItem(orderId, _plain(tea), qty: 2);
+      await storage.bills.finalize(
+        orderId,
+        clientRequestId: 'b6',
+        allowUnsent: true,
+        print: false,
+      );
+    });
+    await tester.pumpWidget(MaterialApp(home: OrderScreen(orderId: orderId)));
+    await settle(tester);
+    expect(find.textContaining('Unpaid'), findsOneWidget);
+
+    Future<void> openPayment() async {
+      await tester.tap(find.textContaining('Collect payment'));
+      await settle(tester);
+      await tester.pump(const Duration(seconds: 1));
+    }
+
+    Future<void> record(String button) async {
+      await tester.tap(find.text(button));
+      await tester.pump(const Duration(seconds: 1));
+      await tester.tap(find.widgetWithText(FilledButton, 'Record'));
+      await tester.pump(const Duration(seconds: 1));
+      await settle(tester);
+      await settle(tester);
+      await tester.pump(const Duration(seconds: 1));
+    }
+
+    await openPayment();
+    expect(find.text('Balance'), findsOneWidget);
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Amount collected now'),
+      '10',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Cash received (optional)'),
+      '50',
+    );
+    await tester.pump();
+    expect(find.text('Change to give: ₹40.00'), findsOneWidget);
+    await record('Record cash payment');
+    expect(find.textContaining('Part paid'), findsOneWidget);
+    expect(find.text('Collect payment · ₹30.00'), findsOneWidget);
+    expect(find.text('Void bill'), findsNothing);
+
+    await openPayment();
+    await tester.tap(find.text('UPI'));
+    await tester.pump();
+    expect(find.textContaining('does not prove'), findsOneWidget);
+    await tester.tap(find.text('Record UPI payment'));
+    await tester.pump();
+    expect(find.textContaining('Tick the box'), findsOneWidget);
+    await tester.tap(find.textContaining('I checked our UPI app'));
+    await tester.pump();
+    await record('Record UPI payment');
+
+    expect(find.textContaining('Paid · Bill 1'), findsOneWidget);
+    final s = (await tester.runAsync(() async {
+      final bill = await storage.bills.currentBillFor(orderId);
+      return storage.payments.summaryFor(bill!.id);
+    }))!;
+    expect(s.entries.map((e) => e.amount.paise), [1000, 3000]);
+    expect(s.entries.last.confirmation, 'staffConfirmed');
   });
 }
 

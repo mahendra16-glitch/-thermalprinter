@@ -53,6 +53,10 @@ class BillingSettings {
   /// Each prefix has its own sequence starting at 1.
   final String billNumberPrefix;
 
+  /// Print a UPI QR for the amount due on bills (needs a UPI ID in the
+  /// business profile). Showing a QR never marks anything as paid.
+  final bool printUpiQr;
+
   const BillingSettings({
     this.serviceChargeBp = 0,
     this.serviceChargeOrderTypes = const {OrderType.dineIn},
@@ -60,6 +64,7 @@ class BillingSettings {
     this.serviceChargeTaxSplit = TaxSplitMode.cgstSgst,
     this.rounding = RoundingMode.none,
     this.billNumberPrefix = '',
+    this.printUpiQr = false,
   });
 
   static const defaults = BillingSettings();
@@ -74,6 +79,7 @@ class BillingSettings {
     TaxSplitMode? serviceChargeTaxSplit,
     RoundingMode? rounding,
     String? billNumberPrefix,
+    bool? printUpiQr,
   }) => BillingSettings(
     serviceChargeBp: serviceChargeBp ?? this.serviceChargeBp,
     serviceChargeOrderTypes:
@@ -82,6 +88,7 @@ class BillingSettings {
     serviceChargeTaxSplit: serviceChargeTaxSplit ?? this.serviceChargeTaxSplit,
     rounding: rounding ?? this.rounding,
     billNumberPrefix: billNumberPrefix ?? this.billNumberPrefix,
+    printUpiQr: printUpiQr ?? this.printUpiQr,
   );
 
   Map<String, Object?> toJson() => {
@@ -94,6 +101,7 @@ class BillingSettings {
     'serviceChargeTaxSplit': serviceChargeTaxSplit.name,
     'rounding': rounding.name,
     'billNumberPrefix': billNumberPrefix,
+    'printUpiQr': printUpiQr,
   };
 
   factory BillingSettings.fromJson(Map<String, dynamic> j) => BillingSettings(
@@ -108,5 +116,6 @@ class BillingSettings {
     ),
     rounding: RoundingModeX.parse(j['rounding'] as String?),
     billNumberPrefix: j['billNumberPrefix'] as String? ?? '',
+    printUpiQr: j['printUpiQr'] as bool? ?? false,
   );
 }

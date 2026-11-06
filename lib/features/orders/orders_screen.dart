@@ -8,6 +8,7 @@ import '../../domain/orders/table_models.dart';
 import '../../services/storage_service.dart';
 import '../common/time_format.dart';
 import '../menu/menu_widgets.dart';
+import '../payments/dues_screen.dart';
 import 'order_launcher.dart';
 
 enum _Filter { all, dineIn, takeaway, held, billed }
@@ -79,6 +80,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
       OrderStatus.open => const Color(0xFFEA580C),
       OrderStatus.held => const Color(0xFF7C3AED),
       OrderStatus.billed => const Color(0xFF2563EB),
+      OrderStatus.due => const Color(0xFFDC2626),
       OrderStatus.cancelled => Colors.grey,
       _ => const Color(0xFF16A34A),
     };
@@ -105,7 +107,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
             if (o.status.occupiesTable)
               elapsedLabel(o.createdAt, DateTime.now())
             else if (o.status == OrderStatus.cancelled)
-              o.cancelReason,
+              o.cancelReason
+            else if (o.status == OrderStatus.due && o.dueNote.isNotEmpty)
+              o.dueNote,
           ].join(' · '),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -130,7 +134,18 @@ class _OrdersScreenState extends State<OrdersScreen> {
     final active = _active;
     final visible = (active ?? []).where(_matches).toList();
     return Scaffold(
-      appBar: AppBar(title: const Text('Orders')),
+      appBar: AppBar(
+        title: const Text('Orders'),
+        actions: [
+          TextButton.icon(
+            style: TextButton.styleFrom(foregroundColor: Colors.white),
+            onPressed: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => const DuesScreen())),
+            icon: const Icon(Icons.account_balance_wallet_outlined),
+            label: const Text('Dues & payments'),
+          ),
+        ],
+      ),
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,

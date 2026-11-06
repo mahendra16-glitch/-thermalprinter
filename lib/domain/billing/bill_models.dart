@@ -170,6 +170,28 @@ class BillTax {
   }
 }
 
+/// A payment line printed on a bill or receipt. [amount] is negative for a
+/// reversal.
+class BillPaymentLine {
+  final String label;
+  final Money amount;
+  final String reference;
+
+  const BillPaymentLine(this.label, this.amount, {this.reference = ''});
+
+  Map<String, Object?> toJson() => {
+    'label': label,
+    'amount': amount.paise,
+    'reference': reference,
+  };
+
+  factory BillPaymentLine.fromJson(Map<String, dynamic> j) => BillPaymentLine(
+    j['label'] as String? ?? '',
+    Money((j['amount'] as num?)?.toInt() ?? 0),
+    reference: j['reference'] as String? ?? '',
+  );
+}
+
 /// A finalized (or voided) bill with everything needed to print it again
 /// exactly as it was.
 class Bill {
@@ -199,6 +221,12 @@ class Bill {
   final DateTime? voidedAt;
   final String voidReason;
 
+  /// Added at print time from the payment ledger (not stored on the bill).
+  final List<BillPaymentLine> payments;
+
+  /// UPI payment link to print as a QR, or empty.
+  final String upiQr;
+
   const Bill({
     required this.id,
     required this.orderId,
@@ -225,6 +253,22 @@ class Bill {
     required this.createdAt,
     this.voidedAt,
     this.voidReason = '',
+    this.payments = const [],
+    this.upiQr = '',
+  });
+
+  Money get paid => payments.fold(Money.zero, (s, p) => s + p.amount);
+
+  Money get balance => grandTotal - paid;
+
+  /// The same bill with print-time payment details.
+  Bill withPrintExtras({
+    required List<BillPaymentLine> payments,
+    String upiQr = '',
+  }) => Bill.fromJson({
+    ...toJson(),
+    'payments': payments.map((p) => p.toJson()).toList(),
+    'upiQr': upiQr,
   });
 
   bool get isVoided => status == BillStatus.voided;
@@ -259,6 +303,9 @@ class Bill {
     'createdAt': createdAt.toIso8601String(),
     'voidedAt': voidedAt?.toIso8601String(),
     'voidReason': voidReason,
+    if (payments.isNotEmpty)
+      'payments': payments.map((p) => p.toJson()).toList(),
+    if (upiQr.isNotEmpty) 'upiQr': upiQr,
   };
 
   factory Bill.fromJson(Map<String, dynamic> j) {
@@ -298,6 +345,11 @@ class Bill {
           DateTime.tryParse(j['createdAt'] as String? ?? '') ?? DateTime(2000),
       voidedAt: DateTime.tryParse(j['voidedAt'] as String? ?? ''),
       voidReason: j['voidReason'] as String? ?? '',
+      payments: [
+        for (final p in (j['payments'] as List? ?? const []))
+          BillPaymentLine.fromJson((p as Map).cast<String, dynamic>()),
+      ],
+      upiQr: j['upiQr'] as String? ?? '',
     );
   }
 }

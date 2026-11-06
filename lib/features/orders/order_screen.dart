@@ -9,9 +9,11 @@ import '../../domain/menu/item_configuration.dart';
 import '../../domain/menu/menu_models.dart';
 import '../../domain/orders/order_models.dart';
 import '../../domain/orders/table_models.dart';
+import '../../domain/payments/payment_models.dart';
 import '../../services/storage_service.dart';
 import '../billing/bill_actions.dart';
 import '../common/time_format.dart';
+import '../payments/payment_actions.dart';
 import '../menu/menu_widgets.dart';
 import 'item_options_sheet.dart';
 import 'kitchen_actions.dart';
@@ -34,6 +36,10 @@ class _OrderScreenState extends State<OrderScreen>
 
   /// The current bill, once the order is billed.
   Bill? _bill;
+
+  /// Payments on [_bill].
+  BillPaymentSummary? _pay;
+  StreamSubscription<void>? _paySub;
   MenuSnapshot? _menu;
   Map<String, RestaurantTable> _tables = {};
   StreamSubscription<OrderDetail?>? _sub;
@@ -55,15 +61,25 @@ class _OrderScreenState extends State<OrderScreen>
     final storage = await StorageService.getInstance();
     _tables = {for (final t in await storage.tables.listTables()) t.id: t};
     _sub = storage.orders.watchDetail(widget.orderId).listen((d) async {
-      final bill = d != null && d.order.status != OrderStatus.open
+      final bill = d != null && !d.order.isEditable
           ? await storage.bills.currentBillFor(d.order.id)
           : null;
+      final pay = bill == null
+          ? null
+          : await storage.payments.summaryFor(bill.id);
       if (!mounted) return;
       setState(() {
         _detail = d;
         _bill = bill;
+        _pay = pay;
         _missing = d == null;
       });
+    });
+    _paySub = storage.payments.watchChanges().listen((_) async {
+      final b = _bill;
+      if (b == null) return;
+      final pay = await storage.payments.summaryFor(b.id);
+      if (mounted) setState(() => _pay = pay);
     });
     _menuSub = storage.menu.watchChanges().listen((_) => _loadMenu());
     await _loadMenu();
@@ -78,6 +94,7 @@ class _OrderScreenState extends State<OrderScreen>
   @override
   void dispose() {
     _sub?.cancel();
+    _paySub?.cancel();
     _menuSub?.cancel();
     _tabs.dispose();
     _search.dispose();
@@ -364,21 +381,19 @@ class _OrderScreenState extends State<OrderScreen>
     final unsent = d.lines.fold<int>(0, (n, l) => n + l.unsentQty);
     return Column(
       children: [
-        if (o.status == OrderStatus.billed)
+        if (_bill != null)
           MaterialBanner(
-            backgroundColor: const Color(0xFFDBEAFE),
-            content: Text(
-              _bill == null
-                  ? 'Billed · waiting for payment'
-                  : 'Bill ${_bill!.billNumber} · ${_bill!.grandTotal.format()}'
-                        ' · waiting for payment',
-            ),
+            backgroundColor: switch (o.status) {
+              OrderStatus.settled => const Color(0xFFDCFCE7),
+              OrderStatus.due => const Color(0xFFFEE2E2),
+              _ => const Color(0xFFDBEAFE),
+            },
+            content: Text(_billBanner(o)),
             actions: [
-              if (_bill != null)
-                TextButton(
-                  onPressed: () => showBill(context, _bill!.id),
-                  child: const Text('View bill'),
-                ),
+              TextButton(
+                onPressed: () => showBill(context, _bill!.id),
+                child: const Text('View bill'),
+              ),
             ],
           )
         else if (!o.isEditable)
@@ -446,8 +461,20 @@ class _OrderScreenState extends State<OrderScreen>
         const Divider(height: 1),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: _bill != null && o.status == OrderStatus.billed
-              ? BreakdownView(rowsForBill(_bill!))
+          child: _bill != null
+              ? Column(
+                  children: [
+                    BreakdownView(rowsForBill(_bill!)),
+                    if (_pay != null && !_pay!.paid.isZero) ...[
+                      _totalRow('Paid', _pay!.paid.format()),
+                      _totalRow(
+                        'Balance due',
+                        _pay!.balance.format(),
+                        bold: true,
+                      ),
+                    ],
+                  ],
+                )
               : Column(
                   children: [
                     _totalRow(
@@ -477,35 +504,7 @@ class _OrderScreenState extends State<OrderScreen>
                   ],
                 ),
         ),
-        if (o.status == OrderStatus.billed && _bill != null)
-          SafeArea(
-            top: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.red,
-                      ),
-                      onPressed: () => voidBill(context, _bill!),
-                      icon: const Icon(Icons.block_rounded),
-                      label: const Text('Void bill'),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: FilledButton.icon(
-                      onPressed: () => showBill(context, _bill!.id),
-                      icon: const Icon(Icons.receipt_long_rounded),
-                      label: const Text('Bill & print'),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+        if (_bill != null && _pay != null) _billActions(o, _bill!, _pay!),
         if (o.isEditable)
           SafeArea(
             top: false,
@@ -581,6 +580,87 @@ class _OrderScreenState extends State<OrderScreen>
         else
           const SizedBox(height: 12),
       ],
+    );
+  }
+
+  String _billBanner(Order o) {
+    final b = _bill!;
+    final p = _pay;
+    final balance = p == null ? '' : ' · balance ${p.balance.format()}';
+    return switch (o.status) {
+      OrderStatus.settled =>
+        'Paid · Bill ${b.billNumber} · '
+            '${b.grandTotal.format()}',
+      OrderStatus.due =>
+        'Due · Bill ${b.billNumber}$balance'
+            '${o.dueNote.isEmpty ? '' : ' · ${o.dueNote}'}',
+      _ =>
+        'Bill ${b.billNumber} · ${b.grandTotal.format()} · '
+            '${p?.status.label ?? 'Unpaid'}'
+            '${p == null || p.paid.isZero ? '' : balance}',
+    };
+  }
+
+  Widget _billActions(Order o, Bill b, BillPaymentSummary p) {
+    final owes = p.balance.paise > 0;
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (owes &&
+                (o.status == OrderStatus.billed ||
+                    o.status == OrderStatus.due)) ...[
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: FilledButton.icon(
+                  onPressed: () => collectPayment(context, b.id),
+                  icon: const Icon(Icons.payments_rounded),
+                  label: Text('Collect payment · ${p.balance.format()}'),
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
+            Row(
+              children: [
+                if (p.paid.isZero && o.status != OrderStatus.settled) ...[
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.red,
+                      ),
+                      onPressed: () => voidBill(context, b),
+                      icon: const Icon(Icons.block_rounded),
+                      label: const Text('Void bill'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                ],
+                if (owes && o.status == OrderStatus.billed) ...[
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => moveToDues(context, o, p.balance),
+                      icon: const Icon(Icons.schedule_rounded),
+                      label: const Text('Move to dues'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                ],
+                Expanded(
+                  child: FilledButton.tonalIcon(
+                    onPressed: () => showBill(context, b.id),
+                    icon: const Icon(Icons.receipt_long_rounded),
+                    label: const Text('Bill & payments'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 

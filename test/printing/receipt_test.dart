@@ -273,6 +273,95 @@ void main() {
       expect(back.createdAt, taxBill.createdAt);
     });
 
+    test('bill with payments shows paid, balance and UPI QR', () async {
+      final paid = taxBill.withPrintExtras(
+        payments: const [
+          BillPaymentLine('Paid Cash', Money(20000)),
+          BillPaymentLine(
+            'Paid UPI (staff-confirmed)',
+            Money(10000),
+            reference: '998877',
+          ),
+        ],
+        upiQr: 'upi://pay?pa=x%40y&am=267.00',
+      );
+      final t = await printBill(billJob(paid), device58);
+      expect(t, contains('Paid Cash'));
+      expect(t, contains('(staff-confirmed)'));
+      expect(t, contains('Ref: 998877'));
+      expect(t, contains('Total paid'));
+      expect(t, contains('BALANCE DUE'));
+      expect(t, contains('Rs.267.00'));
+      expect(t, contains('Scan to pay'));
+
+      final full = taxBill.withPrintExtras(
+        payments: const [BillPaymentLine('Paid Cash', Money(56700))],
+      );
+      final t2 = await printBill(billJob(full), device58);
+      expect(t2, contains('Paid in full'));
+      expect(t2, isNot(contains('BALANCE DUE')));
+      expect(t2, isNot(contains('Scan to pay')));
+    });
+
+    test('payment receipt shows this payment, change and balance', () async {
+      final json = {
+        ...taxBill
+            .withPrintExtras(
+              payments: const [BillPaymentLine('Paid UPI', Money(20000))],
+            )
+            .toJson(),
+        'receipt': {
+          'label': 'PAYMENT RECEIPT',
+          'method': 'UPI',
+          'staffConfirmed': true,
+          'amount': 20000,
+          'reference': 'UTR123',
+          'at': DateTime(2026, 11, 7, 13, 5).toIso8601String(),
+        },
+      };
+      final t = await printBill(
+        PosOrder(
+          orderId: '12',
+          type: 'PAYMENT_RECEIPT',
+          items: const [],
+          bill: json,
+        ),
+        device58,
+      );
+      expect(t, contains('PAYMENT RECEIPT'));
+      expect(t, contains('Bill No: FY26/7'));
+      expect(t, contains('This UPI payment'));
+      expect(t, contains('200.00'));
+      expect(t, contains('Ref: UTR123'));
+      expect(t, contains('bank-verified'));
+      expect(t, contains('BALANCE DUE'));
+      expect(t, contains('Rs.367.00'));
+      expect(t, isNot(contains('Change')));
+
+      final cash = {
+        ...json,
+        'receipt': {
+          'label': 'PAYMENT RECEIPT',
+          'method': 'Cash',
+          'amount': 20000,
+          'tendered': 50000,
+          'change': 30000,
+        },
+      };
+      final t2 = await printBill(
+        PosOrder(
+          orderId: '12',
+          type: 'PAYMENT_RECEIPT',
+          items: const [],
+          bill: cash,
+        ),
+        device58,
+      );
+      expect(t2, contains('Cash received'));
+      expect(t2, contains('300.00'));
+      expect(t2, isNot(contains('bank-verified')));
+    });
+
     test('feed and cut follow the printer settings', () async {
       final noCut = device58.copyWith(autoCut: false, feedLines: 5);
       final bytes = await SmartPrintEngine.generateOrderBytes(

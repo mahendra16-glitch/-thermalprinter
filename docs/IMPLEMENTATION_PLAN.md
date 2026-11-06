@@ -230,7 +230,7 @@ Baseline results (2026-11-06):
 - [x] Phase 3 — Tables & orders (see §12)
 - [x] Phase 4 — KOT + printer fixes D1, D2, D6–D12, D14 (see §13)
 - [x] Phase 5 — Billing & tax (see §14)
-- [ ] Phase 6 — Payments
+- [x] Phase 6 — Payments (see §15)
 - [ ] Phase 7 — Shifts & expenses
 - [ ] Phase 8 — Reports
 - [ ] Phase 9 — Staff & permissions
@@ -644,3 +644,69 @@ No device or printer was connected.
 - **Tax lines** are grouped by rate, not printed per item; HSN/SAC codes are not stored or printed.
 - **Bill numbering** is per prefix; changing the prefix each financial year is manual. The app does not check legal invoice-number rules.
 - **The native Kotlin engine** (Test screen only) still uses the old generic bill layout.
+
+---
+
+## 15. Phase 6 completion report (2026-11-07)
+
+### Commit
+- `Phase 6` — schema v6, payment ledger, payment and dues screens, printed payments and receipts, tests and this report.
+
+### Database migration v5 → v6
+- New table `payments` (the ledger), `ON DELETE RESTRICT` to bills and orders:
+  - kind `payment | reversal`, method `cash | upi | card | other` (+ name for other), amount (always positive), cash received and change, reference (UPI UTR, card slip…), confirmation (`staffConfirmed` for UPI/card/other), `reverses_payment_id` (unique: one reversal per payment), reason, staff name, business date of the money movement, unique client request id, time.
+  - Indexes on bill, order and business date.
+- `orders.due_note` (default empty).
+- `migration_test.dart` checks every path to v6 and v1 → v6 with data.
+
+### Ledger rules (`PaymentRepository`, all transactional and audited on the order and the payment)
+- Entries are only inserted, never updated or deleted. A wrong or refunded payment gets a **reversal** entry with a reason; the original stays.
+- Paid / part paid / unpaid and the balance are always calculated from the entries (`BillPaymentSummary`), never stored.
+- A payment must be above ₹0 and no more than the balance. Cash received may be more: the change is recorded. A voided bill cannot be paid.
+- UPI, card and other payments require staff to confirm they checked the money arrived; they are stored and printed as **staff-confirmed (not bank-verified)**. Showing or printing a QR never records anything.
+- Same request id → one payment (double tap safe).
+- **The order follows the ledger:**
+  - Balance reaches ₹0 → order **settled** (table freed).
+  - A reversal on a settled order → **due** (table stays free; the balance is visible again).
+  - **Move to dues:** a billed order with a balance can be closed as due (needs customer name or phone, optional note); the table is freed.
+  - A ₹0 bill (e.g. 100% discount) settles at once.
+- A bill with money paid on it cannot be voided until the payments are reversed.
+- Customer name, phone and notes can still be edited on billed and due orders (they change no amount; the finalized bill keeps its copy).
+
+### Scenarios tested (₹500 bill)
+Fully cash with change; fully UPI (rejected without staff confirmation); ₹200 cash + ₹300 UPI; ₹100 now + ₹400 later (due listed in between, earlier entry kept); ₹200 UPI + ₹300 cash; card and a named other method; overpayment, ₹0 and short cash rejected; reversal (kept, balance reopened, settled → due, no double reversal, no reversal of a reversal, then paid again); void blocked while paid; move to dues and later settle; day totals by method net of reversals.
+
+### Printing
+- **Bill** (print or reprint) now lists each payment ("Paid Cash", "Paid UPI (staff-confirmed)", "Reversed …"), references, total paid, and **BALANCE DUE** or "Paid in full".
+- **Payment receipt** (optional after each payment or reversal, or later from the payment history): bill number and total, this payment and method, cash received and change, reference, reason for reversals, "Recorded by staff (not bank-verified)" for UPI/card/other, total paid and balance.
+- **UPI QR on bills** (Settings › Billing & tax, off by default): a `upi://pay` QR for the amount due, using the business profile's UPI ID.
+
+### Screens
+- **Order screen (billed / due / paid):** banner with bill number, total and status (Unpaid, Part paid + balance, Due + note, Paid); breakdown with Paid and Balance due; **Collect payment · ₹balance**; **Move to dues**; **Void bill** (only while nothing is paid); **Bill & payments**.
+- **Payment screen:** bill total, paid before, balance; Cash / UPI / Card / Other; amount (defaults to the full balance); for cash, cash received with quick ₹100/200/500/2000 and the change; for UPI, the QR for the full balance (if a UPI ID is set) and a warning that a QR or screenshot is not proof; reference field; a required "I checked…" tick for non-cash; optional receipt; a confirmation dialog before recording. The button says **Record UPI payment** etc.
+- **Bill sheet:** payment history (time, method, staff-confirmed, reference, change, reason; reversed entries struck through) with **Print receipt** and **Refund / reverse…**; Collect; Void only while unpaid.
+- **Orders › Dues & payments:** *Dues* lists every bill still owing (customer, note, balance of total); *Today* shows net totals per method, net collected, and every entry of the business day.
+- The Orders list shows Due (red) and Paid orders in today's closed list.
+
+### Tests and commands
+| Command | Result |
+|---|---|
+| `dart format lib test` | clean |
+| `flutter analyze` | 13 infos (unchanged); no warnings or errors |
+| `flutter test` | **197/197 passed**. New: payment ledger (16), payment print layouts (2), part-cash-then-UPI widget flow; migration v6. |
+| `flutter build apk --debug` | builds |
+
+### Manual tests still required
+No device or printer was connected.
+1. Record cash (with change), UPI, card and split payments on a phone; check the confirmation dialog and messages.
+2. Scan the on-screen UPI QR with a UPI app: it should open with your UPI ID, name and the amount. Do not treat the scan as payment.
+3. Print a bill after a part payment (paid lines + balance), a payment receipt and a reversal receipt at 58mm and 80mm; with "Print UPI QR on bills" on, scan the printed QR.
+4. Move a part-paid bill to dues, start a new order on that table, then settle the due from Orders › Dues.
+
+### Known limitations
+- **No bank verification:** UPI, card and other are staff-recorded only. Nothing is checked online.
+- **Advances before billing** (e.g. booking deposits) are not supported; part payments are taken against the finalized bill.
+- **Reversals are whole payments:** to refund part of a payment, reverse it and record the correct amount again. A reversal records the money going back; the app does not send UPI or card refunds.
+- **No credit notes:** refunding a paid bill does not change the bill or its tax; voiding a bill still requires reversing payments first.
+- **Staff names** are empty until Phase 9 (staff and permissions); reversals are not yet restricted by permission.
+- **Cash drawer** (opening cash, expenses, counted cash, closing) comes in Phase 7; *Today* totals are per business day, not per shift.

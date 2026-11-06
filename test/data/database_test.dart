@@ -13,8 +13,8 @@ void main() {
     'fresh install creates the latest schema and logs every version',
     () async {
       final log = await db.select(db.migrationLog).get();
-      expect(log.map((r) => r.version), [1, 2, 3, 4, 5]);
-      expect(db.schemaVersion, 5);
+      expect(log.map((r) => r.version), [1, 2, 3, 4, 5, 6]);
+      expect(db.schemaVersion, 6);
     },
   );
 

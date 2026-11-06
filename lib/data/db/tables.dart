@@ -400,6 +400,9 @@ class Orders extends Table {
   TextColumn get discountReason => text().withDefault(const Constant(''))();
   TextColumn get cancelReason => text().withDefault(const Constant(''))();
 
+  /// v6: why a billed order was closed with money still due.
+  TextColumn get dueNote => text().withDefault(const Constant(''))();
+
   /// Set by the device that created the order; a repeated create with the
   /// same id returns the existing order instead of making a duplicate.
   TextColumn get clientRequestId => text().unique()();
@@ -648,6 +651,65 @@ class BillTaxes extends Table {
   IntColumn get igstPaise => integer().withDefault(const Constant(0))();
   IntColumn get otherPaise => integer().withDefault(const Constant(0))();
   IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+// ---------------------------------------------------------------------------
+// Schema v6: payment ledger
+// ---------------------------------------------------------------------------
+// Ledger entries are never updated or deleted. A mistaken or refunded
+// payment is undone by a separate `reversal` entry pointing at it. What a
+// bill has received is always the sum of its entries.
+
+@DataClassName('PaymentRow')
+@TableIndex(name: 'idx_payments_bill', columns: {#billId})
+@TableIndex(name: 'idx_payments_order', columns: {#orderId})
+@TableIndex(name: 'idx_payments_business_date', columns: {#businessDate})
+class Payments extends Table {
+  TextColumn get id => text()();
+  TextColumn get billId =>
+      text().references(Bills, #id, onDelete: KeyAction.restrict)();
+  TextColumn get orderId =>
+      text().references(Orders, #id, onDelete: KeyAction.restrict)();
+
+  /// `PaymentKind.name`: payment | reversal.
+  TextColumn get kind => text()();
+
+  /// `PaymentMethod.name`: cash | upi | card | other.
+  TextColumn get method => text()();
+
+  /// Name of an "other" method (e.g. "Swiggy"), otherwise empty.
+  TextColumn get methodName => text().withDefault(const Constant(''))();
+
+  /// Always positive. A reversal subtracts this amount.
+  IntColumn get amountPaise => integer()();
+
+  /// Cash handed over and change returned (cash payments only).
+  IntColumn get tenderedPaise => integer().nullable()();
+  IntColumn get changePaise => integer().nullable()();
+
+  /// UPI transaction id, card slip number, …
+  TextColumn get reference => text().withDefault(const Constant(''))();
+
+  /// How the money was confirmed. UPI/card/other are always
+  /// `staffConfirmed`: the app cannot see the bank.
+  TextColumn get confirmation => text().withDefault(const Constant(''))();
+
+  /// For a reversal: the payment it undoes (one reversal per payment).
+  TextColumn get reversesPaymentId => text().nullable().unique().references(
+    Payments,
+    #id,
+    onDelete: KeyAction.restrict,
+  )();
+  TextColumn get reason => text().withDefault(const Constant(''))();
+  TextColumn get staffName => text().withDefault(const Constant(''))();
+
+  /// Business date the money moved (for shift and day totals).
+  TextColumn get businessDate => text()();
+  TextColumn get clientRequestId => text().unique()();
+  IntColumn get createdAt => integer()();
 
   @override
   Set<Column> get primaryKey => {id};

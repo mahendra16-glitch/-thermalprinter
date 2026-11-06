@@ -33,6 +33,10 @@ class Money implements Comparable<Money> {
   Money operator -(Money other) => Money(paise - other.paise);
   Money operator -() => Money(-paise);
   Money operator *(int factor) => Money(paise * factor);
+  bool operator <(Money other) => paise < other.paise;
+  bool operator <=(Money other) => paise <= other.paise;
+  bool operator >(Money other) => paise > other.paise;
+  bool operator >=(Money other) => paise >= other.paise;
 
   bool get isNegative => paise < 0;
   bool get isZero => paise == 0;

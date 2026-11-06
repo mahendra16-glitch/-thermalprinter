@@ -223,6 +223,20 @@ class _BillingSettingsScreenState extends State<BillingSettingsScreen> {
                   ),
                 ),
                 const Divider(height: 32),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Print UPI QR on bills'),
+                  subtitle: const Text(
+                    'Prints a QR for the amount due, using the UPI ID in the '
+                    'business profile. Showing or printing a QR never marks '
+                    'a bill as paid; staff record UPI payments after '
+                    'checking they arrived.',
+                  ),
+                  value: s.printUpiQr,
+                  onChanged: (v) =>
+                      setState(() => _s = s.copyWith(printUpiQr: v)),
+                ),
+                const Divider(height: 32),
                 TextField(
                   controller: _prefix,
                   maxLength: 10,
