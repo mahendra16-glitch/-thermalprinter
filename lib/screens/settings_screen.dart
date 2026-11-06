@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../models/print_mode.dart';
 import '../services/storage_service.dart';
 import '../services/pos_integration_service.dart';
@@ -77,8 +78,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
 
     try {
-      final jobId =
-          await PosIntegrationService.processIncomingPrintJob(_jsonController.text);
+      final jobId = await PosIntegrationService.processIncomingPrintJob(
+        _jsonController.text,
+      );
 
       if (mounted) {
         setState(() {
@@ -99,9 +101,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Printer Settings & Integration'),
-      ),
+      appBar: AppBar(title: const Text('Printer Settings & Integration')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -140,11 +140,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   groupValue: _currentMode,
                   title: Text(
                     mode.title,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
                   ),
                   subtitle: Text(
                     mode.description,
-                    style: const TextStyle(fontSize: 12, color: Color(0xFF475569)),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF475569),
+                    ),
                   ),
                   onChanged: (val) {
                     if (val != null) _setPrintMode(val);
@@ -193,7 +199,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           width: 16,
                           height: 16,
                           child: CircularProgressIndicator(
-                              strokeWidth: 2, color: Colors.white),
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
                         )
                       : const Icon(Icons.send_rounded, size: 16),
                   label: const Text('Enqueue Print Job'),
@@ -243,9 +251,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               trailing: const Icon(Icons.chevron_right_rounded),
               onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const TestScreen()),
-                );
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (_) => const TestScreen()));
               },
             ),
 

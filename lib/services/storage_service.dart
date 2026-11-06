@@ -1,5 +1,7 @@
 import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../core/constants/app_constants.dart';
 import '../models/printer_device.dart';
 import '../models/print_mode.dart';
@@ -31,7 +33,9 @@ class StorageService {
     if (raw == null || raw.isEmpty) return [];
     try {
       final List<dynamic> list = jsonDecode(raw);
-      return list.map((e) => PrinterDevice.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => PrinterDevice.fromJson(e as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       return [];
     }
@@ -90,7 +94,9 @@ class StorageService {
     if (raw == null || raw.isEmpty) return [];
     try {
       final List<dynamic> list = jsonDecode(raw);
-      return list.map((e) => PrintJob.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => PrintJob.fromJson(e as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       return [];
     }
@@ -108,7 +114,9 @@ class StorageService {
     if (raw == null || raw.isEmpty) return [];
     try {
       final List<dynamic> list = jsonDecode(raw);
-      return list.map((e) => PrintHistoryItem.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => PrintHistoryItem.fromJson(e as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       return [];
     }

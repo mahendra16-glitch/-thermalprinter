@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+
 import '../models/printer_device.dart';
 import '../services/storage_service.dart';
 import '../printers/printer_adapter.dart';
@@ -134,12 +135,15 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
   }
 
   PrinterDevice _buildPrinterDevice() {
-    final String id = widget.printerToEdit?.id ??
+    final String id =
+        widget.printerToEdit?.id ??
         'PRINTER-${DateTime.now().millisecondsSinceEpoch}';
 
     return PrinterDevice(
       id: id,
-      name: _name.trim().isEmpty ? '${_role.label} (${_connectionType.name.toUpperCase()})' : _name.trim(),
+      name: _name.trim().isEmpty
+          ? '${_role.label} (${_connectionType.name.toUpperCase()})'
+          : _name.trim(),
       connectionType: _connectionType,
       paperWidth: _paperWidth,
       role: _role,
@@ -169,7 +173,9 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.printerToEdit == null ? 'Add Printer' : 'Edit Printer'),
+        title: Text(
+          widget.printerToEdit == null ? 'Add Printer' : 'Edit Printer',
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -187,15 +193,18 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.print_rounded),
                 ),
-                validator: (val) =>
-                    val == null || val.trim().isEmpty ? 'Enter printer name' : null,
+                validator: (val) => val == null || val.trim().isEmpty
+                    ? 'Enter printer name'
+                    : null,
                 onSaved: (val) => _name = val ?? '',
               ),
               const SizedBox(height: 16),
 
               // Connection Type Selector
-              const Text('Connection Method:',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+              const Text(
+                'Connection Method:',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              ),
               const SizedBox(height: 8),
               SegmentedButton<ConnectionType>(
                 segments: const [
@@ -236,10 +245,7 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
                         border: OutlineInputBorder(),
                       ),
                       items: PrinterRole.values.map((r) {
-                        return DropdownMenuItem(
-                          value: r,
-                          child: Text(r.label),
-                        );
+                        return DropdownMenuItem(value: r, child: Text(r.label));
                       }).toList(),
                       onChanged: (val) {
                         if (val != null) setState(() => _role = val);
@@ -270,8 +276,10 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
               const SizedBox(height: 20),
 
               // Dynamic Connection Parameters
-              const Text('Connection Details:',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+              const Text(
+                'Connection Details:',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              ),
               const SizedBox(height: 8),
 
               if (_connectionType == ConnectionType.bluetooth) ...[
@@ -287,7 +295,9 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
                         items: _bluetoothDevices.map((d) {
                           return DropdownMenuItem(
                             value: d.address,
-                            child: Text('${d.name ?? "BT Device"} (${d.address})'),
+                            child: Text(
+                              '${d.name ?? "BT Device"} (${d.address})',
+                            ),
                           );
                         }).toList(),
                         onChanged: (val) => setState(() => _macAddress = val),
@@ -326,7 +336,8 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
                           border: OutlineInputBorder(),
                         ),
                         items: _usbDevices.map((d) {
-                          final String devName = d['deviceName'] as String? ?? 'USB Printer';
+                          final String devName =
+                              d['deviceName'] as String? ?? 'USB Printer';
                           final int vid = d['vendorId'] as int? ?? 0;
                           final int pid = d['productId'] as int? ?? 0;
                           return DropdownMenuItem<String>(
@@ -335,8 +346,9 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
                           );
                         }).toList(),
                         onChanged: (val) {
-                          final dev =
-                              _usbDevices.firstWhere((d) => d['deviceName'] == val);
+                          final dev = _usbDevices.firstWhere(
+                            (d) => d['deviceName'] == val,
+                          );
                           setState(() {
                             _usbDeviceName = dev['deviceName'] as String?;
                             _vendorId = dev['vendorId'] as int?;
@@ -366,8 +378,9 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.lan_rounded),
                   ),
-                  validator: (val) =>
-                      val == null || val.trim().isEmpty ? 'Enter IP address' : null,
+                  validator: (val) => val == null || val.trim().isEmpty
+                      ? 'Enter IP address'
+                      : null,
                   onSaved: (val) => _ipAddress = val ?? '192.168.1.12',
                 ),
                 const SizedBox(height: 12),
@@ -378,8 +391,9 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
                     border: OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.number,
-                  validator: (val) =>
-                      val == null || int.tryParse(val) == null ? 'Enter valid port' : null,
+                  validator: (val) => val == null || int.tryParse(val) == null
+                      ? 'Enter valid port'
+                      : null,
                   onSaved: (val) => _port = int.tryParse(val ?? '9100') ?? 9100,
                 ),
               ],
@@ -391,12 +405,15 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: _testSuccess ? Colors.green.shade50 : Colors.red.shade50,
+                    color: _testSuccess
+                        ? Colors.green.shade50
+                        : Colors.red.shade50,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                        color: _testSuccess
-                            ? Colors.green.shade300
-                            : Colors.red.shade300),
+                      color: _testSuccess
+                          ? Colors.green.shade300
+                          : Colors.red.shade300,
+                    ),
                   ),
                   child: Row(
                     children: [

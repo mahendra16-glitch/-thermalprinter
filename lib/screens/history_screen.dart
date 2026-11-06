@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../models/print_history_item.dart';
 import '../services/storage_service.dart';
 import '../queue/print_queue_manager.dart';
@@ -41,10 +42,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   Future<void> _reprint(PrintHistoryItem item) async {
-    final printers = await (await StorageService.getInstance()).getSavedPrinters();
+    final printers = await (await StorageService.getInstance())
+        .getSavedPrinters();
     final printer = printers.firstWhere(
       (p) => p.name == item.printerName,
-      orElse: () => printers.isNotEmpty ? printers.first : throw Exception('No printer found'),
+      orElse: () => printers.isNotEmpty
+          ? printers.first
+          : throw Exception('No printer found'),
     );
 
     final order = TestReceiptGenerator.buildTestOrder(printer);
@@ -53,7 +57,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Reprint job for Order #${item.orderId} added to queue')),
+        SnackBar(
+          content: Text(
+            'Reprint job for Order #${item.orderId} added to queue',
+          ),
+        ),
       );
     }
   }
@@ -72,7 +80,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 context: context,
                 builder: (ctx) => AlertDialog(
                   title: const Text('Clear Print History?'),
-                  content: const Text('This will delete all historical print log records.'),
+                  content: const Text(
+                    'This will delete all historical print log records.',
+                  ),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.of(ctx).pop(false),
@@ -96,73 +106,93 @@ class _HistoryScreenState extends State<HistoryScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _history.isEmpty
-              ? const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.history_toggle_off_rounded,
-                          size: 48, color: Color(0xFFCBD5E1)),
-                      SizedBox(height: 12),
-                      Text(
-                        'No print history records found.',
-                        style: TextStyle(
-                            color: Color(0xFF64748B),
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ],
+          ? const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.history_toggle_off_rounded,
+                    size: 48,
+                    color: Color(0xFFCBD5E1),
                   ),
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.all(12),
-                  itemCount: _history.length,
-                  itemBuilder: (context, idx) {
-                    final item = _history[idx];
-                    final DateFormat formatter =
-                        DateFormat('dd MMM yyyy, hh:mm a');
+                  SizedBox(height: 12),
+                  Text(
+                    'No print history records found.',
+                    style: TextStyle(
+                      color: Color(0xFF64748B),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(12),
+              itemCount: _history.length,
+              itemBuilder: (context, idx) {
+                final item = _history[idx];
+                final DateFormat formatter = DateFormat('dd MMM yyyy, hh:mm a');
 
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: item.isSuccess
-                              ? Colors.green.shade100
-                              : Colors.red.shade100,
-                          child: Icon(
-                            item.isSuccess ? Icons.check_rounded : Icons.close_rounded,
-                            color: item.isSuccess ? Colors.green : Colors.red,
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: item.isSuccess
+                          ? Colors.green.shade100
+                          : Colors.red.shade100,
+                      child: Icon(
+                        item.isSuccess
+                            ? Icons.check_rounded
+                            : Icons.close_rounded,
+                        color: item.isSuccess ? Colors.green : Colors.red,
+                      ),
+                    ),
+                    title: Text(
+                      'Order #${item.orderId} (${item.printType})',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Printer: ${item.printerName} (${item.connectionType.name.toUpperCase()})',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF475569),
                           ),
                         ),
-                        title: Text(
-                          'Order #${item.orderId} (${item.printType})',
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                        Text(
+                          formatter.format(item.timestamp),
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: Color(0xFF94A3B8),
+                          ),
                         ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Printer: ${item.printerName} (${item.connectionType.name.toUpperCase()})',
-                              style: const TextStyle(fontSize: 12, color: Color(0xFF475569)),
+                        if (item.errorMessage != null)
+                          Text(
+                            item.errorMessage!,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: Colors.red,
                             ),
-                            Text(
-                              formatter.format(item.timestamp),
-                              style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
-                            ),
-                            if (item.errorMessage != null)
-                              Text(
-                                item.errorMessage!,
-                                style: const TextStyle(fontSize: 11, color: Colors.red),
-                              ),
-                          ],
-                        ),
-                        trailing: OutlinedButton(
-                          onPressed: () => _reprint(item),
-                          child: const Text('Reprint', style: TextStyle(fontSize: 12)),
-                        ),
+                          ),
+                      ],
+                    ),
+                    trailing: OutlinedButton(
+                      onPressed: () => _reprint(item),
+                      child: const Text(
+                        'Reprint',
+                        style: TextStyle(fontSize: 12),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                );
+              },
+            ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../models/printer_device.dart';
 import '../models/print_mode.dart';
 import '../models/pos_order.dart';
@@ -56,7 +57,12 @@ class SmartPrintEngine {
     final DateFormat formatter = DateFormat('dd-MMM-yyyy hh:mm a');
 
     // Header
-    builder.text(order.restaurantName, align: 1, bold: true, heightMultiplier: 1);
+    builder.text(
+      order.restaurantName,
+      align: 1,
+      bold: true,
+      heightMultiplier: 1,
+    );
     builder.text('--------------------------------', align: 1);
     builder.text('${order.type} #${order.orderId}', align: 1, bold: true);
     if (order.tableNumber != null) {
@@ -71,16 +77,22 @@ class SmartPrintEngine {
 
     // Items
     for (final item in order.items) {
-      builder.row([
-        item.name,
-        '${item.qty}',
-        '₹${(item.price * item.qty).toStringAsFixed(2)}',
-      ], flex: [3, 1, 2]);
+      builder.row(
+        [
+          item.name,
+          '${item.qty}',
+          '₹${(item.price * item.qty).toStringAsFixed(2)}',
+        ],
+        flex: [3, 1, 2],
+      );
     }
     builder.divider();
 
     // Totals
-    builder.row(['Total:', '', '₹${order.total.toStringAsFixed(2)}'], flex: [2, 1, 2]);
+    builder.row(
+      ['Total:', '', '₹${order.total.toStringAsFixed(2)}'],
+      flex: [2, 1, 2],
+    );
     builder.text(order.paymentStatus, align: 1, bold: true);
     builder.divider();
 
@@ -93,7 +105,10 @@ class SmartPrintEngine {
     // QR & Barcode
     await builder.qrCode(order.orderId);
     builder.text('--------------------------------', align: 1);
-    builder.text('Connection: ${device.connectionType.name.toUpperCase()}', align: 1);
+    builder.text(
+      'Connection: ${device.connectionType.name.toUpperCase()}',
+      align: 1,
+    );
     builder.text('Printer Status: OK', align: 1);
     builder.divider();
 
@@ -121,7 +136,12 @@ class SmartPrintEngine {
       );
       builder.addRawBytes(raster);
     } else {
-      builder.text(order.restaurantName, align: 1, bold: true, heightMultiplier: 1);
+      builder.text(
+        order.restaurantName,
+        align: 1,
+        bold: true,
+        heightMultiplier: 1,
+      );
     }
 
     builder.text('--------------------------------', align: 1);
@@ -148,17 +168,23 @@ class SmartPrintEngine {
         );
         builder.addRawBytes(raster);
       } else {
-        builder.row([
-          item.name,
-          '${item.qty}',
-          '₹${(item.price * item.qty).toStringAsFixed(2)}',
-        ], flex: [3, 1, 2]);
+        builder.row(
+          [
+            item.name,
+            '${item.qty}',
+            '₹${(item.price * item.qty).toStringAsFixed(2)}',
+          ],
+          flex: [3, 1, 2],
+        );
       }
     }
     builder.divider();
 
     // Total
-    builder.row(['Total:', '', '₹${order.total.toStringAsFixed(2)}'], flex: [2, 1, 2]);
+    builder.row(
+      ['Total:', '', '₹${order.total.toStringAsFixed(2)}'],
+      flex: [2, 1, 2],
+    );
 
     if (HybridTextParser.hasComplexContent(order.paymentStatus)) {
       final raster = await RasterGenerator.textToRasterBytes(
@@ -204,7 +230,10 @@ class SmartPrintEngine {
 
     await builder.qrCode(order.orderId);
     builder.text('--------------------------------', align: 1);
-    builder.text('Connection: ${device.connectionType.name.toUpperCase()}', align: 1);
+    builder.text(
+      'Connection: ${device.connectionType.name.toUpperCase()}',
+      align: 1,
+    );
     builder.text('Printer Status: OK', align: 1);
     builder.divider();
 

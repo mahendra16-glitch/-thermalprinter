@@ -22,15 +22,15 @@ class PrintHistoryItem {
   });
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'timestamp': timestamp.toIso8601String(),
-        'printerName': printerName,
-        'connectionType': connectionType.name,
-        'orderId': orderId,
-        'printType': printType,
-        'isSuccess': isSuccess,
-        'errorMessage': errorMessage,
-      };
+    'id': id,
+    'timestamp': timestamp.toIso8601String(),
+    'printerName': printerName,
+    'connectionType': connectionType.name,
+    'orderId': orderId,
+    'printType': printType,
+    'isSuccess': isSuccess,
+    'errorMessage': errorMessage,
+  };
 
   factory PrintHistoryItem.fromJson(Map<String, dynamic> json) =>
       PrintHistoryItem(

@@ -26,6 +26,14 @@ class AppConstants {
 
   // Special unicode characters supported by hybrid engine
   static const List<String> specialSymbols = [
-    '₹', '✓', '★', '♥', '→', '•', '°', '©', '™'
+    '₹',
+    '✓',
+    '★',
+    '♥',
+    '→',
+    '•',
+    '°',
+    '©',
+    '™',
   ];
 }

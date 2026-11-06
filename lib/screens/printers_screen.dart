@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../models/printer_device.dart';
 import '../services/storage_service.dart';
 import '../widgets/printer_card.dart';
@@ -43,9 +44,8 @@ class _PrintersScreenState extends State<PrintersScreen>
   }
 
   void _openAddPrinter() async {
-    final result = await Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const AddEditPrinterScreen()),
-    );
+    final result = await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => const AddEditPrinterScreen()));
     if (result == true) {
       _loadPrinters();
     }
@@ -54,7 +54,8 @@ class _PrintersScreenState extends State<PrintersScreen>
   void _openEditPrinter(PrinterDevice device) async {
     final result = await Navigator.of(context).push(
       MaterialPageRoute(
-          builder: (_) => AddEditPrinterScreen(printerToEdit: device)),
+        builder: (_) => AddEditPrinterScreen(printerToEdit: device),
+      ),
     );
     if (result == true) {
       _loadPrinters();
@@ -109,15 +110,19 @@ class _PrintersScreenState extends State<PrintersScreen>
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.print_disabled_rounded,
-                            size: 48, color: Color(0xFFCBD5E1)),
+                        const Icon(
+                          Icons.print_disabled_rounded,
+                          size: 48,
+                          color: Color(0xFFCBD5E1),
+                        ),
                         const SizedBox(height: 12),
                         const Text(
                           'No printers configured for this tab.',
                           style: TextStyle(
-                              color: Color(0xFF64748B),
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500),
+                            color: Color(0xFF64748B),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                         const SizedBox(height: 16),
                         ElevatedButton.icon(
@@ -150,7 +155,10 @@ class _PrintersScreenState extends State<PrintersScreen>
         backgroundColor: const Color(0xFF1E293B),
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add_rounded),
-        label: const Text('+ Add Printer', style: TextStyle(fontWeight: FontWeight.bold)),
+        label: const Text(
+          '+ Add Printer',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }

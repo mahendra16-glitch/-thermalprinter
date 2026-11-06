@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+
 import '../models/printer_device.dart';
 import '../core/constants/app_constants.dart';
 import 'printer_adapter.dart';

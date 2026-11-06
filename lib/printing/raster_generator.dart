@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
+
 import '../core/constants/escpos_commands.dart';
 
 class RasterGenerator {
@@ -59,8 +61,9 @@ class RasterGenerator {
 
   /// Converts a Flutter [ui.Image] to monochrome ESC/POS raster command (`GS v 0`).
   static Future<List<int>> imageToEscPosRaster(ui.Image uiImage) async {
-    final ByteData? byteData =
-        await uiImage.toByteData(format: ui.ImageByteFormat.rawRgba);
+    final ByteData? byteData = await uiImage.toByteData(
+      format: ui.ImageByteFormat.rawRgba,
+    );
     if (byteData == null) return [];
 
     final int width = uiImage.width;
@@ -90,11 +93,13 @@ class RasterGenerator {
     final List<int> bytes = [];
 
     // Add ESC/POS GS v 0 raster header
-    bytes.addAll(EscPosCommands.rasterHeader(
-      widthInBytes: widthInBytes,
-      heightInPixels: height,
-      mode: 0,
-    ));
+    bytes.addAll(
+      EscPosCommands.rasterHeader(
+        widthInBytes: widthInBytes,
+        heightInPixels: height,
+        mode: 0,
+      ),
+    );
 
     for (int y = 0; y < height; y++) {
       for (int xByte = 0; xByte < widthInBytes; xByte++) {

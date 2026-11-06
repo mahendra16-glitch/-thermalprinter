@@ -1,10 +1,12 @@
 import 'package:flutter/services.dart';
+
 import '../models/printer_device.dart';
 import '../models/pos_order.dart';
 
 class NativeEngineService {
-  static const MethodChannel _channel =
-      MethodChannel('com.example.thermalprinter/engine');
+  static const MethodChannel _channel = MethodChannel(
+    'com.example.thermalprinter/engine',
+  );
 
   /// Invokes native Kotlin CalibrationWizard to print a physical print calibration sheet
   static Future<bool> runCalibration(PrinterDevice device) async {

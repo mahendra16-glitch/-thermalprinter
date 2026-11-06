@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+
 import '../services/storage_service.dart';
 import '../queue/print_queue_manager.dart';
 import '../models/printer_device.dart';
@@ -43,7 +44,8 @@ class DiagnosticsService {
           sb.writeln('  MAC Address: ${p.macAddress ?? "N/A"}');
         } else if (p.connectionType == ConnectionType.usb) {
           sb.writeln(
-              '  USB VID/PID: ${p.vendorId ?? "N/A"} / ${p.productId ?? "N/A"}');
+            '  USB VID/PID: ${p.vendorId ?? "N/A"} / ${p.productId ?? "N/A"}',
+          );
           sb.writeln('  Device Name: ${p.deviceName ?? "N/A"}');
         } else if (p.connectionType == ConnectionType.network) {
           sb.writeln('  IP Address: ${p.ipAddress ?? "N/A"}');
@@ -66,7 +68,8 @@ class DiagnosticsService {
     } else {
       for (final j in queue) {
         sb.writeln(
-            'Job [${j.id}] Order #${j.orderId} - Status: ${j.status.name.toUpperCase()} (Retries: ${j.retryCount})');
+          'Job [${j.id}] Order #${j.orderId} - Status: ${j.status.name.toUpperCase()} (Retries: ${j.retryCount})',
+        );
         if (j.errorMessage != null) {
           sb.writeln('  Error: ${j.errorMessage}');
         }
@@ -81,7 +84,8 @@ class DiagnosticsService {
     } else {
       for (final h in recentHistory) {
         sb.writeln(
-            '${formatter.format(h.timestamp)} | ${h.printerName} | Order #${h.orderId} | ${h.isSuccess ? "SUCCESS ✓" : "FAILED ✗"}');
+          '${formatter.format(h.timestamp)} | ${h.printerName} | Order #${h.orderId} | ${h.isSuccess ? "SUCCESS ✓" : "FAILED ✗"}',
+        );
         if (h.errorMessage != null) {
           sb.writeln('  Err: ${h.errorMessage}');
         }

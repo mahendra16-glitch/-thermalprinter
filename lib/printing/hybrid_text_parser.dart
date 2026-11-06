@@ -9,7 +9,16 @@ class HybridTextParser {
 
   // Special non-standard ASCII symbols commonly used in receipts
   static const List<String> specialSymbols = [
-    '₹', '✓', '★', '♥', '→', '•', '°', '©', '™', '🙏'
+    '₹',
+    '✓',
+    '★',
+    '♥',
+    '→',
+    '•',
+    '°',
+    '©',
+    '™',
+    '🙏',
   ];
 
   /// Checks if the given [text] contains characters that thermal printer hardware

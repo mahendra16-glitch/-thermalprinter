@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'printers_screen.dart';
 import 'queue_screen.dart';
 import 'history_screen.dart';
@@ -24,10 +25,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
+      body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {

@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+
 import '../models/printer_device.dart';
 import '../core/constants/escpos_commands.dart';
 import 'raster_generator.dart';
@@ -42,10 +44,9 @@ class EscPosBuilder {
     _bytes.addAll(bold ? EscPosCommands.boldOn : EscPosCommands.boldOff);
 
     // Set Text Size
-    _bytes.addAll(EscPosCommands.textSize(
-      width: widthMultiplier,
-      height: heightMultiplier,
-    ));
+    _bytes.addAll(
+      EscPosCommands.textSize(width: widthMultiplier, height: heightMultiplier),
+    );
 
     // Convert text to standard bytes
     _bytes.addAll(latin1.encode(text));
@@ -142,7 +143,7 @@ class EscPosBuilder {
         final uiImage = await picture.toImage(size.toInt(), size.toInt());
 
         final rasterBytes = await RasterGenerator.imageToEscPosRaster(uiImage);
-        
+
         // Center QR Code
         _bytes.addAll(EscPosCommands.alignCenter);
         _bytes.addAll(rasterBytes);

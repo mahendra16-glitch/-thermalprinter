@@ -14,18 +14,18 @@ class PosOrderItem {
   });
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        'qty': qty,
-        'price': price,
-        'notes': notes,
-      };
+    'name': name,
+    'qty': qty,
+    'price': price,
+    'notes': notes,
+  };
 
   factory PosOrderItem.fromJson(Map<String, dynamic> json) => PosOrderItem(
-        name: json['name'] as String? ?? 'Item',
-        qty: (json['qty'] as num?)?.toInt() ?? 1,
-        price: (json['price'] as num?)?.toDouble() ?? 0.0,
-        notes: json['notes'] as String?,
-      );
+    name: json['name'] as String? ?? 'Item',
+    qty: (json['qty'] as num?)?.toInt() ?? 1,
+    price: (json['price'] as num?)?.toDouble() ?? 0.0,
+    notes: json['notes'] as String?,
+  );
 }
 
 class PosOrder {
@@ -75,38 +75,39 @@ class PosOrder {
     this.paymentMethod = 'UPI',
     this.paymentStatus = '✓ PAID',
     DateTime? timestamp,
-  })  : billNo = billNo ?? orderId,
-        timestamp = timestamp ?? DateTime.now();
+  }) : billNo = billNo ?? orderId,
+       timestamp = timestamp ?? DateTime.now();
 
   Map<String, dynamic> toJson() => {
-        'orderId': orderId,
-        'billNo': billNo,
-        'type': type,
-        'printerRole': printerRole.name,
-        'restaurantName': restaurantName,
-        'customerName': customerName,
-        'customerPhone': customerPhone,
-        'customerAddress': customerAddress,
-        'tableNumber': tableNumber,
-        'waiterName': waiterName,
-        'orderType': orderType,
-        'specialNotes': specialNotes,
-        'items': items.map((i) => i.toJson()).toList(),
-        'subtotal': subtotal,
-        'cgst': cgst,
-        'sgst': sgst,
-        'tax': tax,
-        'discount': discount,
-        'total': total,
-        'paymentMethod': paymentMethod,
-        'paymentStatus': paymentStatus,
-        'timestamp': timestamp.toIso8601String(),
-      };
+    'orderId': orderId,
+    'billNo': billNo,
+    'type': type,
+    'printerRole': printerRole.name,
+    'restaurantName': restaurantName,
+    'customerName': customerName,
+    'customerPhone': customerPhone,
+    'customerAddress': customerAddress,
+    'tableNumber': tableNumber,
+    'waiterName': waiterName,
+    'orderType': orderType,
+    'specialNotes': specialNotes,
+    'items': items.map((i) => i.toJson()).toList(),
+    'subtotal': subtotal,
+    'cgst': cgst,
+    'sgst': sgst,
+    'tax': tax,
+    'discount': discount,
+    'total': total,
+    'paymentMethod': paymentMethod,
+    'paymentStatus': paymentStatus,
+    'timestamp': timestamp.toIso8601String(),
+  };
 
   factory PosOrder.fromJson(Map<String, dynamic> json) {
     final rawItems = json['items'] as List<dynamic>? ?? [];
-    final itemsList =
-        rawItems.map((e) => PosOrderItem.fromJson(e as Map<String, dynamic>)).toList();
+    final itemsList = rawItems
+        .map((e) => PosOrderItem.fromJson(e as Map<String, dynamic>))
+        .toList();
 
     final id = json['orderId'] as String? ?? '1001';
 
@@ -115,10 +116,15 @@ class PosOrder {
       billNo: json['billNo'] as String? ?? id,
       type: json['type'] as String? ?? 'BILL',
       printerRole: PrinterRole.values.firstWhere(
-        (r) => r.name.toLowerCase() == (json['printer'] ?? json['printerRole'] ?? 'bill').toString().toLowerCase(),
+        (r) =>
+            r.name.toLowerCase() ==
+            (json['printer'] ?? json['printerRole'] ?? 'bill')
+                .toString()
+                .toLowerCase(),
         orElse: () => PrinterRole.bill,
       ),
-      restaurantName: json['restaurantName'] as String? ?? 'MYGENIE RESTAURANT ❤️',
+      restaurantName:
+          json['restaurantName'] as String? ?? 'MYGENIE RESTAURANT ❤️',
       customerName: json['customerName'] as String?,
       customerPhone: json['customerPhone'] as String?,
       customerAddress: json['customerAddress'] as String?,

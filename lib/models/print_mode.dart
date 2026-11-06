@@ -1,8 +1,4 @@
-enum PrintMode {
-  fastMode,
-  compatibilityMode,
-  fullImageMode,
-}
+enum PrintMode { fastMode, compatibilityMode, fullImageMode }
 
 extension PrintModeX on PrintMode {
   String get title {

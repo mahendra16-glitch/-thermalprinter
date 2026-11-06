@@ -1,5 +1,7 @@
 import 'dart:typed_data';
+
 import 'package:flutter/services.dart';
+
 import '../models/printer_device.dart';
 import 'printer_adapter.dart';
 
@@ -7,16 +9,16 @@ class UsbPrinterAdapter implements PrinterAdapter {
   @override
   final PrinterDevice device;
 
-  static const MethodChannel _channel =
-      MethodChannel('com.example.thermalprinter/usb');
+  static const MethodChannel _channel = MethodChannel(
+    'com.example.thermalprinter/usb',
+  );
   bool _connected = false;
 
   UsbPrinterAdapter(this.device);
 
   static Future<List<Map<String, dynamic>>> getConnectedUsbDevices() async {
     try {
-      final List<dynamic>? list =
-          await _channel.invokeMethod('getUsbDevices');
+      final List<dynamic>? list = await _channel.invokeMethod('getUsbDevices');
       if (list == null) return [];
       return list.map((e) => Map<String, dynamic>.from(e as Map)).toList();
     } catch (_) {

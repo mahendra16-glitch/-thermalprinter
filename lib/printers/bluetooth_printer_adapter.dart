@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+
 import '../models/printer_device.dart';
 import 'printer_adapter.dart';
 
@@ -32,7 +33,7 @@ class BluetoothPrinterAdapter implements PrinterAdapter {
 
       // Create BluetoothDevice instance from mac and name
       BluetoothDevice bluetoothDevice = BluetoothDevice(device.name, mac);
-      
+
       final bool? result = await _bluetooth.connect(bluetoothDevice);
       if (result == true) {
         _connected = true;
@@ -43,7 +44,8 @@ class BluetoothPrinterAdapter implements PrinterAdapter {
       } else {
         _connected = false;
         device.isConnected = false;
-        final msg = 'Failed to connect to Bluetooth printer ${device.name} ($mac).';
+        final msg =
+            'Failed to connect to Bluetooth printer ${device.name} ($mac).';
         device.lastError = msg;
         throw Exception(msg);
       }

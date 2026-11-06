@@ -33,9 +33,16 @@ class EscPosCommands {
   static List<int> setLineSpacing(int n) => [0x1B, 0x33, n]; // ESC 3 n
 
   // Code Page (Character Set)
-  static const List<int> codePagePC437 = [0x1B, 0x74, 0x00]; // USA, Standard Europe
+  static const List<int> codePagePC437 = [
+    0x1B,
+    0x74,
+    0x00,
+  ]; // USA, Standard Europe
   static const List<int> codePageWPC1252 = [0x1B, 0x74, 0x10]; // Latin 1
-  static const List<int> codePageUTF8 = [0x1C, 0x26]; // FS & (Enable UTF-8 if printer supports native UTF-8)
+  static const List<int> codePageUTF8 = [
+    0x1C,
+    0x26,
+  ]; // FS & (Enable UTF-8 if printer supports native UTF-8)
 
   // Raster Image Command (GS v 0)
   // mode: 0 = Normal, 1 = Double width, 2 = Double height, 3 = Quadruple

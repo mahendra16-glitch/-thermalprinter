@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import '../models/print_job.dart';
 import '../models/printer_device.dart';
 import '../models/pos_order.dart';
@@ -51,10 +52,7 @@ class PrintQueueManager {
           j.orderId == order.orderId &&
           (j.status == PrintJobStatus.pending ||
               j.status == PrintJobStatus.printing),
-      orElse: () => PrintJob(
-        id: '',
-        orderId: '',
-      ),
+      orElse: () => PrintJob(id: '', orderId: ''),
     );
 
     if (existing.id.isNotEmpty) {
@@ -99,8 +97,11 @@ class PrintQueueManager {
 
   /// Clear completed / failed jobs
   Future<void> clearCompleted() async {
-    _queue.removeWhere((j) =>
-        j.status == PrintJobStatus.printed || j.status == PrintJobStatus.failed);
+    _queue.removeWhere(
+      (j) =>
+          j.status == PrintJobStatus.printed ||
+          j.status == PrintJobStatus.failed,
+    );
     _notify();
   }
 
@@ -110,8 +111,9 @@ class PrintQueueManager {
     _isProcessing = true;
 
     try {
-      final pendingIndex =
-          _queue.indexWhere((j) => j.status == PrintJobStatus.pending);
+      final pendingIndex = _queue.indexWhere(
+        (j) => j.status == PrintJobStatus.pending,
+      );
       if (pendingIndex < 0) {
         _isProcessing = false;
         return;
@@ -173,8 +175,7 @@ class PrintQueueManager {
           job.retryCount++;
           _notify();
 
-          await _recordHistory(
-              job, device.name, device.connectionType, false);
+          await _recordHistory(job, device.name, device.connectionType, false);
         }
       }
     } finally {

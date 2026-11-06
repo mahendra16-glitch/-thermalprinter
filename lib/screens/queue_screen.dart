@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../models/print_job.dart';
 import '../queue/print_queue_manager.dart';
 import '../widgets/status_badge.dart';
@@ -43,7 +44,9 @@ class _QueueScreenState extends State<QueueScreen> {
                 final messenger = ScaffoldMessenger.of(context);
                 await _queueManager!.clearCompleted();
                 messenger.showSnackBar(
-                  const SnackBar(content: Text('Cleared completed & failed jobs')),
+                  const SnackBar(
+                    content: Text('Cleared completed & failed jobs'),
+                  ),
                 );
               },
             ),
@@ -62,15 +65,19 @@ class _QueueScreenState extends State<QueueScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.inbox_rounded,
-                            size: 48, color: Color(0xFFCBD5E1)),
+                        Icon(
+                          Icons.inbox_rounded,
+                          size: 48,
+                          color: Color(0xFFCBD5E1),
+                        ),
                         SizedBox(height: 12),
                         Text(
                           'Print queue is empty.',
                           style: TextStyle(
-                              color: Color(0xFF64748B),
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500),
+                            color: Color(0xFF64748B),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ],
                     ),
@@ -104,7 +111,9 @@ class _QueueScreenState extends State<QueueScreen> {
                                 const SizedBox(width: 8),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 2),
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: Colors.blue.shade50,
                                     borderRadius: BorderRadius.circular(4),
@@ -135,7 +144,9 @@ class _QueueScreenState extends State<QueueScreen> {
                               Text(
                                 'Retry Attempts: ${job.retryCount}',
                                 style: const TextStyle(
-                                    fontSize: 11, color: Color(0xFFF59E0B)),
+                                  fontSize: 11,
+                                  color: Color(0xFFF59E0B),
+                                ),
                               ),
                             ],
                             if (job.errorMessage != null) ...[
@@ -143,7 +154,9 @@ class _QueueScreenState extends State<QueueScreen> {
                               Text(
                                 job.errorMessage!,
                                 style: const TextStyle(
-                                    fontSize: 12, color: Colors.red),
+                                  fontSize: 12,
+                                  color: Colors.red,
+                                ),
                               ),
                             ],
                             const SizedBox(height: 10),
@@ -154,18 +167,25 @@ class _QueueScreenState extends State<QueueScreen> {
                                   OutlinedButton.icon(
                                     onPressed: () =>
                                         _queueManager!.retryJob(job.id),
-                                    icon: const Icon(Icons.refresh_rounded,
-                                        size: 14),
+                                    icon: const Icon(
+                                      Icons.refresh_rounded,
+                                      size: 14,
+                                    ),
                                     label: const Text('Retry Print'),
                                     style: OutlinedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 10, vertical: 6),
+                                        horizontal: 10,
+                                        vertical: 6,
+                                      ),
                                     ),
                                   ),
                                 const SizedBox(width: 8),
                                 IconButton(
-                                  icon: const Icon(Icons.delete_outline,
-                                      size: 20, color: Colors.red),
+                                  icon: const Icon(
+                                    Icons.delete_outline,
+                                    size: 20,
+                                    color: Colors.red,
+                                  ),
                                   onPressed: () =>
                                       _queueManager!.removeJob(job.id),
                                   tooltip: 'Remove from queue',

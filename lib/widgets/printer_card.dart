@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../models/printer_device.dart';
 import '../printers/printer_adapter.dart';
 import 'status_badge.dart';
@@ -99,7 +100,11 @@ class _PrinterCardState extends State<PrinterCard> {
             // Top Row: Printer Name & Role Badge
             Row(
               children: [
-                Icon(_getConnectionIcon(), color: const Color(0xFF2563EB), size: 22),
+                Icon(
+                  _getConnectionIcon(),
+                  color: const Color(0xFF2563EB),
+                  size: 22,
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -112,7 +117,10 @@ class _PrinterCardState extends State<PrinterCard> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFF2563EB).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(6),
@@ -135,7 +143,10 @@ class _PrinterCardState extends State<PrinterCard> {
               children: [
                 Text(
                   'Type: ${p.connectionType.name.toUpperCase()}  |  Width: ${p.paperWidth.label}',
-                  style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF64748B),
+                  ),
                 ),
               ],
             ),
@@ -163,9 +174,15 @@ class _PrinterCardState extends State<PrinterCard> {
                 OutlinedButton.icon(
                   onPressed: _showTestPrintDialog,
                   icon: const Icon(Icons.print, size: 14),
-                  label: const Text('Test Print', style: TextStyle(fontSize: 12)),
+                  label: const Text(
+                    'Test Print',
+                    style: TextStyle(fontSize: 12),
+                  ),
                   style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
                   ),
                 ),
               ],
@@ -190,18 +207,28 @@ class _PrinterCardState extends State<PrinterCard> {
                     p.isConnected ? 'Disconnect' : 'Connect',
                     style: TextStyle(
                       fontSize: 12,
-                      color: p.isConnected ? Colors.red : const Color(0xFF2563EB),
+                      color: p.isConnected
+                          ? Colors.red
+                          : const Color(0xFF2563EB),
                     ),
                   ),
                 ),
                 const Spacer(),
                 IconButton(
-                  icon: const Icon(Icons.edit_outlined, size: 20, color: Color(0xFF64748B)),
+                  icon: const Icon(
+                    Icons.edit_outlined,
+                    size: 20,
+                    color: Color(0xFF64748B),
+                  ),
                   onPressed: widget.onEdit,
                   tooltip: 'Edit Printer',
                 ),
                 IconButton(
-                  icon: const Icon(Icons.delete_outline, size: 20, color: Colors.red),
+                  icon: const Icon(
+                    Icons.delete_outline,
+                    size: 20,
+                    color: Colors.red,
+                  ),
                   onPressed: widget.onDelete,
                   tooltip: 'Delete Printer',
                 ),

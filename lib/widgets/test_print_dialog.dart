@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../models/printer_device.dart';
 import '../models/print_mode.dart';
 import '../services/storage_service.dart';
@@ -105,11 +106,17 @@ class _TestPrintDialogState extends State<TestPrintDialog> {
                 contentPadding: EdgeInsets.zero,
                 title: Text(
                   mode.title,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
                 ),
                 subtitle: Text(
                   mode.description,
-                  style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF64748B),
+                  ),
                 ),
                 onChanged: _isPrinting
                     ? null
@@ -133,7 +140,11 @@ class _TestPrintDialogState extends State<TestPrintDialog> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.error_outline, color: Colors.red, size: 18),
+                    const Icon(
+                      Icons.error_outline,
+                      color: Colors.red,
+                      size: 18,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -156,12 +167,20 @@ class _TestPrintDialogState extends State<TestPrintDialog> {
                 ),
                 child: const Row(
                   children: [
-                    Icon(Icons.check_circle_outline, color: Colors.green, size: 18),
+                    Icon(
+                      Icons.check_circle_outline,
+                      color: Colors.green,
+                      size: 18,
+                    ),
                     SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'Test page printed successfully!',
-                        style: TextStyle(color: Colors.green, fontSize: 12, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],
@@ -182,7 +201,10 @@ class _TestPrintDialogState extends State<TestPrintDialog> {
               ? const SizedBox(
                   width: 18,
                   height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
                 )
               : const Text('Send Test Page'),
         ),
