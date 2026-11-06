@@ -5,12 +5,14 @@ class PosOrderItem {
   final int qty;
   final double price;
   final String? notes;
+  final List<String> addOns;
 
   PosOrderItem({
     required this.name,
     required this.qty,
     this.price = 0.0,
     this.notes,
+    this.addOns = const [],
   });
 
   Map<String, dynamic> toJson() => {
@@ -18,6 +20,7 @@ class PosOrderItem {
     'qty': qty,
     'price': price,
     'notes': notes,
+    if (addOns.isNotEmpty) 'addOns': addOns,
   };
 
   factory PosOrderItem.fromJson(Map<String, dynamic> json) => PosOrderItem(
@@ -25,6 +28,9 @@ class PosOrderItem {
     qty: (json['qty'] as num?)?.toInt() ?? 1,
     price: (json['price'] as num?)?.toDouble() ?? 0.0,
     notes: json['notes'] as String?,
+    addOns: (json['addOns'] as List<dynamic>? ?? const [])
+        .map((e) => e.toString())
+        .toList(),
   );
 }
 
@@ -49,15 +55,28 @@ class PosOrder {
   final double discount;
   final double total;
   final String paymentMethod;
-  final String paymentStatus; // e.g. "PAID", "PENDING"
+  final String paymentStatus; // e.g. "PAID", "PENDING"; empty = not printed
   final DateTime timestamp;
+
+  // Kitchen ticket fields (type "KOT").
+  /// "NEW" for items being sent, "VOID" for a cancellation ticket.
+  final String kotKind;
+  final int? kotRound;
+  final String? stationName;
+
+  /// Printed as a "REPRINT" banner so it is not mistaken for a new order.
+  final bool isReprint;
+
+  /// Reason shown on void tickets.
+  final String? reason;
 
   PosOrder({
     required this.orderId,
     String? billNo,
     this.type = 'BILL',
     this.printerRole = PrinterRole.bill,
-    this.restaurantName = 'MYGENIE RESTAURANT ❤️',
+    // No demo defaults: anything not provided is simply not printed.
+    this.restaurantName = '',
     this.customerName,
     this.customerPhone,
     this.customerAddress,
@@ -72,9 +91,14 @@ class PosOrder {
     this.tax = 0.0,
     this.discount = 0.0,
     this.total = 0.0,
-    this.paymentMethod = 'UPI',
-    this.paymentStatus = '✓ PAID',
+    this.paymentMethod = '',
+    this.paymentStatus = '',
     DateTime? timestamp,
+    this.kotKind = 'NEW',
+    this.kotRound,
+    this.stationName,
+    this.isReprint = false,
+    this.reason,
   }) : billNo = billNo ?? orderId,
        timestamp = timestamp ?? DateTime.now();
 
@@ -101,7 +125,15 @@ class PosOrder {
     'paymentMethod': paymentMethod,
     'paymentStatus': paymentStatus,
     'timestamp': timestamp.toIso8601String(),
+    'kotKind': kotKind,
+    'kotRound': kotRound,
+    'stationName': stationName,
+    'isReprint': isReprint,
+    'reason': reason,
   };
+
+  /// Same order marked as a reprint.
+  PosOrder asReprint() => PosOrder.fromJson({...toJson(), 'isReprint': true});
 
   factory PosOrder.fromJson(Map<String, dynamic> json) {
     final rawItems = json['items'] as List<dynamic>? ?? [];
@@ -123,8 +155,7 @@ class PosOrder {
                 .toLowerCase(),
         orElse: () => PrinterRole.bill,
       ),
-      restaurantName:
-          json['restaurantName'] as String? ?? 'MYGENIE RESTAURANT ❤️',
+      restaurantName: json['restaurantName'] as String? ?? '',
       customerName: json['customerName'] as String?,
       customerPhone: json['customerPhone'] as String?,
       customerAddress: json['customerAddress'] as String?,
@@ -139,11 +170,16 @@ class PosOrder {
       tax: (json['tax'] as num?)?.toDouble() ?? 0.0,
       discount: (json['discount'] as num?)?.toDouble() ?? 0.0,
       total: (json['total'] as num?)?.toDouble() ?? 0.0,
-      paymentMethod: json['paymentMethod'] as String? ?? 'UPI',
-      paymentStatus: json['paymentStatus'] as String? ?? '✓ PAID',
+      paymentMethod: json['paymentMethod'] as String? ?? '',
+      paymentStatus: json['paymentStatus'] as String? ?? '',
       timestamp: json['timestamp'] != null
           ? DateTime.tryParse(json['timestamp'] as String) ?? DateTime.now()
           : DateTime.now(),
+      kotKind: json['kotKind'] as String? ?? 'NEW',
+      kotRound: (json['kotRound'] as num?)?.toInt(),
+      stationName: json['stationName'] as String?,
+      isReprint: json['isReprint'] as bool? ?? false,
+      reason: json['reason'] as String?,
     );
   }
 }

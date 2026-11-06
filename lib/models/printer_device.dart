@@ -48,9 +48,26 @@ class PrinterDevice {
   final String? ipAddress;
   final int port;
 
+  // Print settings; null means the default for the paper width.
+  final int? printableDots;
+  final int? charsPerLine;
+  final int? rasterThreshold;
+  final int? feedLines;
+  final bool autoCut;
+
   bool isConnected;
   DateTime? lastConnected;
   String? lastError;
+
+  /// Printable width actually used for raster output.
+  int get effectiveDots => printableDots ?? paperWidth.dots;
+
+  /// Characters per line actually used for text output.
+  int get effectiveCharsPerLine => charsPerLine ?? paperWidth.charsPerLine;
+
+  int get effectiveThreshold => rasterThreshold ?? 160;
+
+  int get effectiveFeedLines => feedLines ?? 3;
 
   PrinterDevice({
     required this.id,
@@ -64,6 +81,11 @@ class PrinterDevice {
     this.deviceName,
     this.ipAddress,
     this.port = 9100,
+    this.printableDots,
+    this.charsPerLine,
+    this.rasterThreshold,
+    this.feedLines,
+    this.autoCut = true,
     this.isConnected = false,
     this.lastConnected,
     this.lastError,
@@ -82,6 +104,11 @@ class PrinterDevice {
       'deviceName': deviceName,
       'ipAddress': ipAddress,
       'port': port,
+      'printableDots': printableDots,
+      'charsPerLine': charsPerLine,
+      'rasterThreshold': rasterThreshold,
+      'feedLines': feedLines,
+      'autoCut': autoCut,
       'isConnected': isConnected,
       'lastConnected': lastConnected?.toIso8601String(),
       'lastError': lastError,
@@ -110,6 +137,11 @@ class PrinterDevice {
       deviceName: json['deviceName'] as String?,
       ipAddress: json['ipAddress'] as String?,
       port: json['port'] as int? ?? 9100,
+      printableDots: json['printableDots'] as int?,
+      charsPerLine: json['charsPerLine'] as int?,
+      rasterThreshold: json['rasterThreshold'] as int?,
+      feedLines: json['feedLines'] as int?,
+      autoCut: json['autoCut'] as bool? ?? true,
       isConnected: json['isConnected'] as bool? ?? false,
       lastConnected: json['lastConnected'] != null
           ? DateTime.tryParse(json['lastConnected'] as String)
@@ -130,6 +162,11 @@ class PrinterDevice {
     String? deviceName,
     String? ipAddress,
     int? port,
+    int? printableDots,
+    int? charsPerLine,
+    int? rasterThreshold,
+    int? feedLines,
+    bool? autoCut,
     bool? isConnected,
     DateTime? lastConnected,
     String? lastError,
@@ -146,6 +183,11 @@ class PrinterDevice {
       deviceName: deviceName ?? this.deviceName,
       ipAddress: ipAddress ?? this.ipAddress,
       port: port ?? this.port,
+      printableDots: printableDots ?? this.printableDots,
+      charsPerLine: charsPerLine ?? this.charsPerLine,
+      rasterThreshold: rasterThreshold ?? this.rasterThreshold,
+      feedLines: feedLines ?? this.feedLines,
+      autoCut: autoCut ?? this.autoCut,
       isConnected: isConnected ?? this.isConnected,
       lastConnected: lastConnected ?? this.lastConnected,
       lastError: lastError ?? this.lastError,

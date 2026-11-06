@@ -20,7 +20,7 @@ Future<OrderRepository> _orders() async =>
 Future<void> editLine(BuildContext context, OrderLine line) async {
   final notes = TextEditingController(text: line.notes);
   var qty = line.qty;
-  final minQty = (line.sentQty + line.voidedQty).clamp(1, 999);
+  final minQty = line.sentQty.clamp(1, 999);
   final sent = line.sentQty > 0;
   final result = await showModalBottomSheet<String>(
     context: context,

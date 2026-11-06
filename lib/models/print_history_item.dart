@@ -10,6 +10,9 @@ class PrintHistoryItem {
   final bool isSuccess;
   final String? errorMessage;
 
+  /// The queue job this attempt belongs to (null for legacy entries).
+  final String? jobId;
+
   PrintHistoryItem({
     required this.id,
     required this.timestamp,
@@ -19,6 +22,7 @@ class PrintHistoryItem {
     required this.printType,
     required this.isSuccess,
     this.errorMessage,
+    this.jobId,
   });
 
   Map<String, dynamic> toJson() => {

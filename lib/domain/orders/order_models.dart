@@ -129,11 +129,17 @@ class OrderLine {
     this.options = const [],
   });
 
+  // Invariant: 0 <= voidedQty <= sentQty <= qty. Voids only ever apply to
+  // units already sent; unsent units are simply removed.
+
   /// Units that are still being charged for.
   int get billableQty => qty - voidedQty;
 
   /// Units not yet sent to the kitchen.
-  int get unsentQty => qty - voidedQty - sentQty;
+  int get unsentQty => qty - sentQty;
+
+  /// Units in the kitchen that can still be voided.
+  int get voidableQty => sentQty - voidedQty;
 
   Money get lineTotal => unitPrice * billableQty;
 

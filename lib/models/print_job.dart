@@ -1,6 +1,7 @@
 import 'printer_device.dart';
 
-enum PrintJobStatus { pending, printing, printed, failed }
+/// `cancelled`: removed by staff before printing; kept for the record.
+enum PrintJobStatus { pending, printing, printed, failed, cancelled }
 
 class PrintJob {
   final String id;
@@ -11,6 +12,10 @@ class PrintJob {
   final Map<String, dynamic>? posOrderJson;
   final List<int>? rawBytes;
   final DateTime createdAt;
+
+  /// What this job prints, e.g. `KOT:<ticket>:<printer>`. Only one active
+  /// job may exist per key. Defaults to `<printType>:<orderId>`.
+  final String? sourceKey;
 
   PrintJobStatus status;
   int retryCount;
@@ -25,6 +30,7 @@ class PrintJob {
     this.targetPrinterId,
     this.posOrderJson,
     this.rawBytes,
+    this.sourceKey,
     DateTime? createdAt,
     this.status = PrintJobStatus.pending,
     this.retryCount = 0,
@@ -39,6 +45,7 @@ class PrintJob {
     'targetRole': targetRole.name,
     'targetPrinterId': targetPrinterId,
     'posOrderJson': posOrderJson,
+    'sourceKey': sourceKey,
     'createdAt': createdAt.toIso8601String(),
     'status': status.name,
     'retryCount': retryCount,
@@ -56,6 +63,7 @@ class PrintJob {
     ),
     targetPrinterId: json['targetPrinterId'] as String?,
     posOrderJson: json['posOrderJson'] as Map<String, dynamic>?,
+    sourceKey: json['sourceKey'] as String?,
     createdAt: json['createdAt'] != null
         ? DateTime.tryParse(json['createdAt'] as String) ?? DateTime.now()
         : DateTime.now(),
@@ -69,4 +77,12 @@ class PrintJob {
         ? DateTime.tryParse(json['processedAt'] as String)
         : null,
   );
+}
+
+extension PrintJobKey on PrintJob {
+  String get effectiveSourceKey =>
+      sourceKey ?? '${printType.toUpperCase()}:$orderId';
+
+  bool get isActive =>
+      status == PrintJobStatus.pending || status == PrintJobStatus.printing;
 }

@@ -45,7 +45,7 @@ class _QueueScreenState extends State<QueueScreen> {
                 await _queueManager!.clearCompleted();
                 messenger.showSnackBar(
                   const SnackBar(
-                    content: Text('Cleared completed & failed jobs'),
+                    content: Text('Cleared printed, failed and cancelled jobs'),
                   ),
                 );
               },
@@ -188,7 +188,7 @@ class _QueueScreenState extends State<QueueScreen> {
                                   ),
                                   onPressed: () =>
                                       _queueManager!.removeJob(job.id),
-                                  tooltip: 'Remove from queue',
+                                  tooltip: 'Cancel / remove job',
                                 ),
                               ],
                             ),

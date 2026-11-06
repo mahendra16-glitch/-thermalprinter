@@ -60,7 +60,10 @@ class RasterGenerator {
   }
 
   /// Converts a Flutter [ui.Image] to monochrome ESC/POS raster command (`GS v 0`).
-  static Future<List<int>> imageToEscPosRaster(ui.Image uiImage) async {
+  static Future<List<int>> imageToEscPosRaster(
+    ui.Image uiImage, {
+    int threshold = 160,
+  }) async {
     final ByteData? byteData = await uiImage.toByteData(
       format: ui.ImageByteFormat.rawRgba,
     );
@@ -76,6 +79,7 @@ class RasterGenerator {
       ),
       width: width,
       height: height,
+      threshold: threshold,
     );
   }
 
@@ -101,7 +105,11 @@ class RasterGenerator {
     return convertImageToRasterEscPos(image, threshold: threshold);
   }
 
-  /// Converts an [img.Image] to 1-bit monochrome and returns ESC/POS raster command bytes.
+  /// Rows per GS v 0 command.
+  static const int bandHeight = 128;
+
+  /// Converts an [img.Image] to 1-bit monochrome ESC/POS raster commands,
+  /// one command per band of [bandHeight] rows.
   static List<int> convertImageToRasterEscPos(
     img.Image srcImage, {
     int threshold = 160,
@@ -113,17 +121,18 @@ class RasterGenerator {
     final int widthInBytes = (width + 7) ~/ 8;
 
     final List<int> bytes = [];
-
-    // Add ESC/POS GS v 0 raster header
-    bytes.addAll(
-      EscPosCommands.rasterHeader(
-        widthInBytes: widthInBytes,
-        heightInPixels: height,
-        mode: 0,
-      ),
-    );
-
     for (int y = 0; y < height; y++) {
+      // Each band of [bandHeight] rows is its own GS v 0 command, so small
+      // printer buffers (common on Bluetooth models) are not overrun.
+      if (y % bandHeight == 0) {
+        bytes.addAll(
+          EscPosCommands.rasterHeader(
+            widthInBytes: widthInBytes,
+            heightInPixels: (height - y) < bandHeight ? height - y : bandHeight,
+            mode: 0,
+          ),
+        );
+      }
       for (int xByte = 0; xByte < widthInBytes; xByte++) {
         int byteVal = 0;
         for (int bit = 0; bit < 8; bit++) {

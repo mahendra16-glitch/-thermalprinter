@@ -1243,6 +1243,65 @@ class $PrinterProfilesTable extends PrinterProfiles
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _printableDotsMeta = const VerificationMeta(
+    'printableDots',
+  );
+  @override
+  late final GeneratedColumn<int> printableDots = GeneratedColumn<int>(
+    'printable_dots',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _charsPerLineMeta = const VerificationMeta(
+    'charsPerLine',
+  );
+  @override
+  late final GeneratedColumn<int> charsPerLine = GeneratedColumn<int>(
+    'chars_per_line',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rasterThresholdMeta = const VerificationMeta(
+    'rasterThreshold',
+  );
+  @override
+  late final GeneratedColumn<int> rasterThreshold = GeneratedColumn<int>(
+    'raster_threshold',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _feedLinesMeta = const VerificationMeta(
+    'feedLines',
+  );
+  @override
+  late final GeneratedColumn<int> feedLines = GeneratedColumn<int>(
+    'feed_lines',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _autoCutMeta = const VerificationMeta(
+    'autoCut',
+  );
+  @override
+  late final GeneratedColumn<bool> autoCut = GeneratedColumn<bool>(
+    'auto_cut',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("auto_cut" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -1281,6 +1340,11 @@ class $PrinterProfilesTable extends PrinterProfiles
     lastConnectedAt,
     lastError,
     sortOrder,
+    printableDots,
+    charsPerLine,
+    rasterThreshold,
+    feedLines,
+    autoCut,
     createdAt,
     updatedAt,
   ];
@@ -1393,6 +1457,45 @@ class $PrinterProfilesTable extends PrinterProfiles
         sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
       );
     }
+    if (data.containsKey('printable_dots')) {
+      context.handle(
+        _printableDotsMeta,
+        printableDots.isAcceptableOrUnknown(
+          data['printable_dots']!,
+          _printableDotsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('chars_per_line')) {
+      context.handle(
+        _charsPerLineMeta,
+        charsPerLine.isAcceptableOrUnknown(
+          data['chars_per_line']!,
+          _charsPerLineMeta,
+        ),
+      );
+    }
+    if (data.containsKey('raster_threshold')) {
+      context.handle(
+        _rasterThresholdMeta,
+        rasterThreshold.isAcceptableOrUnknown(
+          data['raster_threshold']!,
+          _rasterThresholdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('feed_lines')) {
+      context.handle(
+        _feedLinesMeta,
+        feedLines.isAcceptableOrUnknown(data['feed_lines']!, _feedLinesMeta),
+      );
+    }
+    if (data.containsKey('auto_cut')) {
+      context.handle(
+        _autoCutMeta,
+        autoCut.isAcceptableOrUnknown(data['auto_cut']!, _autoCutMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -1474,6 +1577,26 @@ class $PrinterProfilesTable extends PrinterProfiles
         DriftSqlType.int,
         data['${effectivePrefix}sort_order'],
       )!,
+      printableDots: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}printable_dots'],
+      ),
+      charsPerLine: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}chars_per_line'],
+      ),
+      rasterThreshold: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}raster_threshold'],
+      ),
+      feedLines: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}feed_lines'],
+      ),
+      autoCut: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}auto_cut'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}created_at'],
@@ -1513,6 +1636,22 @@ class PrinterProfileRow extends DataClass
   final int? lastConnectedAt;
   final String? lastError;
   final int sortOrder;
+
+  /// Printable width in dots (often 384 for 58mm, 576 for 80mm; some
+  /// 80mm printers use 512).
+  final int? printableDots;
+
+  /// Characters per line in text mode (32 / 42 / 48 …).
+  final int? charsPerLine;
+
+  /// Luminance below which a raster pixel prints black (80–220).
+  final int? rasterThreshold;
+
+  /// Blank lines fed before cutting (0–10).
+  final int? feedLines;
+
+  /// Whether to send the cut command.
+  final bool autoCut;
   final int createdAt;
   final int updatedAt;
   const PrinterProfileRow({
@@ -1530,6 +1669,11 @@ class PrinterProfileRow extends DataClass
     this.lastConnectedAt,
     this.lastError,
     required this.sortOrder,
+    this.printableDots,
+    this.charsPerLine,
+    this.rasterThreshold,
+    this.feedLines,
+    required this.autoCut,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -1564,6 +1708,19 @@ class PrinterProfileRow extends DataClass
       map['last_error'] = Variable<String>(lastError);
     }
     map['sort_order'] = Variable<int>(sortOrder);
+    if (!nullToAbsent || printableDots != null) {
+      map['printable_dots'] = Variable<int>(printableDots);
+    }
+    if (!nullToAbsent || charsPerLine != null) {
+      map['chars_per_line'] = Variable<int>(charsPerLine);
+    }
+    if (!nullToAbsent || rasterThreshold != null) {
+      map['raster_threshold'] = Variable<int>(rasterThreshold);
+    }
+    if (!nullToAbsent || feedLines != null) {
+      map['feed_lines'] = Variable<int>(feedLines);
+    }
+    map['auto_cut'] = Variable<bool>(autoCut);
     map['created_at'] = Variable<int>(createdAt);
     map['updated_at'] = Variable<int>(updatedAt);
     return map;
@@ -1599,6 +1756,19 @@ class PrinterProfileRow extends DataClass
           ? const Value.absent()
           : Value(lastError),
       sortOrder: Value(sortOrder),
+      printableDots: printableDots == null && nullToAbsent
+          ? const Value.absent()
+          : Value(printableDots),
+      charsPerLine: charsPerLine == null && nullToAbsent
+          ? const Value.absent()
+          : Value(charsPerLine),
+      rasterThreshold: rasterThreshold == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rasterThreshold),
+      feedLines: feedLines == null && nullToAbsent
+          ? const Value.absent()
+          : Value(feedLines),
+      autoCut: Value(autoCut),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -1624,6 +1794,11 @@ class PrinterProfileRow extends DataClass
       lastConnectedAt: serializer.fromJson<int?>(json['lastConnectedAt']),
       lastError: serializer.fromJson<String?>(json['lastError']),
       sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      printableDots: serializer.fromJson<int?>(json['printableDots']),
+      charsPerLine: serializer.fromJson<int?>(json['charsPerLine']),
+      rasterThreshold: serializer.fromJson<int?>(json['rasterThreshold']),
+      feedLines: serializer.fromJson<int?>(json['feedLines']),
+      autoCut: serializer.fromJson<bool>(json['autoCut']),
       createdAt: serializer.fromJson<int>(json['createdAt']),
       updatedAt: serializer.fromJson<int>(json['updatedAt']),
     );
@@ -1646,6 +1821,11 @@ class PrinterProfileRow extends DataClass
       'lastConnectedAt': serializer.toJson<int?>(lastConnectedAt),
       'lastError': serializer.toJson<String?>(lastError),
       'sortOrder': serializer.toJson<int>(sortOrder),
+      'printableDots': serializer.toJson<int?>(printableDots),
+      'charsPerLine': serializer.toJson<int?>(charsPerLine),
+      'rasterThreshold': serializer.toJson<int?>(rasterThreshold),
+      'feedLines': serializer.toJson<int?>(feedLines),
+      'autoCut': serializer.toJson<bool>(autoCut),
       'createdAt': serializer.toJson<int>(createdAt),
       'updatedAt': serializer.toJson<int>(updatedAt),
     };
@@ -1666,6 +1846,11 @@ class PrinterProfileRow extends DataClass
     Value<int?> lastConnectedAt = const Value.absent(),
     Value<String?> lastError = const Value.absent(),
     int? sortOrder,
+    Value<int?> printableDots = const Value.absent(),
+    Value<int?> charsPerLine = const Value.absent(),
+    Value<int?> rasterThreshold = const Value.absent(),
+    Value<int?> feedLines = const Value.absent(),
+    bool? autoCut,
     int? createdAt,
     int? updatedAt,
   }) => PrinterProfileRow(
@@ -1685,6 +1870,15 @@ class PrinterProfileRow extends DataClass
         : this.lastConnectedAt,
     lastError: lastError.present ? lastError.value : this.lastError,
     sortOrder: sortOrder ?? this.sortOrder,
+    printableDots: printableDots.present
+        ? printableDots.value
+        : this.printableDots,
+    charsPerLine: charsPerLine.present ? charsPerLine.value : this.charsPerLine,
+    rasterThreshold: rasterThreshold.present
+        ? rasterThreshold.value
+        : this.rasterThreshold,
+    feedLines: feedLines.present ? feedLines.value : this.feedLines,
+    autoCut: autoCut ?? this.autoCut,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -1714,6 +1908,17 @@ class PrinterProfileRow extends DataClass
           : this.lastConnectedAt,
       lastError: data.lastError.present ? data.lastError.value : this.lastError,
       sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      printableDots: data.printableDots.present
+          ? data.printableDots.value
+          : this.printableDots,
+      charsPerLine: data.charsPerLine.present
+          ? data.charsPerLine.value
+          : this.charsPerLine,
+      rasterThreshold: data.rasterThreshold.present
+          ? data.rasterThreshold.value
+          : this.rasterThreshold,
+      feedLines: data.feedLines.present ? data.feedLines.value : this.feedLines,
+      autoCut: data.autoCut.present ? data.autoCut.value : this.autoCut,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -1736,6 +1941,11 @@ class PrinterProfileRow extends DataClass
           ..write('lastConnectedAt: $lastConnectedAt, ')
           ..write('lastError: $lastError, ')
           ..write('sortOrder: $sortOrder, ')
+          ..write('printableDots: $printableDots, ')
+          ..write('charsPerLine: $charsPerLine, ')
+          ..write('rasterThreshold: $rasterThreshold, ')
+          ..write('feedLines: $feedLines, ')
+          ..write('autoCut: $autoCut, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -1743,7 +1953,7 @@ class PrinterProfileRow extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     id,
     name,
     connectionType,
@@ -1758,9 +1968,14 @@ class PrinterProfileRow extends DataClass
     lastConnectedAt,
     lastError,
     sortOrder,
+    printableDots,
+    charsPerLine,
+    rasterThreshold,
+    feedLines,
+    autoCut,
     createdAt,
     updatedAt,
-  );
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1779,6 +1994,11 @@ class PrinterProfileRow extends DataClass
           other.lastConnectedAt == this.lastConnectedAt &&
           other.lastError == this.lastError &&
           other.sortOrder == this.sortOrder &&
+          other.printableDots == this.printableDots &&
+          other.charsPerLine == this.charsPerLine &&
+          other.rasterThreshold == this.rasterThreshold &&
+          other.feedLines == this.feedLines &&
+          other.autoCut == this.autoCut &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -1798,6 +2018,11 @@ class PrinterProfilesCompanion extends UpdateCompanion<PrinterProfileRow> {
   final Value<int?> lastConnectedAt;
   final Value<String?> lastError;
   final Value<int> sortOrder;
+  final Value<int?> printableDots;
+  final Value<int?> charsPerLine;
+  final Value<int?> rasterThreshold;
+  final Value<int?> feedLines;
+  final Value<bool> autoCut;
   final Value<int> createdAt;
   final Value<int> updatedAt;
   final Value<int> rowid;
@@ -1816,6 +2041,11 @@ class PrinterProfilesCompanion extends UpdateCompanion<PrinterProfileRow> {
     this.lastConnectedAt = const Value.absent(),
     this.lastError = const Value.absent(),
     this.sortOrder = const Value.absent(),
+    this.printableDots = const Value.absent(),
+    this.charsPerLine = const Value.absent(),
+    this.rasterThreshold = const Value.absent(),
+    this.feedLines = const Value.absent(),
+    this.autoCut = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1835,6 +2065,11 @@ class PrinterProfilesCompanion extends UpdateCompanion<PrinterProfileRow> {
     this.lastConnectedAt = const Value.absent(),
     this.lastError = const Value.absent(),
     this.sortOrder = const Value.absent(),
+    this.printableDots = const Value.absent(),
+    this.charsPerLine = const Value.absent(),
+    this.rasterThreshold = const Value.absent(),
+    this.feedLines = const Value.absent(),
+    this.autoCut = const Value.absent(),
     required int createdAt,
     required int updatedAt,
     this.rowid = const Value.absent(),
@@ -1860,6 +2095,11 @@ class PrinterProfilesCompanion extends UpdateCompanion<PrinterProfileRow> {
     Expression<int>? lastConnectedAt,
     Expression<String>? lastError,
     Expression<int>? sortOrder,
+    Expression<int>? printableDots,
+    Expression<int>? charsPerLine,
+    Expression<int>? rasterThreshold,
+    Expression<int>? feedLines,
+    Expression<bool>? autoCut,
     Expression<int>? createdAt,
     Expression<int>? updatedAt,
     Expression<int>? rowid,
@@ -1879,6 +2119,11 @@ class PrinterProfilesCompanion extends UpdateCompanion<PrinterProfileRow> {
       if (lastConnectedAt != null) 'last_connected_at': lastConnectedAt,
       if (lastError != null) 'last_error': lastError,
       if (sortOrder != null) 'sort_order': sortOrder,
+      if (printableDots != null) 'printable_dots': printableDots,
+      if (charsPerLine != null) 'chars_per_line': charsPerLine,
+      if (rasterThreshold != null) 'raster_threshold': rasterThreshold,
+      if (feedLines != null) 'feed_lines': feedLines,
+      if (autoCut != null) 'auto_cut': autoCut,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -1900,6 +2145,11 @@ class PrinterProfilesCompanion extends UpdateCompanion<PrinterProfileRow> {
     Value<int?>? lastConnectedAt,
     Value<String?>? lastError,
     Value<int>? sortOrder,
+    Value<int?>? printableDots,
+    Value<int?>? charsPerLine,
+    Value<int?>? rasterThreshold,
+    Value<int?>? feedLines,
+    Value<bool>? autoCut,
     Value<int>? createdAt,
     Value<int>? updatedAt,
     Value<int>? rowid,
@@ -1919,6 +2169,11 @@ class PrinterProfilesCompanion extends UpdateCompanion<PrinterProfileRow> {
       lastConnectedAt: lastConnectedAt ?? this.lastConnectedAt,
       lastError: lastError ?? this.lastError,
       sortOrder: sortOrder ?? this.sortOrder,
+      printableDots: printableDots ?? this.printableDots,
+      charsPerLine: charsPerLine ?? this.charsPerLine,
+      rasterThreshold: rasterThreshold ?? this.rasterThreshold,
+      feedLines: feedLines ?? this.feedLines,
+      autoCut: autoCut ?? this.autoCut,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -1970,6 +2225,21 @@ class PrinterProfilesCompanion extends UpdateCompanion<PrinterProfileRow> {
     if (sortOrder.present) {
       map['sort_order'] = Variable<int>(sortOrder.value);
     }
+    if (printableDots.present) {
+      map['printable_dots'] = Variable<int>(printableDots.value);
+    }
+    if (charsPerLine.present) {
+      map['chars_per_line'] = Variable<int>(charsPerLine.value);
+    }
+    if (rasterThreshold.present) {
+      map['raster_threshold'] = Variable<int>(rasterThreshold.value);
+    }
+    if (feedLines.present) {
+      map['feed_lines'] = Variable<int>(feedLines.value);
+    }
+    if (autoCut.present) {
+      map['auto_cut'] = Variable<bool>(autoCut.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<int>(createdAt.value);
     }
@@ -1999,6 +2269,11 @@ class PrinterProfilesCompanion extends UpdateCompanion<PrinterProfileRow> {
           ..write('lastConnectedAt: $lastConnectedAt, ')
           ..write('lastError: $lastError, ')
           ..write('sortOrder: $sortOrder, ')
+          ..write('printableDots: $printableDots, ')
+          ..write('charsPerLine: $charsPerLine, ')
+          ..write('rasterThreshold: $rasterThreshold, ')
+          ..write('feedLines: $feedLines, ')
+          ..write('autoCut: $autoCut, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -11327,6 +11602,1321 @@ class OrderLineOptionsCompanion extends UpdateCompanion<OrderLineOptionRow> {
   }
 }
 
+class $StationPrintersTable extends StationPrinters
+    with TableInfo<$StationPrintersTable, StationPrinterRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StationPrintersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _stationIdMeta = const VerificationMeta(
+    'stationId',
+  );
+  @override
+  late final GeneratedColumn<String> stationId = GeneratedColumn<String>(
+    'station_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _printerIdMeta = const VerificationMeta(
+    'printerId',
+  );
+  @override
+  late final GeneratedColumn<String> printerId = GeneratedColumn<String>(
+    'printer_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [stationId, printerId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'station_printers';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StationPrinterRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('station_id')) {
+      context.handle(
+        _stationIdMeta,
+        stationId.isAcceptableOrUnknown(data['station_id']!, _stationIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_stationIdMeta);
+    }
+    if (data.containsKey('printer_id')) {
+      context.handle(
+        _printerIdMeta,
+        printerId.isAcceptableOrUnknown(data['printer_id']!, _printerIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_printerIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {stationId, printerId};
+  @override
+  StationPrinterRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StationPrinterRow(
+      stationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}station_id'],
+      )!,
+      printerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}printer_id'],
+      )!,
+    );
+  }
+
+  @override
+  $StationPrintersTable createAlias(String alias) {
+    return $StationPrintersTable(attachedDatabase, alias);
+  }
+}
+
+class StationPrinterRow extends DataClass
+    implements Insertable<StationPrinterRow> {
+  final String stationId;
+  final String printerId;
+  const StationPrinterRow({required this.stationId, required this.printerId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['station_id'] = Variable<String>(stationId);
+    map['printer_id'] = Variable<String>(printerId);
+    return map;
+  }
+
+  StationPrintersCompanion toCompanion(bool nullToAbsent) {
+    return StationPrintersCompanion(
+      stationId: Value(stationId),
+      printerId: Value(printerId),
+    );
+  }
+
+  factory StationPrinterRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StationPrinterRow(
+      stationId: serializer.fromJson<String>(json['stationId']),
+      printerId: serializer.fromJson<String>(json['printerId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'stationId': serializer.toJson<String>(stationId),
+      'printerId': serializer.toJson<String>(printerId),
+    };
+  }
+
+  StationPrinterRow copyWith({String? stationId, String? printerId}) =>
+      StationPrinterRow(
+        stationId: stationId ?? this.stationId,
+        printerId: printerId ?? this.printerId,
+      );
+  StationPrinterRow copyWithCompanion(StationPrintersCompanion data) {
+    return StationPrinterRow(
+      stationId: data.stationId.present ? data.stationId.value : this.stationId,
+      printerId: data.printerId.present ? data.printerId.value : this.printerId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StationPrinterRow(')
+          ..write('stationId: $stationId, ')
+          ..write('printerId: $printerId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(stationId, printerId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StationPrinterRow &&
+          other.stationId == this.stationId &&
+          other.printerId == this.printerId);
+}
+
+class StationPrintersCompanion extends UpdateCompanion<StationPrinterRow> {
+  final Value<String> stationId;
+  final Value<String> printerId;
+  final Value<int> rowid;
+  const StationPrintersCompanion({
+    this.stationId = const Value.absent(),
+    this.printerId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StationPrintersCompanion.insert({
+    required String stationId,
+    required String printerId,
+    this.rowid = const Value.absent(),
+  }) : stationId = Value(stationId),
+       printerId = Value(printerId);
+  static Insertable<StationPrinterRow> custom({
+    Expression<String>? stationId,
+    Expression<String>? printerId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (stationId != null) 'station_id': stationId,
+      if (printerId != null) 'printer_id': printerId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StationPrintersCompanion copyWith({
+    Value<String>? stationId,
+    Value<String>? printerId,
+    Value<int>? rowid,
+  }) {
+    return StationPrintersCompanion(
+      stationId: stationId ?? this.stationId,
+      printerId: printerId ?? this.printerId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (stationId.present) {
+      map['station_id'] = Variable<String>(stationId.value);
+    }
+    if (printerId.present) {
+      map['printer_id'] = Variable<String>(printerId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StationPrintersCompanion(')
+          ..write('stationId: $stationId, ')
+          ..write('printerId: $printerId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $KitchenTicketsTable extends KitchenTickets
+    with TableInfo<$KitchenTicketsTable, KitchenTicketRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $KitchenTicketsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _orderIdMeta = const VerificationMeta(
+    'orderId',
+  );
+  @override
+  late final GeneratedColumn<String> orderId = GeneratedColumn<String>(
+    'order_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES orders (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _stationIdMeta = const VerificationMeta(
+    'stationId',
+  );
+  @override
+  late final GeneratedColumn<String> stationId = GeneratedColumn<String>(
+    'station_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stationNameMeta = const VerificationMeta(
+    'stationName',
+  );
+  @override
+  late final GeneratedColumn<String> stationName = GeneratedColumn<String>(
+    'station_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _roundNoMeta = const VerificationMeta(
+    'roundNo',
+  );
+  @override
+  late final GeneratedColumn<int> roundNo = GeneratedColumn<int>(
+    'round_no',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _reasonMeta = const VerificationMeta('reason');
+  @override
+  late final GeneratedColumn<String> reason = GeneratedColumn<String>(
+    'reason',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _clientRequestIdMeta = const VerificationMeta(
+    'clientRequestId',
+  );
+  @override
+  late final GeneratedColumn<String> clientRequestId = GeneratedColumn<String>(
+    'client_request_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    orderId,
+    stationId,
+    stationName,
+    roundNo,
+    kind,
+    reason,
+    clientRequestId,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'kitchen_tickets';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<KitchenTicketRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('order_id')) {
+      context.handle(
+        _orderIdMeta,
+        orderId.isAcceptableOrUnknown(data['order_id']!, _orderIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_orderIdMeta);
+    }
+    if (data.containsKey('station_id')) {
+      context.handle(
+        _stationIdMeta,
+        stationId.isAcceptableOrUnknown(data['station_id']!, _stationIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_stationIdMeta);
+    }
+    if (data.containsKey('station_name')) {
+      context.handle(
+        _stationNameMeta,
+        stationName.isAcceptableOrUnknown(
+          data['station_name']!,
+          _stationNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_stationNameMeta);
+    }
+    if (data.containsKey('round_no')) {
+      context.handle(
+        _roundNoMeta,
+        roundNo.isAcceptableOrUnknown(data['round_no']!, _roundNoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_roundNoMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('reason')) {
+      context.handle(
+        _reasonMeta,
+        reason.isAcceptableOrUnknown(data['reason']!, _reasonMeta),
+      );
+    }
+    if (data.containsKey('client_request_id')) {
+      context.handle(
+        _clientRequestIdMeta,
+        clientRequestId.isAcceptableOrUnknown(
+          data['client_request_id']!,
+          _clientRequestIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_clientRequestIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  KitchenTicketRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return KitchenTicketRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      orderId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}order_id'],
+      )!,
+      stationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}station_id'],
+      )!,
+      stationName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}station_name'],
+      )!,
+      roundNo: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}round_no'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      reason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reason'],
+      )!,
+      clientRequestId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}client_request_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $KitchenTicketsTable createAlias(String alias) {
+    return $KitchenTicketsTable(attachedDatabase, alias);
+  }
+}
+
+class KitchenTicketRow extends DataClass
+    implements Insertable<KitchenTicketRow> {
+  final String id;
+  final String orderId;
+
+  /// Station id, or [StationPrinters.defaultStation].
+  final String stationId;
+  final String stationName;
+
+  /// 1 for the first send of an order, 2 for the next, … (per order).
+  final int roundNo;
+
+  /// `KitchenTicketKind.name`: send | voided.
+  final String kind;
+  final String reason;
+
+  /// Ties the ticket to the staff action that created it, so a retried
+  /// action cannot create it twice.
+  final String clientRequestId;
+  final int createdAt;
+  const KitchenTicketRow({
+    required this.id,
+    required this.orderId,
+    required this.stationId,
+    required this.stationName,
+    required this.roundNo,
+    required this.kind,
+    required this.reason,
+    required this.clientRequestId,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['order_id'] = Variable<String>(orderId);
+    map['station_id'] = Variable<String>(stationId);
+    map['station_name'] = Variable<String>(stationName);
+    map['round_no'] = Variable<int>(roundNo);
+    map['kind'] = Variable<String>(kind);
+    map['reason'] = Variable<String>(reason);
+    map['client_request_id'] = Variable<String>(clientRequestId);
+    map['created_at'] = Variable<int>(createdAt);
+    return map;
+  }
+
+  KitchenTicketsCompanion toCompanion(bool nullToAbsent) {
+    return KitchenTicketsCompanion(
+      id: Value(id),
+      orderId: Value(orderId),
+      stationId: Value(stationId),
+      stationName: Value(stationName),
+      roundNo: Value(roundNo),
+      kind: Value(kind),
+      reason: Value(reason),
+      clientRequestId: Value(clientRequestId),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory KitchenTicketRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return KitchenTicketRow(
+      id: serializer.fromJson<String>(json['id']),
+      orderId: serializer.fromJson<String>(json['orderId']),
+      stationId: serializer.fromJson<String>(json['stationId']),
+      stationName: serializer.fromJson<String>(json['stationName']),
+      roundNo: serializer.fromJson<int>(json['roundNo']),
+      kind: serializer.fromJson<String>(json['kind']),
+      reason: serializer.fromJson<String>(json['reason']),
+      clientRequestId: serializer.fromJson<String>(json['clientRequestId']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'orderId': serializer.toJson<String>(orderId),
+      'stationId': serializer.toJson<String>(stationId),
+      'stationName': serializer.toJson<String>(stationName),
+      'roundNo': serializer.toJson<int>(roundNo),
+      'kind': serializer.toJson<String>(kind),
+      'reason': serializer.toJson<String>(reason),
+      'clientRequestId': serializer.toJson<String>(clientRequestId),
+      'createdAt': serializer.toJson<int>(createdAt),
+    };
+  }
+
+  KitchenTicketRow copyWith({
+    String? id,
+    String? orderId,
+    String? stationId,
+    String? stationName,
+    int? roundNo,
+    String? kind,
+    String? reason,
+    String? clientRequestId,
+    int? createdAt,
+  }) => KitchenTicketRow(
+    id: id ?? this.id,
+    orderId: orderId ?? this.orderId,
+    stationId: stationId ?? this.stationId,
+    stationName: stationName ?? this.stationName,
+    roundNo: roundNo ?? this.roundNo,
+    kind: kind ?? this.kind,
+    reason: reason ?? this.reason,
+    clientRequestId: clientRequestId ?? this.clientRequestId,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  KitchenTicketRow copyWithCompanion(KitchenTicketsCompanion data) {
+    return KitchenTicketRow(
+      id: data.id.present ? data.id.value : this.id,
+      orderId: data.orderId.present ? data.orderId.value : this.orderId,
+      stationId: data.stationId.present ? data.stationId.value : this.stationId,
+      stationName: data.stationName.present
+          ? data.stationName.value
+          : this.stationName,
+      roundNo: data.roundNo.present ? data.roundNo.value : this.roundNo,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      reason: data.reason.present ? data.reason.value : this.reason,
+      clientRequestId: data.clientRequestId.present
+          ? data.clientRequestId.value
+          : this.clientRequestId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KitchenTicketRow(')
+          ..write('id: $id, ')
+          ..write('orderId: $orderId, ')
+          ..write('stationId: $stationId, ')
+          ..write('stationName: $stationName, ')
+          ..write('roundNo: $roundNo, ')
+          ..write('kind: $kind, ')
+          ..write('reason: $reason, ')
+          ..write('clientRequestId: $clientRequestId, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    orderId,
+    stationId,
+    stationName,
+    roundNo,
+    kind,
+    reason,
+    clientRequestId,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is KitchenTicketRow &&
+          other.id == this.id &&
+          other.orderId == this.orderId &&
+          other.stationId == this.stationId &&
+          other.stationName == this.stationName &&
+          other.roundNo == this.roundNo &&
+          other.kind == this.kind &&
+          other.reason == this.reason &&
+          other.clientRequestId == this.clientRequestId &&
+          other.createdAt == this.createdAt);
+}
+
+class KitchenTicketsCompanion extends UpdateCompanion<KitchenTicketRow> {
+  final Value<String> id;
+  final Value<String> orderId;
+  final Value<String> stationId;
+  final Value<String> stationName;
+  final Value<int> roundNo;
+  final Value<String> kind;
+  final Value<String> reason;
+  final Value<String> clientRequestId;
+  final Value<int> createdAt;
+  final Value<int> rowid;
+  const KitchenTicketsCompanion({
+    this.id = const Value.absent(),
+    this.orderId = const Value.absent(),
+    this.stationId = const Value.absent(),
+    this.stationName = const Value.absent(),
+    this.roundNo = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.reason = const Value.absent(),
+    this.clientRequestId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  KitchenTicketsCompanion.insert({
+    required String id,
+    required String orderId,
+    required String stationId,
+    required String stationName,
+    required int roundNo,
+    required String kind,
+    this.reason = const Value.absent(),
+    required String clientRequestId,
+    required int createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       orderId = Value(orderId),
+       stationId = Value(stationId),
+       stationName = Value(stationName),
+       roundNo = Value(roundNo),
+       kind = Value(kind),
+       clientRequestId = Value(clientRequestId),
+       createdAt = Value(createdAt);
+  static Insertable<KitchenTicketRow> custom({
+    Expression<String>? id,
+    Expression<String>? orderId,
+    Expression<String>? stationId,
+    Expression<String>? stationName,
+    Expression<int>? roundNo,
+    Expression<String>? kind,
+    Expression<String>? reason,
+    Expression<String>? clientRequestId,
+    Expression<int>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (orderId != null) 'order_id': orderId,
+      if (stationId != null) 'station_id': stationId,
+      if (stationName != null) 'station_name': stationName,
+      if (roundNo != null) 'round_no': roundNo,
+      if (kind != null) 'kind': kind,
+      if (reason != null) 'reason': reason,
+      if (clientRequestId != null) 'client_request_id': clientRequestId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  KitchenTicketsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? orderId,
+    Value<String>? stationId,
+    Value<String>? stationName,
+    Value<int>? roundNo,
+    Value<String>? kind,
+    Value<String>? reason,
+    Value<String>? clientRequestId,
+    Value<int>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return KitchenTicketsCompanion(
+      id: id ?? this.id,
+      orderId: orderId ?? this.orderId,
+      stationId: stationId ?? this.stationId,
+      stationName: stationName ?? this.stationName,
+      roundNo: roundNo ?? this.roundNo,
+      kind: kind ?? this.kind,
+      reason: reason ?? this.reason,
+      clientRequestId: clientRequestId ?? this.clientRequestId,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (orderId.present) {
+      map['order_id'] = Variable<String>(orderId.value);
+    }
+    if (stationId.present) {
+      map['station_id'] = Variable<String>(stationId.value);
+    }
+    if (stationName.present) {
+      map['station_name'] = Variable<String>(stationName.value);
+    }
+    if (roundNo.present) {
+      map['round_no'] = Variable<int>(roundNo.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (reason.present) {
+      map['reason'] = Variable<String>(reason.value);
+    }
+    if (clientRequestId.present) {
+      map['client_request_id'] = Variable<String>(clientRequestId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KitchenTicketsCompanion(')
+          ..write('id: $id, ')
+          ..write('orderId: $orderId, ')
+          ..write('stationId: $stationId, ')
+          ..write('stationName: $stationName, ')
+          ..write('roundNo: $roundNo, ')
+          ..write('kind: $kind, ')
+          ..write('reason: $reason, ')
+          ..write('clientRequestId: $clientRequestId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $KitchenTicketLinesTable extends KitchenTicketLines
+    with TableInfo<$KitchenTicketLinesTable, KitchenTicketLineRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $KitchenTicketLinesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ticketIdMeta = const VerificationMeta(
+    'ticketId',
+  );
+  @override
+  late final GeneratedColumn<String> ticketId = GeneratedColumn<String>(
+    'ticket_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES kitchen_tickets (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _orderLineIdMeta = const VerificationMeta(
+    'orderLineId',
+  );
+  @override
+  late final GeneratedColumn<String> orderLineId = GeneratedColumn<String>(
+    'order_line_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES order_lines (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _qtyMeta = const VerificationMeta('qty');
+  @override
+  late final GeneratedColumn<int> qty = GeneratedColumn<int>(
+    'qty',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _itemNameMeta = const VerificationMeta(
+    'itemName',
+  );
+  @override
+  late final GeneratedColumn<String> itemName = GeneratedColumn<String>(
+    'item_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _addonsTextMeta = const VerificationMeta(
+    'addonsText',
+  );
+  @override
+  late final GeneratedColumn<String> addonsText = GeneratedColumn<String>(
+    'addons_text',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    ticketId,
+    orderLineId,
+    qty,
+    itemName,
+    addonsText,
+    notes,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'kitchen_ticket_lines';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<KitchenTicketLineRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('ticket_id')) {
+      context.handle(
+        _ticketIdMeta,
+        ticketId.isAcceptableOrUnknown(data['ticket_id']!, _ticketIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_ticketIdMeta);
+    }
+    if (data.containsKey('order_line_id')) {
+      context.handle(
+        _orderLineIdMeta,
+        orderLineId.isAcceptableOrUnknown(
+          data['order_line_id']!,
+          _orderLineIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_orderLineIdMeta);
+    }
+    if (data.containsKey('qty')) {
+      context.handle(
+        _qtyMeta,
+        qty.isAcceptableOrUnknown(data['qty']!, _qtyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_qtyMeta);
+    }
+    if (data.containsKey('item_name')) {
+      context.handle(
+        _itemNameMeta,
+        itemName.isAcceptableOrUnknown(data['item_name']!, _itemNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_itemNameMeta);
+    }
+    if (data.containsKey('addons_text')) {
+      context.handle(
+        _addonsTextMeta,
+        addonsText.isAcceptableOrUnknown(data['addons_text']!, _addonsTextMeta),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  KitchenTicketLineRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return KitchenTicketLineRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      ticketId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ticket_id'],
+      )!,
+      orderLineId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}order_line_id'],
+      )!,
+      qty: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}qty'],
+      )!,
+      itemName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}item_name'],
+      )!,
+      addonsText: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}addons_text'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $KitchenTicketLinesTable createAlias(String alias) {
+    return $KitchenTicketLinesTable(attachedDatabase, alias);
+  }
+}
+
+class KitchenTicketLineRow extends DataClass
+    implements Insertable<KitchenTicketLineRow> {
+  final String id;
+  final String ticketId;
+  final String orderLineId;
+  final int qty;
+
+  /// Printed text, copied at send time.
+  final String itemName;
+  final String addonsText;
+  final String notes;
+  final int sortOrder;
+  const KitchenTicketLineRow({
+    required this.id,
+    required this.ticketId,
+    required this.orderLineId,
+    required this.qty,
+    required this.itemName,
+    required this.addonsText,
+    required this.notes,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['ticket_id'] = Variable<String>(ticketId);
+    map['order_line_id'] = Variable<String>(orderLineId);
+    map['qty'] = Variable<int>(qty);
+    map['item_name'] = Variable<String>(itemName);
+    map['addons_text'] = Variable<String>(addonsText);
+    map['notes'] = Variable<String>(notes);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  KitchenTicketLinesCompanion toCompanion(bool nullToAbsent) {
+    return KitchenTicketLinesCompanion(
+      id: Value(id),
+      ticketId: Value(ticketId),
+      orderLineId: Value(orderLineId),
+      qty: Value(qty),
+      itemName: Value(itemName),
+      addonsText: Value(addonsText),
+      notes: Value(notes),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory KitchenTicketLineRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return KitchenTicketLineRow(
+      id: serializer.fromJson<String>(json['id']),
+      ticketId: serializer.fromJson<String>(json['ticketId']),
+      orderLineId: serializer.fromJson<String>(json['orderLineId']),
+      qty: serializer.fromJson<int>(json['qty']),
+      itemName: serializer.fromJson<String>(json['itemName']),
+      addonsText: serializer.fromJson<String>(json['addonsText']),
+      notes: serializer.fromJson<String>(json['notes']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'ticketId': serializer.toJson<String>(ticketId),
+      'orderLineId': serializer.toJson<String>(orderLineId),
+      'qty': serializer.toJson<int>(qty),
+      'itemName': serializer.toJson<String>(itemName),
+      'addonsText': serializer.toJson<String>(addonsText),
+      'notes': serializer.toJson<String>(notes),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  KitchenTicketLineRow copyWith({
+    String? id,
+    String? ticketId,
+    String? orderLineId,
+    int? qty,
+    String? itemName,
+    String? addonsText,
+    String? notes,
+    int? sortOrder,
+  }) => KitchenTicketLineRow(
+    id: id ?? this.id,
+    ticketId: ticketId ?? this.ticketId,
+    orderLineId: orderLineId ?? this.orderLineId,
+    qty: qty ?? this.qty,
+    itemName: itemName ?? this.itemName,
+    addonsText: addonsText ?? this.addonsText,
+    notes: notes ?? this.notes,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  KitchenTicketLineRow copyWithCompanion(KitchenTicketLinesCompanion data) {
+    return KitchenTicketLineRow(
+      id: data.id.present ? data.id.value : this.id,
+      ticketId: data.ticketId.present ? data.ticketId.value : this.ticketId,
+      orderLineId: data.orderLineId.present
+          ? data.orderLineId.value
+          : this.orderLineId,
+      qty: data.qty.present ? data.qty.value : this.qty,
+      itemName: data.itemName.present ? data.itemName.value : this.itemName,
+      addonsText: data.addonsText.present
+          ? data.addonsText.value
+          : this.addonsText,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KitchenTicketLineRow(')
+          ..write('id: $id, ')
+          ..write('ticketId: $ticketId, ')
+          ..write('orderLineId: $orderLineId, ')
+          ..write('qty: $qty, ')
+          ..write('itemName: $itemName, ')
+          ..write('addonsText: $addonsText, ')
+          ..write('notes: $notes, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    ticketId,
+    orderLineId,
+    qty,
+    itemName,
+    addonsText,
+    notes,
+    sortOrder,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is KitchenTicketLineRow &&
+          other.id == this.id &&
+          other.ticketId == this.ticketId &&
+          other.orderLineId == this.orderLineId &&
+          other.qty == this.qty &&
+          other.itemName == this.itemName &&
+          other.addonsText == this.addonsText &&
+          other.notes == this.notes &&
+          other.sortOrder == this.sortOrder);
+}
+
+class KitchenTicketLinesCompanion
+    extends UpdateCompanion<KitchenTicketLineRow> {
+  final Value<String> id;
+  final Value<String> ticketId;
+  final Value<String> orderLineId;
+  final Value<int> qty;
+  final Value<String> itemName;
+  final Value<String> addonsText;
+  final Value<String> notes;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const KitchenTicketLinesCompanion({
+    this.id = const Value.absent(),
+    this.ticketId = const Value.absent(),
+    this.orderLineId = const Value.absent(),
+    this.qty = const Value.absent(),
+    this.itemName = const Value.absent(),
+    this.addonsText = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  KitchenTicketLinesCompanion.insert({
+    required String id,
+    required String ticketId,
+    required String orderLineId,
+    required int qty,
+    required String itemName,
+    this.addonsText = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       ticketId = Value(ticketId),
+       orderLineId = Value(orderLineId),
+       qty = Value(qty),
+       itemName = Value(itemName);
+  static Insertable<KitchenTicketLineRow> custom({
+    Expression<String>? id,
+    Expression<String>? ticketId,
+    Expression<String>? orderLineId,
+    Expression<int>? qty,
+    Expression<String>? itemName,
+    Expression<String>? addonsText,
+    Expression<String>? notes,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (ticketId != null) 'ticket_id': ticketId,
+      if (orderLineId != null) 'order_line_id': orderLineId,
+      if (qty != null) 'qty': qty,
+      if (itemName != null) 'item_name': itemName,
+      if (addonsText != null) 'addons_text': addonsText,
+      if (notes != null) 'notes': notes,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  KitchenTicketLinesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? ticketId,
+    Value<String>? orderLineId,
+    Value<int>? qty,
+    Value<String>? itemName,
+    Value<String>? addonsText,
+    Value<String>? notes,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return KitchenTicketLinesCompanion(
+      id: id ?? this.id,
+      ticketId: ticketId ?? this.ticketId,
+      orderLineId: orderLineId ?? this.orderLineId,
+      qty: qty ?? this.qty,
+      itemName: itemName ?? this.itemName,
+      addonsText: addonsText ?? this.addonsText,
+      notes: notes ?? this.notes,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (ticketId.present) {
+      map['ticket_id'] = Variable<String>(ticketId.value);
+    }
+    if (orderLineId.present) {
+      map['order_line_id'] = Variable<String>(orderLineId.value);
+    }
+    if (qty.present) {
+      map['qty'] = Variable<int>(qty.value);
+    }
+    if (itemName.present) {
+      map['item_name'] = Variable<String>(itemName.value);
+    }
+    if (addonsText.present) {
+      map['addons_text'] = Variable<String>(addonsText.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KitchenTicketLinesCompanion(')
+          ..write('id: $id, ')
+          ..write('ticketId: $ticketId, ')
+          ..write('orderLineId: $orderLineId, ')
+          ..write('qty: $qty, ')
+          ..write('itemName: $itemName, ')
+          ..write('addonsText: $addonsText, ')
+          ..write('notes: $notes, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -11361,6 +12951,12 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $OrderLineOptionsTable orderLineOptions = $OrderLineOptionsTable(
     this,
   );
+  late final $StationPrintersTable stationPrinters = $StationPrintersTable(
+    this,
+  );
+  late final $KitchenTicketsTable kitchenTickets = $KitchenTicketsTable(this);
+  late final $KitchenTicketLinesTable kitchenTicketLines =
+      $KitchenTicketLinesTable(this);
   late final Index idxPrintJobsStatus = Index(
     'idx_print_jobs_status',
     'CREATE INDEX idx_print_jobs_status ON print_jobs (status)',
@@ -11421,6 +13017,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_order_line_options_line',
     'CREATE INDEX idx_order_line_options_line ON order_line_options (line_id)',
   );
+  late final Index idxKitchenTicketsOrder = Index(
+    'idx_kitchen_tickets_order',
+    'CREATE INDEX idx_kitchen_tickets_order ON kitchen_tickets (order_id)',
+  );
+  late final Index idxKitchenTicketLinesTicket = Index(
+    'idx_kitchen_ticket_lines_ticket',
+    'CREATE INDEX idx_kitchen_ticket_lines_ticket ON kitchen_ticket_lines (ticket_id)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -11445,6 +13049,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     orders,
     orderLines,
     orderLineOptions,
+    stationPrinters,
+    kitchenTickets,
+    kitchenTicketLines,
     idxPrintJobsStatus,
     idxPrintJobsSourceKey,
     idxPrintHistoryAt,
@@ -11460,6 +13067,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     idxOrdersDayNumber,
     idxOrderLinesOrder,
     idxOrderLineOptionsLine,
+    idxKitchenTicketsOrder,
+    idxKitchenTicketLinesTicket,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -12146,6 +13755,11 @@ typedef $$PrinterProfilesTableCreateCompanionBuilder =
       Value<int?> lastConnectedAt,
       Value<String?> lastError,
       Value<int> sortOrder,
+      Value<int?> printableDots,
+      Value<int?> charsPerLine,
+      Value<int?> rasterThreshold,
+      Value<int?> feedLines,
+      Value<bool> autoCut,
       required int createdAt,
       required int updatedAt,
       Value<int> rowid,
@@ -12166,6 +13780,11 @@ typedef $$PrinterProfilesTableUpdateCompanionBuilder =
       Value<int?> lastConnectedAt,
       Value<String?> lastError,
       Value<int> sortOrder,
+      Value<int?> printableDots,
+      Value<int?> charsPerLine,
+      Value<int?> rasterThreshold,
+      Value<int?> feedLines,
+      Value<bool> autoCut,
       Value<int> createdAt,
       Value<int> updatedAt,
       Value<int> rowid,
@@ -12247,6 +13866,31 @@ class $$PrinterProfilesTableFilterComposer
 
   ColumnFilters<int> get sortOrder => $composableBuilder(
     column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get printableDots => $composableBuilder(
+    column: $table.printableDots,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get charsPerLine => $composableBuilder(
+    column: $table.charsPerLine,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get rasterThreshold => $composableBuilder(
+    column: $table.rasterThreshold,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get feedLines => $composableBuilder(
+    column: $table.feedLines,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get autoCut => $composableBuilder(
+    column: $table.autoCut,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -12340,6 +13984,31 @@ class $$PrinterProfilesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get printableDots => $composableBuilder(
+    column: $table.printableDots,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get charsPerLine => $composableBuilder(
+    column: $table.charsPerLine,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get rasterThreshold => $composableBuilder(
+    column: $table.rasterThreshold,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get feedLines => $composableBuilder(
+    column: $table.feedLines,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get autoCut => $composableBuilder(
+    column: $table.autoCut,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -12412,6 +14081,27 @@ class $$PrinterProfilesTableAnnotationComposer
   GeneratedColumn<int> get sortOrder =>
       $composableBuilder(column: $table.sortOrder, builder: (column) => column);
 
+  GeneratedColumn<int> get printableDots => $composableBuilder(
+    column: $table.printableDots,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get charsPerLine => $composableBuilder(
+    column: $table.charsPerLine,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get rasterThreshold => $composableBuilder(
+    column: $table.rasterThreshold,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get feedLines =>
+      $composableBuilder(column: $table.feedLines, builder: (column) => column);
+
+  GeneratedColumn<bool> get autoCut =>
+      $composableBuilder(column: $table.autoCut, builder: (column) => column);
+
   GeneratedColumn<int> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
@@ -12470,6 +14160,11 @@ class $$PrinterProfilesTableTableManager
                 Value<int?> lastConnectedAt = const Value.absent(),
                 Value<String?> lastError = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
+                Value<int?> printableDots = const Value.absent(),
+                Value<int?> charsPerLine = const Value.absent(),
+                Value<int?> rasterThreshold = const Value.absent(),
+                Value<int?> feedLines = const Value.absent(),
+                Value<bool> autoCut = const Value.absent(),
                 Value<int> createdAt = const Value.absent(),
                 Value<int> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -12488,6 +14183,11 @@ class $$PrinterProfilesTableTableManager
                 lastConnectedAt: lastConnectedAt,
                 lastError: lastError,
                 sortOrder: sortOrder,
+                printableDots: printableDots,
+                charsPerLine: charsPerLine,
+                rasterThreshold: rasterThreshold,
+                feedLines: feedLines,
+                autoCut: autoCut,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -12508,6 +14208,11 @@ class $$PrinterProfilesTableTableManager
                 Value<int?> lastConnectedAt = const Value.absent(),
                 Value<String?> lastError = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
+                Value<int?> printableDots = const Value.absent(),
+                Value<int?> charsPerLine = const Value.absent(),
+                Value<int?> rasterThreshold = const Value.absent(),
+                Value<int?> feedLines = const Value.absent(),
+                Value<bool> autoCut = const Value.absent(),
                 required int createdAt,
                 required int updatedAt,
                 Value<int> rowid = const Value.absent(),
@@ -12526,6 +14231,11 @@ class $$PrinterProfilesTableTableManager
                 lastConnectedAt: lastConnectedAt,
                 lastError: lastError,
                 sortOrder: sortOrder,
+                printableDots: printableDots,
+                charsPerLine: charsPerLine,
+                rasterThreshold: rasterThreshold,
+                feedLines: feedLines,
+                autoCut: autoCut,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
@@ -17693,6 +19403,24 @@ final class $$OrdersTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$KitchenTicketsTable, List<KitchenTicketRow>>
+  _kitchenTicketsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.kitchenTickets,
+    aliasName: 'orders__id__kitchen_tickets__order_id',
+  );
+
+  $$KitchenTicketsTableProcessedTableManager get kitchenTicketsRefs {
+    final manager = $$KitchenTicketsTableTableManager(
+      $_db,
+      $_db.kitchenTickets,
+    ).filter((f) => f.orderId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_kitchenTicketsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$OrdersTableFilterComposer
@@ -17838,6 +19566,31 @@ class $$OrdersTableFilterComposer
           }) => $$OrderLinesTableFilterComposer(
             $db: $db,
             $table: $db.orderLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> kitchenTicketsRefs(
+    Expression<bool> Function($$KitchenTicketsTableFilterComposer f) f,
+  ) {
+    final $$KitchenTicketsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.kitchenTickets,
+      getReferencedColumn: (t) => t.orderId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$KitchenTicketsTableFilterComposer(
+            $db: $db,
+            $table: $db.kitchenTickets,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -18105,6 +19858,31 @@ class $$OrdersTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> kitchenTicketsRefs<T extends Object>(
+    Expression<T> Function($$KitchenTicketsTableAnnotationComposer a) f,
+  ) {
+    final $$KitchenTicketsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.kitchenTickets,
+      getReferencedColumn: (t) => t.orderId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$KitchenTicketsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.kitchenTickets,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$OrdersTableTableManager
@@ -18120,7 +19898,11 @@ class $$OrdersTableTableManager
           $$OrdersTableUpdateCompanionBuilder,
           (OrderRow, $$OrdersTableReferences),
           OrderRow,
-          PrefetchHooks Function({bool tableId, bool orderLinesRefs})
+          PrefetchHooks Function({
+            bool tableId,
+            bool orderLinesRefs,
+            bool kitchenTicketsRefs,
+          })
         > {
   $$OrdersTableTableManager(_$AppDatabase db, $OrdersTable table)
     : super(
@@ -18233,63 +20015,94 @@ class $$OrdersTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({tableId = false, orderLinesRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [if (orderLinesRefs) db.orderLines],
-              addJoins:
-                  <
-                    T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic
-                    >
-                  >(state) {
-                    if (tableId) {
-                      state = state.withJoin(
-                        currentTable: table,
-                        currentColumn: table.tableId,
-                        referencedTable: $$OrdersTableReferences._tableIdTable(
-                          db,
-                        ),
-                        referencedColumn: $$OrdersTableReferences
-                            ._tableIdTable(db)
-                            .id,
-                      ) as T;
-                    }
+          prefetchHooksCallback:
+              ({
+                tableId = false,
+                orderLinesRefs = false,
+                kitchenTicketsRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (orderLinesRefs) db.orderLines,
+                    if (kitchenTicketsRefs) db.kitchenTickets,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (tableId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.tableId,
+                            referencedTable: $$OrdersTableReferences
+                                ._tableIdTable(db),
+                            referencedColumn: $$OrdersTableReferences
+                                ._tableIdTable(db)
+                                .id,
+                          ) as T;
+                        }
 
-                    return state;
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (orderLinesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          OrderRow,
+                          $OrdersTable,
+                          OrderLineRow,
+                          $OrderLinesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$OrdersTableReferences
+                              ._orderLinesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$OrdersTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).orderLinesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'order_id',
+                          typedResults: items,
+                        ),
+                      if (kitchenTicketsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          OrderRow,
+                          $OrdersTable,
+                          KitchenTicketRow,
+                          $KitchenTicketsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$OrdersTableReferences
+                              ._kitchenTicketsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$OrdersTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).kitchenTicketsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'order_id',
+                          typedResults: items,
+                        ),
+                    ];
                   },
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (orderLinesRefs)
-                    await $_getPrefetchedDataByColumns<
-                      OrderRow,
-                      $OrdersTable,
-                      OrderLineRow,
-                      $OrderLinesTable
-                    >(
-                      currentTable: table,
-                      referencedTable: $$OrdersTableReferences
-                          ._orderLinesRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$OrdersTableReferences(db, table, p0).orderLinesRefs,
-                      currentColumn: 'id',
-                      referencedColumn: 'order_id',
-                      typedResults: items,
-                    ),
-                ];
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -18306,7 +20119,11 @@ typedef $$OrdersTableProcessedTableManager =
       $$OrdersTableUpdateCompanionBuilder,
       (OrderRow, $$OrdersTableReferences),
       OrderRow,
-      PrefetchHooks Function({bool tableId, bool orderLinesRefs})
+      PrefetchHooks Function({
+        bool tableId,
+        bool orderLinesRefs,
+        bool kitchenTicketsRefs,
+      })
     >;
 typedef $$OrderLinesTableCreateCompanionBuilder = OrderLinesCompanion Function({
   required String id,
@@ -18405,6 +20222,30 @@ final class $$OrderLinesTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _orderLineOptionsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $KitchenTicketLinesTable,
+    List<KitchenTicketLineRow>
+  >
+  _kitchenTicketLinesRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.kitchenTicketLines,
+        aliasName: 'order_lines__id__kitchen_ticket_lines__order_line_id',
+      );
+
+  $$KitchenTicketLinesTableProcessedTableManager get kitchenTicketLinesRefs {
+    final manager = $$KitchenTicketLinesTableTableManager(
+      $_db,
+      $_db.kitchenTicketLines,
+    ).filter((f) => f.orderLineId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _kitchenTicketLinesRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -18568,6 +20409,31 @@ class $$OrderLinesTableFilterComposer
           }) => $$OrderLineOptionsTableFilterComposer(
             $db: $db,
             $table: $db.orderLineOptions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> kitchenTicketLinesRefs(
+    Expression<bool> Function($$KitchenTicketLinesTableFilterComposer f) f,
+  ) {
+    final $$KitchenTicketLinesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.kitchenTicketLines,
+      getReferencedColumn: (t) => t.orderLineId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$KitchenTicketLinesTableFilterComposer(
+            $db: $db,
+            $table: $db.kitchenTicketLines,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -18861,6 +20727,32 @@ class $$OrderLinesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> kitchenTicketLinesRefs<T extends Object>(
+    Expression<T> Function($$KitchenTicketLinesTableAnnotationComposer a) f,
+  ) {
+    final $$KitchenTicketLinesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.kitchenTicketLines,
+          getReferencedColumn: (t) => t.orderLineId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$KitchenTicketLinesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.kitchenTicketLines,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$OrderLinesTableTableManager
@@ -18880,6 +20772,7 @@ class $$OrderLinesTableTableManager
             bool orderId,
             bool menuItemId,
             bool orderLineOptionsRefs,
+            bool kitchenTicketLinesRefs,
           })
         > {
   $$OrderLinesTableTableManager(_$AppDatabase db, $OrderLinesTable table)
@@ -18994,11 +20887,13 @@ class $$OrderLinesTableTableManager
                 orderId = false,
                 menuItemId = false,
                 orderLineOptionsRefs = false,
+                kitchenTicketLinesRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (orderLineOptionsRefs) db.orderLineOptions,
+                    if (kitchenTicketLinesRefs) db.kitchenTicketLines,
                   ],
                   addJoins:
                       <
@@ -19063,6 +20958,26 @@ class $$OrderLinesTableTableManager
                           referencedColumn: 'line_id',
                           typedResults: items,
                         ),
+                      if (kitchenTicketLinesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          OrderLineRow,
+                          $OrderLinesTable,
+                          KitchenTicketLineRow,
+                          $KitchenTicketLinesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$OrderLinesTableReferences
+                              ._kitchenTicketLinesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$OrderLinesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).kitchenTicketLinesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'order_line_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -19087,6 +21002,7 @@ typedef $$OrderLinesTableProcessedTableManager =
         bool orderId,
         bool menuItemId,
         bool orderLineOptionsRefs,
+        bool kitchenTicketLinesRefs,
       })
     >;
 typedef $$OrderLineOptionsTableCreateCompanionBuilder =
@@ -19495,6 +21411,1140 @@ typedef $$OrderLineOptionsTableProcessedTableManager =
       OrderLineOptionRow,
       PrefetchHooks Function({bool lineId})
     >;
+typedef $$StationPrintersTableCreateCompanionBuilder =
+    StationPrintersCompanion Function({
+      required String stationId,
+      required String printerId,
+      Value<int> rowid,
+    });
+typedef $$StationPrintersTableUpdateCompanionBuilder =
+    StationPrintersCompanion Function({
+      Value<String> stationId,
+      Value<String> printerId,
+      Value<int> rowid,
+    });
+
+class $$StationPrintersTableFilterComposer
+    extends Composer<_$AppDatabase, $StationPrintersTable> {
+  $$StationPrintersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get stationId => $composableBuilder(
+    column: $table.stationId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get printerId => $composableBuilder(
+    column: $table.printerId,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$StationPrintersTableOrderingComposer
+    extends Composer<_$AppDatabase, $StationPrintersTable> {
+  $$StationPrintersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get stationId => $composableBuilder(
+    column: $table.stationId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get printerId => $composableBuilder(
+    column: $table.printerId,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$StationPrintersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $StationPrintersTable> {
+  $$StationPrintersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get stationId =>
+      $composableBuilder(column: $table.stationId, builder: (column) => column);
+
+  GeneratedColumn<String> get printerId =>
+      $composableBuilder(column: $table.printerId, builder: (column) => column);
+}
+
+class $$StationPrintersTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $StationPrintersTable,
+          StationPrinterRow,
+          $$StationPrintersTableFilterComposer,
+          $$StationPrintersTableOrderingComposer,
+          $$StationPrintersTableAnnotationComposer,
+          $$StationPrintersTableCreateCompanionBuilder,
+          $$StationPrintersTableUpdateCompanionBuilder,
+          (
+            StationPrinterRow,
+            BaseReferences<
+              _$AppDatabase,
+              $StationPrintersTable,
+              StationPrinterRow
+            >,
+          ),
+          StationPrinterRow,
+          PrefetchHooks Function()
+        > {
+  $$StationPrintersTableTableManager(
+    _$AppDatabase db,
+    $StationPrintersTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StationPrintersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StationPrintersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StationPrintersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> stationId = const Value.absent(),
+                Value<String> printerId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StationPrintersCompanion(
+                stationId: stationId,
+                printerId: printerId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String stationId,
+                required String printerId,
+                Value<int> rowid = const Value.absent(),
+              }) => StationPrintersCompanion.insert(
+                stationId: stationId,
+                printerId: printerId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$StationPrintersTable, StationPrinterRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $StationPrintersTable,
+                    StationPrinterRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$StationPrintersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $StationPrintersTable,
+      StationPrinterRow,
+      $$StationPrintersTableFilterComposer,
+      $$StationPrintersTableOrderingComposer,
+      $$StationPrintersTableAnnotationComposer,
+      $$StationPrintersTableCreateCompanionBuilder,
+      $$StationPrintersTableUpdateCompanionBuilder,
+      (
+        StationPrinterRow,
+        BaseReferences<_$AppDatabase, $StationPrintersTable, StationPrinterRow>,
+      ),
+      StationPrinterRow,
+      PrefetchHooks Function()
+    >;
+typedef $$KitchenTicketsTableCreateCompanionBuilder =
+    KitchenTicketsCompanion Function({
+      required String id,
+      required String orderId,
+      required String stationId,
+      required String stationName,
+      required int roundNo,
+      required String kind,
+      Value<String> reason,
+      required String clientRequestId,
+      required int createdAt,
+      Value<int> rowid,
+    });
+typedef $$KitchenTicketsTableUpdateCompanionBuilder =
+    KitchenTicketsCompanion Function({
+      Value<String> id,
+      Value<String> orderId,
+      Value<String> stationId,
+      Value<String> stationName,
+      Value<int> roundNo,
+      Value<String> kind,
+      Value<String> reason,
+      Value<String> clientRequestId,
+      Value<int> createdAt,
+      Value<int> rowid,
+    });
+
+final class $$KitchenTicketsTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $KitchenTicketsTable, KitchenTicketRow> {
+  $$KitchenTicketsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $OrdersTable _orderIdTable(_$AppDatabase db) =>
+      db.orders.createAlias('kitchen_tickets__order_id__orders__id');
+
+  $$OrdersTableProcessedTableManager get orderId {
+    final $_column = $_itemColumn<String>('order_id')!;
+
+    final manager = $$OrdersTableTableManager(
+      $_db,
+      $_db.orders,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_orderIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $KitchenTicketLinesTable,
+    List<KitchenTicketLineRow>
+  >
+  _kitchenTicketLinesRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.kitchenTicketLines,
+        aliasName: 'kitchen_tickets__id__kitchen_ticket_lines__ticket_id',
+      );
+
+  $$KitchenTicketLinesTableProcessedTableManager get kitchenTicketLinesRefs {
+    final manager = $$KitchenTicketLinesTableTableManager(
+      $_db,
+      $_db.kitchenTicketLines,
+    ).filter((f) => f.ticketId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _kitchenTicketLinesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$KitchenTicketsTableFilterComposer
+    extends Composer<_$AppDatabase, $KitchenTicketsTable> {
+  $$KitchenTicketsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get stationId => $composableBuilder(
+    column: $table.stationId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get stationName => $composableBuilder(
+    column: $table.stationName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get roundNo => $composableBuilder(
+    column: $table.roundNo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get reason => $composableBuilder(
+    column: $table.reason,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clientRequestId => $composableBuilder(
+    column: $table.clientRequestId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$OrdersTableFilterComposer get orderId {
+    final $$OrdersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.orderId,
+      referencedTable: $db.orders,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrdersTableFilterComposer(
+            $db: $db,
+            $table: $db.orders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> kitchenTicketLinesRefs(
+    Expression<bool> Function($$KitchenTicketLinesTableFilterComposer f) f,
+  ) {
+    final $$KitchenTicketLinesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.kitchenTicketLines,
+      getReferencedColumn: (t) => t.ticketId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$KitchenTicketLinesTableFilterComposer(
+            $db: $db,
+            $table: $db.kitchenTicketLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$KitchenTicketsTableOrderingComposer
+    extends Composer<_$AppDatabase, $KitchenTicketsTable> {
+  $$KitchenTicketsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get stationId => $composableBuilder(
+    column: $table.stationId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get stationName => $composableBuilder(
+    column: $table.stationName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get roundNo => $composableBuilder(
+    column: $table.roundNo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get reason => $composableBuilder(
+    column: $table.reason,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clientRequestId => $composableBuilder(
+    column: $table.clientRequestId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$OrdersTableOrderingComposer get orderId {
+    final $$OrdersTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.orderId,
+      referencedTable: $db.orders,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrdersTableOrderingComposer(
+            $db: $db,
+            $table: $db.orders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$KitchenTicketsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $KitchenTicketsTable> {
+  $$KitchenTicketsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get stationId =>
+      $composableBuilder(column: $table.stationId, builder: (column) => column);
+
+  GeneratedColumn<String> get stationName => $composableBuilder(
+    column: $table.stationName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get roundNo =>
+      $composableBuilder(column: $table.roundNo, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get reason =>
+      $composableBuilder(column: $table.reason, builder: (column) => column);
+
+  GeneratedColumn<String> get clientRequestId => $composableBuilder(
+    column: $table.clientRequestId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$OrdersTableAnnotationComposer get orderId {
+    final $$OrdersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.orderId,
+      referencedTable: $db.orders,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrdersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.orders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> kitchenTicketLinesRefs<T extends Object>(
+    Expression<T> Function($$KitchenTicketLinesTableAnnotationComposer a) f,
+  ) {
+    final $$KitchenTicketLinesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.kitchenTicketLines,
+          getReferencedColumn: (t) => t.ticketId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$KitchenTicketLinesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.kitchenTicketLines,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$KitchenTicketsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $KitchenTicketsTable,
+          KitchenTicketRow,
+          $$KitchenTicketsTableFilterComposer,
+          $$KitchenTicketsTableOrderingComposer,
+          $$KitchenTicketsTableAnnotationComposer,
+          $$KitchenTicketsTableCreateCompanionBuilder,
+          $$KitchenTicketsTableUpdateCompanionBuilder,
+          (KitchenTicketRow, $$KitchenTicketsTableReferences),
+          KitchenTicketRow,
+          PrefetchHooks Function({bool orderId, bool kitchenTicketLinesRefs})
+        > {
+  $$KitchenTicketsTableTableManager(
+    _$AppDatabase db,
+    $KitchenTicketsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$KitchenTicketsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$KitchenTicketsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$KitchenTicketsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> orderId = const Value.absent(),
+                Value<String> stationId = const Value.absent(),
+                Value<String> stationName = const Value.absent(),
+                Value<int> roundNo = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<String> reason = const Value.absent(),
+                Value<String> clientRequestId = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => KitchenTicketsCompanion(
+                id: id,
+                orderId: orderId,
+                stationId: stationId,
+                stationName: stationName,
+                roundNo: roundNo,
+                kind: kind,
+                reason: reason,
+                clientRequestId: clientRequestId,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String orderId,
+                required String stationId,
+                required String stationName,
+                required int roundNo,
+                required String kind,
+                Value<String> reason = const Value.absent(),
+                required String clientRequestId,
+                required int createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => KitchenTicketsCompanion.insert(
+                id: id,
+                orderId: orderId,
+                stationId: stationId,
+                stationName: stationName,
+                roundNo: roundNo,
+                kind: kind,
+                reason: reason,
+                clientRequestId: clientRequestId,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$KitchenTicketsTable, KitchenTicketRow>(table),
+                  $$KitchenTicketsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({orderId = false, kitchenTicketLinesRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (kitchenTicketLinesRefs) db.kitchenTicketLines,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (orderId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.orderId,
+                            referencedTable: $$KitchenTicketsTableReferences
+                                ._orderIdTable(db),
+                            referencedColumn: $$KitchenTicketsTableReferences
+                                ._orderIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (kitchenTicketLinesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          KitchenTicketRow,
+                          $KitchenTicketsTable,
+                          KitchenTicketLineRow,
+                          $KitchenTicketLinesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$KitchenTicketsTableReferences
+                              ._kitchenTicketLinesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$KitchenTicketsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).kitchenTicketLinesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'ticket_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$KitchenTicketsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $KitchenTicketsTable,
+      KitchenTicketRow,
+      $$KitchenTicketsTableFilterComposer,
+      $$KitchenTicketsTableOrderingComposer,
+      $$KitchenTicketsTableAnnotationComposer,
+      $$KitchenTicketsTableCreateCompanionBuilder,
+      $$KitchenTicketsTableUpdateCompanionBuilder,
+      (KitchenTicketRow, $$KitchenTicketsTableReferences),
+      KitchenTicketRow,
+      PrefetchHooks Function({bool orderId, bool kitchenTicketLinesRefs})
+    >;
+typedef $$KitchenTicketLinesTableCreateCompanionBuilder =
+    KitchenTicketLinesCompanion Function({
+      required String id,
+      required String ticketId,
+      required String orderLineId,
+      required int qty,
+      required String itemName,
+      Value<String> addonsText,
+      Value<String> notes,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$KitchenTicketLinesTableUpdateCompanionBuilder =
+    KitchenTicketLinesCompanion Function({
+      Value<String> id,
+      Value<String> ticketId,
+      Value<String> orderLineId,
+      Value<int> qty,
+      Value<String> itemName,
+      Value<String> addonsText,
+      Value<String> notes,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+final class $$KitchenTicketLinesTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $KitchenTicketLinesTable,
+          KitchenTicketLineRow
+        > {
+  $$KitchenTicketLinesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $KitchenTicketsTable _ticketIdTable(_$AppDatabase db) => db
+      .kitchenTickets
+      .createAlias('kitchen_ticket_lines__ticket_id__kitchen_tickets__id');
+
+  $$KitchenTicketsTableProcessedTableManager get ticketId {
+    final $_column = $_itemColumn<String>('ticket_id')!;
+
+    final manager = $$KitchenTicketsTableTableManager(
+      $_db,
+      $_db.kitchenTickets,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_ticketIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $OrderLinesTable _orderLineIdTable(_$AppDatabase db) => db.orderLines
+      .createAlias('kitchen_ticket_lines__order_line_id__order_lines__id');
+
+  $$OrderLinesTableProcessedTableManager get orderLineId {
+    final $_column = $_itemColumn<String>('order_line_id')!;
+
+    final manager = $$OrderLinesTableTableManager(
+      $_db,
+      $_db.orderLines,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_orderLineIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$KitchenTicketLinesTableFilterComposer
+    extends Composer<_$AppDatabase, $KitchenTicketLinesTable> {
+  $$KitchenTicketLinesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get qty => $composableBuilder(
+    column: $table.qty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get itemName => $composableBuilder(
+    column: $table.itemName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get addonsText => $composableBuilder(
+    column: $table.addonsText,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$KitchenTicketsTableFilterComposer get ticketId {
+    final $$KitchenTicketsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.ticketId,
+      referencedTable: $db.kitchenTickets,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$KitchenTicketsTableFilterComposer(
+            $db: $db,
+            $table: $db.kitchenTickets,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$OrderLinesTableFilterComposer get orderLineId {
+    final $$OrderLinesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.orderLineId,
+      referencedTable: $db.orderLines,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrderLinesTableFilterComposer(
+            $db: $db,
+            $table: $db.orderLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$KitchenTicketLinesTableOrderingComposer
+    extends Composer<_$AppDatabase, $KitchenTicketLinesTable> {
+  $$KitchenTicketLinesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get qty => $composableBuilder(
+    column: $table.qty,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get itemName => $composableBuilder(
+    column: $table.itemName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get addonsText => $composableBuilder(
+    column: $table.addonsText,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$KitchenTicketsTableOrderingComposer get ticketId {
+    final $$KitchenTicketsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.ticketId,
+      referencedTable: $db.kitchenTickets,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$KitchenTicketsTableOrderingComposer(
+            $db: $db,
+            $table: $db.kitchenTickets,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$OrderLinesTableOrderingComposer get orderLineId {
+    final $$OrderLinesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.orderLineId,
+      referencedTable: $db.orderLines,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrderLinesTableOrderingComposer(
+            $db: $db,
+            $table: $db.orderLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$KitchenTicketLinesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $KitchenTicketLinesTable> {
+  $$KitchenTicketLinesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get qty =>
+      $composableBuilder(column: $table.qty, builder: (column) => column);
+
+  GeneratedColumn<String> get itemName =>
+      $composableBuilder(column: $table.itemName, builder: (column) => column);
+
+  GeneratedColumn<String> get addonsText => $composableBuilder(
+    column: $table.addonsText,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  $$KitchenTicketsTableAnnotationComposer get ticketId {
+    final $$KitchenTicketsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.ticketId,
+      referencedTable: $db.kitchenTickets,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$KitchenTicketsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.kitchenTickets,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$OrderLinesTableAnnotationComposer get orderLineId {
+    final $$OrderLinesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.orderLineId,
+      referencedTable: $db.orderLines,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrderLinesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.orderLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$KitchenTicketLinesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $KitchenTicketLinesTable,
+          KitchenTicketLineRow,
+          $$KitchenTicketLinesTableFilterComposer,
+          $$KitchenTicketLinesTableOrderingComposer,
+          $$KitchenTicketLinesTableAnnotationComposer,
+          $$KitchenTicketLinesTableCreateCompanionBuilder,
+          $$KitchenTicketLinesTableUpdateCompanionBuilder,
+          (KitchenTicketLineRow, $$KitchenTicketLinesTableReferences),
+          KitchenTicketLineRow,
+          PrefetchHooks Function({bool ticketId, bool orderLineId})
+        > {
+  $$KitchenTicketLinesTableTableManager(
+    _$AppDatabase db,
+    $KitchenTicketLinesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$KitchenTicketLinesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$KitchenTicketLinesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$KitchenTicketLinesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> ticketId = const Value.absent(),
+                Value<String> orderLineId = const Value.absent(),
+                Value<int> qty = const Value.absent(),
+                Value<String> itemName = const Value.absent(),
+                Value<String> addonsText = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => KitchenTicketLinesCompanion(
+                id: id,
+                ticketId: ticketId,
+                orderLineId: orderLineId,
+                qty: qty,
+                itemName: itemName,
+                addonsText: addonsText,
+                notes: notes,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String ticketId,
+                required String orderLineId,
+                required int qty,
+                required String itemName,
+                Value<String> addonsText = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => KitchenTicketLinesCompanion.insert(
+                id: id,
+                ticketId: ticketId,
+                orderLineId: orderLineId,
+                qty: qty,
+                itemName: itemName,
+                addonsText: addonsText,
+                notes: notes,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$KitchenTicketLinesTable, KitchenTicketLineRow>(
+                    table,
+                  ),
+                  $$KitchenTicketLinesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({ticketId = false, orderLineId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (ticketId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.ticketId,
+                        referencedTable: $$KitchenTicketLinesTableReferences
+                            ._ticketIdTable(db),
+                        referencedColumn: $$KitchenTicketLinesTableReferences
+                            ._ticketIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+                    if (orderLineId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.orderLineId,
+                        referencedTable: $$KitchenTicketLinesTableReferences
+                            ._orderLineIdTable(db),
+                        referencedColumn: $$KitchenTicketLinesTableReferences
+                            ._orderLineIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$KitchenTicketLinesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $KitchenTicketLinesTable,
+      KitchenTicketLineRow,
+      $$KitchenTicketLinesTableFilterComposer,
+      $$KitchenTicketLinesTableOrderingComposer,
+      $$KitchenTicketLinesTableAnnotationComposer,
+      $$KitchenTicketLinesTableCreateCompanionBuilder,
+      $$KitchenTicketLinesTableUpdateCompanionBuilder,
+      (KitchenTicketLineRow, $$KitchenTicketLinesTableReferences),
+      KitchenTicketLineRow,
+      PrefetchHooks Function({bool ticketId, bool orderLineId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -19537,4 +22587,10 @@ class $AppDatabaseManager {
       $$OrderLinesTableTableManager(_db, _db.orderLines);
   $$OrderLineOptionsTableTableManager get orderLineOptions =>
       $$OrderLineOptionsTableTableManager(_db, _db.orderLineOptions);
+  $$StationPrintersTableTableManager get stationPrinters =>
+      $$StationPrintersTableTableManager(_db, _db.stationPrinters);
+  $$KitchenTicketsTableTableManager get kitchenTickets =>
+      $$KitchenTicketsTableTableManager(_db, _db.kitchenTickets);
+  $$KitchenTicketLinesTableTableManager get kitchenTicketLines =>
+      $$KitchenTicketLinesTableTableManager(_db, _db.kitchenTicketLines);
 }

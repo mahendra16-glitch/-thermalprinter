@@ -1,6 +1,6 @@
 // dart format width=80
 // ignore_for_file: unused_local_variable, unused_import
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift_dev/api/migrations_native.dart';
 import 'package:thermalprinter/data/db/app_database.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -34,7 +34,7 @@ void main() {
     }
   });
 
-  test('v1 -> v3 keeps existing printers, jobs and settings', () async {
+  test('v1 -> v4 keeps existing printers, jobs and settings', () async {
     final schema = await verifier.schemaAt(1);
     final raw = schema.rawDatabase;
     raw.execute(
@@ -58,17 +58,19 @@ void main() {
     );
 
     final db = AppDatabase(schema.newConnection());
-    await verifier.migrateAndValidate(db, 3);
+    await verifier.migrateAndValidate(db, 4);
 
     final printers = await db.select(db.printerProfiles).get();
     expect(printers.single.id, 'PRINTER-1');
     expect(printers.single.ipAddress, '10.0.0.5');
+    expect(printers.single.printableDots, isNull);
+    expect(printers.single.autoCut, isTrue);
     final jobs = await db.select(db.printJobs).get();
     expect(jobs.single.sourceKey, 'KOT:1024');
     final setting = await db.select(db.appSettings).getSingle();
     expect(setting.value, 'PRINTER-1');
     final log = await db.select(db.migrationLog).get();
-    expect(log.map((r) => r.version), [1, 2, 3]);
+    expect(log.map((r) => r.version), [1, 2, 3, 4]);
     expect(await db.select(db.menuItems).get(), isEmpty);
     expect(await db.select(db.orders).get(), isEmpty);
     await db.close();

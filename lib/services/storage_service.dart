@@ -5,6 +5,7 @@ import '../data/db/app_database.dart';
 import '../data/legacy/legacy_prefs_importer.dart';
 import '../data/repositories/audit_repository.dart';
 import '../data/repositories/business_profile_repository.dart';
+import '../data/repositories/kitchen_repository.dart';
 import '../data/repositories/menu_repository.dart';
 import '../data/repositories/order_repository.dart';
 import '../data/repositories/print_job_repository.dart';
@@ -32,6 +33,11 @@ class StorageService {
   late final MenuRepository menu = MenuRepository(db, audit);
   late final TableRepository tables = TableRepository(db, audit);
   late final OrderRepository orders = OrderRepository(db, audit, settings);
+  late final KitchenRepository kitchen = KitchenRepository(
+    db,
+    audit,
+    printJobs,
+  );
 
   /// Set when the one-time import of pre-database data failed. The legacy
   /// data is untouched and the import is retried on the next launch.
@@ -92,6 +98,13 @@ class StorageService {
   Future<PrinterDevice?> getPrinterForRole(PrinterRole role) async {
     final direct = await printers.getFirstForRole(role);
     if (direct != null) return direct;
+    // "KOT" and "Kitchen" printers both take kitchen tickets.
+    if (role == PrinterRole.kot || role == PrinterRole.kitchen) {
+      final other = await printers.getFirstForRole(
+        role == PrinterRole.kot ? PrinterRole.kitchen : PrinterRole.kot,
+      );
+      if (other != null) return other;
+    }
     final fallbackId = await settings.getFallbackPrinterId();
     if (fallbackId == null) return null;
     return printers.getById(fallbackId);

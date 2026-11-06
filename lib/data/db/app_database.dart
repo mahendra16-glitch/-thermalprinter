@@ -21,6 +21,8 @@ part 'app_database.g.dart';
 ///   option_groups, option_choices, item_option_groups.
 /// - v3: dining_areas, restaurant_tables, orders, order_lines,
 ///   order_line_options.
+/// - v4: printer_profiles print-setting columns; station_printers,
+///   kitchen_tickets, kitchen_ticket_lines.
 @DriftDatabase(
   tables: [
     MigrationLog,
@@ -42,6 +44,9 @@ part 'app_database.g.dart';
     Orders,
     OrderLines,
     OrderLineOptions,
+    StationPrinters,
+    KitchenTickets,
+    KitchenTicketLines,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -50,7 +55,7 @@ class AppDatabase extends _$AppDatabase {
   static const String fileName = 'pos.db';
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -60,6 +65,7 @@ class AppDatabase extends _$AppDatabase {
       await _logMigration(1, 'initial schema');
       await _logMigration(2, 'menu tables (fresh install)');
       await _logMigration(3, 'tables and orders (fresh install)');
+      await _logMigration(4, 'kitchen tickets (fresh install)');
     },
     onUpgrade: stepByStep(
       from1To2: (m, schema) async {
@@ -90,6 +96,20 @@ class AppDatabase extends _$AppDatabase {
         await m.createIndex(schema.idxOrderLinesOrder);
         await m.createIndex(schema.idxOrderLineOptionsLine);
         await _logMigration(3, 'tables and orders');
+      },
+      from3To4: (m, schema) async {
+        final p = schema.printerProfiles;
+        await m.addColumn(p, p.printableDots);
+        await m.addColumn(p, p.charsPerLine);
+        await m.addColumn(p, p.rasterThreshold);
+        await m.addColumn(p, p.feedLines);
+        await m.addColumn(p, p.autoCut);
+        await m.createTable(schema.stationPrinters);
+        await m.createTable(schema.kitchenTickets);
+        await m.createTable(schema.kitchenTicketLines);
+        await m.createIndex(schema.idxKitchenTicketsOrder);
+        await m.createIndex(schema.idxKitchenTicketLinesTicket);
+        await _logMigration(4, 'kitchen tickets, printer settings');
       },
     ),
     beforeOpen: (details) async {

@@ -560,7 +560,7 @@ class _OrderScreenState extends State<OrderScreen>
               QtyStepper(
                 compact: true,
                 qty: l.qty,
-                min: l.sentQty + l.voidedQty > 0 ? l.sentQty + l.voidedQty : 1,
+                min: l.sentQty > 0 ? l.sentQty : 1,
                 onChanged: _busy
                     ? null
                     : (q) => _guard(

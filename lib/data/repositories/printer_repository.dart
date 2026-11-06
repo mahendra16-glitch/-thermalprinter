@@ -130,6 +130,11 @@ class PrinterRepository {
       deviceName: r.deviceName,
       ipAddress: r.ipAddress,
       port: r.port,
+      printableDots: r.printableDots,
+      charsPerLine: r.charsPerLine,
+      rasterThreshold: r.rasterThreshold,
+      feedLines: r.feedLines,
+      autoCut: r.autoCut,
       lastConnected: r.lastConnectedAt == null
           ? null
           : Clock.toLocal(r.lastConnectedAt!),
@@ -155,6 +160,11 @@ class PrinterRepository {
       deviceName: Value(p.deviceName),
       ipAddress: Value(p.ipAddress),
       port: Value(p.port),
+      printableDots: Value(p.printableDots),
+      charsPerLine: Value(p.charsPerLine),
+      rasterThreshold: Value(p.rasterThreshold),
+      feedLines: Value(p.feedLines),
+      autoCut: Value(p.autoCut),
       lastConnectedAt: Value(p.lastConnected?.toUtc().millisecondsSinceEpoch),
       lastError: Value(p.lastError),
       sortOrder: Value(sortOrder),

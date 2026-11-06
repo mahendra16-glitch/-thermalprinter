@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -7,6 +6,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../models/printer_device.dart';
 import '../core/constants/escpos_commands.dart';
 import 'raster_generator.dart';
+import 'receipt_document.dart';
 
 class EscPosBuilder {
   final PaperWidth paperWidth;
@@ -48,8 +48,8 @@ class EscPosBuilder {
       EscPosCommands.textSize(width: widthMultiplier, height: heightMultiplier),
     );
 
-    // Convert text to standard bytes
-    _bytes.addAll(latin1.encode(text));
+    // Never latin1.encode: it throws on ₹, Hindi and emoji (D2).
+    _bytes.addAll(encodePrinterText(text));
 
     if (lineBreak) {
       _bytes.addAll(EscPosCommands.lineFeed);

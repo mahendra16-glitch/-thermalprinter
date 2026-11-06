@@ -341,8 +341,7 @@ class OrderRepository {
       final line = await _requireLine(lineId);
       await _requireEditable(line.orderId);
       _checkQty(qty);
-      final locked = line.sentQty + line.voidedQty;
-      if (qty < locked) {
+      if (qty < line.sentQty) {
         throw ValidationException(
           '${line.sentQty} already sent to the kitchen. Void them instead of '
           'reducing the quantity.',

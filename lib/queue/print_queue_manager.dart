@@ -95,23 +95,19 @@ class PrintQueueManager {
 
   /// Adds a print job for [order] and returns its id.
   ///
-  /// If a job for the same document (same print type and order id) is
-  /// already pending or printing, that job's id is returned instead, so a
-  /// double tap cannot queue two copies. A KOT and a BILL for the same order
-  /// are different documents and are both queued.
+  /// If a job for the same document ([sourceKey], by default print type +
+  /// order id) is already pending or printing, that job's id is returned
+  /// instead, so a double tap cannot queue two copies. A KOT and a BILL for
+  /// the same order are different documents and are both queued.
   Future<String> addOrderToQueue(
     PosOrder order, {
     String? targetPrinterId,
+    String? sourceKey,
   }) async {
-    final key = PrintJobRepository.sourceKeyFor(order.type, order.orderId);
+    final key =
+        sourceKey ?? PrintJobRepository.sourceKeyFor(order.type, order.orderId);
     for (final j in _queue) {
-      final active =
-          j.status == PrintJobStatus.pending ||
-          j.status == PrintJobStatus.printing;
-      if (active &&
-          PrintJobRepository.sourceKeyFor(j.printType, j.orderId) == key) {
-        return j.id;
-      }
+      if (j.isActive && j.effectiveSourceKey == key) return j.id;
     }
 
     final job = PrintJob(
@@ -121,6 +117,7 @@ class PrintQueueManager {
       targetRole: order.printerRole,
       targetPrinterId: targetPrinterId,
       posOrderJson: order.toJson(),
+      sourceKey: key,
       status: PrintJobStatus.pending,
     );
 
@@ -128,6 +125,46 @@ class PrintQueueManager {
     _queue.add(job);
     _emit();
 
+    unawaited(processNext());
+    return job.id;
+  }
+
+  /// Picks up jobs that other services wrote to the database (for example
+  /// KOT jobs created in the same transaction as the kitchen ticket) and
+  /// starts printing them.
+  Future<void> syncFromStorage() async {
+    final known = {for (final j in _queue) j.id};
+    var added = false;
+    for (final j in await _jobs.getAllJobs()) {
+      if (!known.contains(j.id)) {
+        _queue.add(j);
+        added = true;
+      }
+    }
+    if (added) _emit();
+    unawaited(processNext());
+  }
+
+  /// Prints another copy of a stored job, marked "REPRINT". Never touches
+  /// the original job, ticket or order. Returns the new job id, or null if
+  /// the original is no longer stored.
+  Future<String?> reprintJob(String jobId) async {
+    final original = _find(jobId) ?? await _jobs.getJob(jobId);
+    final payload = original?.posOrderJson;
+    if (original == null || payload == null) return null;
+    final order = PosOrder.fromJson(payload).asReprint();
+    final job = PrintJob(
+      id: newId(),
+      orderId: original.orderId,
+      printType: original.printType,
+      targetRole: original.targetRole,
+      targetPrinterId: original.targetPrinterId,
+      posOrderJson: order.toJson(),
+      sourceKey: 'REPRINT:${original.effectiveSourceKey}:${newId()}',
+    );
+    await _jobs.upsertJob(job);
+    _queue.add(job);
+    _emit();
     unawaited(processNext());
     return job.id;
   }
@@ -143,18 +180,30 @@ class PrintQueueManager {
     unawaited(processNext());
   }
 
-  /// Deletes a job that is not currently printing.
+  /// Cancels a job that is not currently printing. The job stays on record
+  /// as cancelled until "clear" is used.
   Future<void> removeJob(String jobId) async {
     final job = _find(jobId);
     if (job == null || job.status == PrintJobStatus.printing) return;
-    await _jobs.deleteJob(jobId);
-    _queue.remove(job);
+    if (job.status == PrintJobStatus.pending ||
+        job.status == PrintJobStatus.failed) {
+      job.status = PrintJobStatus.cancelled;
+      job.errorMessage = 'Cancelled by staff';
+      await _jobs.updateJobState(job);
+    } else {
+      await _jobs.deleteJob(jobId);
+      _queue.remove(job);
+    }
     _emit();
   }
 
-  /// Clears printed and failed jobs.
+  /// Clears printed, failed and cancelled jobs.
   Future<void> clearCompleted() async {
-    const statuses = [PrintJobStatus.printed, PrintJobStatus.failed];
+    const statuses = [
+      PrintJobStatus.printed,
+      PrintJobStatus.failed,
+      PrintJobStatus.cancelled,
+    ];
     await _jobs.deleteJobsWithStatus(statuses);
     _queue.removeWhere((j) => statuses.contains(j.status));
     _emit();

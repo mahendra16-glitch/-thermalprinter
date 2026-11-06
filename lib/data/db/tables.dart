@@ -68,6 +68,23 @@ class PrinterProfiles extends Table {
   IntColumn get lastConnectedAt => integer().nullable()();
   TextColumn get lastError => text().nullable()();
   IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+
+  // v4: print settings. Null means "use the default for the paper width".
+  /// Printable width in dots (often 384 for 58mm, 576 for 80mm; some
+  /// 80mm printers use 512).
+  IntColumn get printableDots => integer().nullable()();
+
+  /// Characters per line in text mode (32 / 42 / 48 …).
+  IntColumn get charsPerLine => integer().nullable()();
+
+  /// Luminance below which a raster pixel prints black (80–220).
+  IntColumn get rasterThreshold => integer().nullable()();
+
+  /// Blank lines fed before cutting (0–10).
+  IntColumn get feedLines => integer().nullable()();
+
+  /// Whether to send the cut command.
+  BoolColumn get autoCut => boolean().withDefault(const Constant(true))();
   IntColumn get createdAt => integer()();
   IntColumn get updatedAt => integer()();
 
@@ -449,6 +466,72 @@ class OrderLineOptions extends Table {
   TextColumn get choiceId => text()();
   TextColumn get name => text()();
   IntColumn get priceDeltaPaise => integer()();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+// ---------------------------------------------------------------------------
+// Schema v4: kitchen tickets (KOT) and station routing
+// ---------------------------------------------------------------------------
+
+/// Which printers receive KOTs for a station. `stationId` is
+/// [StationPrinters.defaultStation] for items that have no station.
+@DataClassName('StationPrinterRow')
+class StationPrinters extends Table {
+  static const String defaultStation = '__default__';
+
+  TextColumn get stationId => text()();
+  TextColumn get printerId => text()();
+
+  @override
+  Set<Column> get primaryKey => {stationId, printerId};
+}
+
+/// One kitchen ticket: the units of an order sent to one station at one
+/// time ("round"), or a void of units already sent.
+@DataClassName('KitchenTicketRow')
+@TableIndex(name: 'idx_kitchen_tickets_order', columns: {#orderId})
+class KitchenTickets extends Table {
+  TextColumn get id => text()();
+  TextColumn get orderId =>
+      text().references(Orders, #id, onDelete: KeyAction.restrict)();
+
+  /// Station id, or [StationPrinters.defaultStation].
+  TextColumn get stationId => text()();
+  TextColumn get stationName => text()();
+
+  /// 1 for the first send of an order, 2 for the next, … (per order).
+  IntColumn get roundNo => integer()();
+
+  /// `KitchenTicketKind.name`: send | voided.
+  TextColumn get kind => text()();
+  TextColumn get reason => text().withDefault(const Constant(''))();
+
+  /// Ties the ticket to the staff action that created it, so a retried
+  /// action cannot create it twice.
+  TextColumn get clientRequestId => text()();
+  IntColumn get createdAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DataClassName('KitchenTicketLineRow')
+@TableIndex(name: 'idx_kitchen_ticket_lines_ticket', columns: {#ticketId})
+class KitchenTicketLines extends Table {
+  TextColumn get id => text()();
+  TextColumn get ticketId =>
+      text().references(KitchenTickets, #id, onDelete: KeyAction.restrict)();
+  TextColumn get orderLineId =>
+      text().references(OrderLines, #id, onDelete: KeyAction.restrict)();
+  IntColumn get qty => integer()();
+
+  /// Printed text, copied at send time.
+  TextColumn get itemName => text()();
+  TextColumn get addonsText => text().withDefault(const Constant(''))();
+  TextColumn get notes => text().withDefault(const Constant(''))();
   IntColumn get sortOrder => integer().withDefault(const Constant(0))();
 
   @override

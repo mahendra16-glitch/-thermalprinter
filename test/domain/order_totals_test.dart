@@ -47,7 +47,8 @@ void main() {
   test('unsent and billable quantities', () {
     final l = line(100, 5, sent: 2, voided: 1);
     expect(l.billableQty, 4);
-    expect(l.unsentQty, 2);
+    expect(l.unsentQty, 3);
+    expect(l.voidableQty, 1);
   });
 
   group('business date', () {

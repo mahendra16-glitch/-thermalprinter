@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import '../models/print_history_item.dart';
 import '../services/storage_service.dart';
 import '../queue/print_queue_manager.dart';
-import '../printing/test_receipt_generator.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -41,29 +40,27 @@ class _HistoryScreenState extends State<HistoryScreen> {
     _loadHistory();
   }
 
+  /// Reprints the original job's content (marked REPRINT). If the job was
+  /// cleared from the queue there is nothing to reprint, and staff are told
+  /// so rather than being given a test page.
   Future<void> _reprint(PrintHistoryItem item) async {
-    final printers = await (await StorageService.getInstance())
-        .getSavedPrinters();
-    final printer = printers.firstWhere(
-      (p) => p.name == item.printerName,
-      orElse: () => printers.isNotEmpty
-          ? printers.first
-          : throw Exception('No printer found'),
-    );
-
-    final order = TestReceiptGenerator.buildTestOrder(printer);
-    final queueManager = await PrintQueueManager.getInstance();
-    await queueManager.addOrderToQueue(order);
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Reprint job for Order #${item.orderId} added to queue',
-          ),
-        ),
-      );
+    final messenger = ScaffoldMessenger.of(context);
+    final jobId = item.jobId;
+    String? newJob;
+    if (jobId != null) {
+      final queueManager = await PrintQueueManager.getInstance();
+      newJob = await queueManager.reprintJob(jobId);
     }
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          newJob != null
+              ? 'Reprint of ${item.printType} #${item.orderId} added to the queue'
+              : 'The original print job is no longer stored (it was cleared '
+                    'from the queue), so it cannot be reprinted from here.',
+        ),
+      ),
+    );
   }
 
   @override

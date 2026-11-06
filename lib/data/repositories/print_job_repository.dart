@@ -45,6 +45,26 @@ class PrintJobRepository {
     );
   }
 
+  Future<PrintJob?> getJob(String id) async {
+    final r = await (_db.select(
+      _db.printJobs,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
+    return r == null ? null : jobFromRow(r);
+  }
+
+  /// Jobs whose source key starts with [prefix], oldest first.
+  Future<List<PrintJob>> jobsWithSourcePrefix(String prefix) async {
+    final rows =
+        await (_db.select(_db.printJobs)
+              ..where((t) => t.sourceKey.like('$prefix%'))
+              ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
+            .get();
+    return rows.map(jobFromRow).toList();
+  }
+
+  Stream<void> watchJobs() =>
+      _db.tableUpdates(TableUpdateQuery.onTable(_db.printJobs));
+
   Future<void> deleteJob(String id) =>
       (_db.delete(_db.printJobs)..where((t) => t.id.equals(id))).go();
 
@@ -103,6 +123,7 @@ class PrintJobRepository {
         orElse: () => PrinterRole.bill,
       ),
       targetPrinterId: r.targetPrinterId,
+      sourceKey: r.sourceKey,
       posOrderJson: r.payloadJson == null
           ? null
           : jsonDecode(r.payloadJson!) as Map<String, dynamic>,
@@ -124,7 +145,7 @@ class PrintJobRepository {
       printType: j.printType,
       targetRole: j.targetRole.name,
       targetPrinterId: Value(j.targetPrinterId),
-      sourceKey: sourceKeyFor(j.printType, j.orderId),
+      sourceKey: j.sourceKey ?? sourceKeyFor(j.printType, j.orderId),
       payloadJson: Value(
         j.posOrderJson == null ? null : jsonEncode(j.posOrderJson),
       ),
@@ -150,6 +171,7 @@ class PrintJobRepository {
       printType: r.printType,
       isSuccess: r.isSuccess,
       errorMessage: r.errorMessage,
+      jobId: r.jobId,
     );
   }
 
@@ -159,7 +181,7 @@ class PrintJobRepository {
   }) {
     return PrintHistoryCompanion.insert(
       id: h.id,
-      jobId: Value(jobId),
+      jobId: Value(jobId ?? h.jobId),
       at: h.timestamp.toUtc().millisecondsSinceEpoch,
       printerName: h.printerName,
       connectionType: h.connectionType.name,

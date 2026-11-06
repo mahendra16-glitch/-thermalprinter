@@ -64,6 +64,12 @@ class StatusBadge extends StatelessWidget {
           color: Color(0xFFEF4444),
           icon: Icons.error_rounded,
         );
+      case PrintJobStatus.cancelled:
+        return const StatusBadge(
+          label: 'Cancelled',
+          color: Color(0xFF64748B),
+          icon: Icons.block_rounded,
+        );
     }
   }
 
