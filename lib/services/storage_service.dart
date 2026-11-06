@@ -1,138 +1,117 @@
-import 'dart:convert';
-
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../core/constants/app_constants.dart';
-import '../models/printer_device.dart';
-import '../models/print_mode.dart';
-import '../models/print_job.dart';
+import '../data/db/app_database.dart';
+import '../data/legacy/legacy_prefs_importer.dart';
+import '../data/repositories/audit_repository.dart';
+import '../data/repositories/business_profile_repository.dart';
+import '../data/repositories/print_job_repository.dart';
+import '../data/repositories/printer_repository.dart';
+import '../data/repositories/settings_repository.dart';
 import '../models/print_history_item.dart';
+import '../models/print_mode.dart';
+import '../models/printer_device.dart';
 
+/// App-wide access to local data. Backed by the SQLite database
+/// ([AppDatabase]); the method names are kept from the earlier
+/// SharedPreferences version so existing screens did not change.
 class StorageService {
   static StorageService? _instance;
-  SharedPreferences? _prefs;
+  static Future<StorageService>? _opening;
 
-  StorageService._();
+  final AppDatabase db;
+  late final AuditRepository audit = AuditRepository(db);
+  late final SettingsRepository settings = SettingsRepository(db, audit);
+  late final PrinterRepository printers = PrinterRepository(db, audit);
+  late final PrintJobRepository printJobs = PrintJobRepository(db);
+  late final BusinessProfileRepository businessProfile =
+      BusinessProfileRepository(db, audit);
 
-  static Future<StorageService> getInstance() async {
-    if (_instance == null) {
-      _instance = StorageService._();
-      await _instance!._init();
-    }
-    return _instance!;
+  /// Set when the one-time import of pre-database data failed. The legacy
+  /// data is untouched and the import is retried on the next launch.
+  String? legacyImportError;
+
+  StorageService._(this.db);
+
+  /// Uses [db] directly (tests). Does not run the legacy import.
+  @visibleForTesting
+  factory StorageService.forTesting(AppDatabase db) {
+    final s = StorageService._(db);
+    _instance = s;
+    return s;
   }
 
-  Future<void> _init() async {
-    _prefs = await SharedPreferences.getInstance();
+  @visibleForTesting
+  static void resetForTesting() {
+    _instance = null;
+    _opening = null;
+  }
+
+  static Future<StorageService> getInstance() {
+    final existing = _instance;
+    if (existing != null) return Future.value(existing);
+    return _opening ??= _open();
+  }
+
+  static Future<StorageService> _open() async {
+    final s = StorageService._(await openPosDatabase());
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await LegacyPrefsImporter(s.db, prefs).run();
+    } catch (e) {
+      s.legacyImportError = e.toString();
+      debugPrint('Legacy import failed: $e');
+    }
+    _instance = s;
+    return s;
   }
 
   // --- Saved Printers ---
 
-  Future<List<PrinterDevice>> getSavedPrinters() async {
-    final String? raw = _prefs?.getString(AppConstants.keySavedPrinters);
-    if (raw == null || raw.isEmpty) return [];
-    try {
-      final List<dynamic> list = jsonDecode(raw);
-      return list
-          .map((e) => PrinterDevice.fromJson(e as Map<String, dynamic>))
-          .toList();
-    } catch (e) {
-      return [];
-    }
-  }
+  Future<List<PrinterDevice>> getSavedPrinters() => printers.getAll();
 
-  Future<void> savePrinter(PrinterDevice printer) async {
-    final printers = await getSavedPrinters();
-    final index = printers.indexWhere((p) => p.id == printer.id);
-    if (index >= 0) {
-      printers[index] = printer;
-    } else {
-      printers.add(printer);
-    }
-    await _savePrinterList(printers);
-  }
+  Future<void> savePrinter(PrinterDevice printer) => printers.save(printer);
 
   Future<void> deletePrinter(String printerId) async {
-    final printers = await getSavedPrinters();
-    printers.removeWhere((p) => p.id == printerId);
-    await _savePrinterList(printers);
+    await db.transaction(() async {
+      await printers.delete(printerId);
+      if (await settings.getFallbackPrinterId() == printerId) {
+        await settings.setFallbackPrinterId(null);
+      }
+    });
   }
 
-  Future<void> _savePrinterList(List<PrinterDevice> printers) async {
-    final raw = jsonEncode(printers.map((p) => p.toJson()).toList());
-    await _prefs?.setString(AppConstants.keySavedPrinters, raw);
-  }
-
+  /// The printer for [role]; otherwise the configured fallback printer;
+  /// otherwise null (the caller must report that no printer is assigned).
   Future<PrinterDevice?> getPrinterForRole(PrinterRole role) async {
-    final printers = await getSavedPrinters();
-    try {
-      return printers.firstWhere((p) => p.role == role);
-    } catch (_) {
-      return printers.isNotEmpty ? printers.first : null;
-    }
+    final direct = await printers.getFirstForRole(role);
+    if (direct != null) return direct;
+    final fallbackId = await settings.getFallbackPrinterId();
+    if (fallbackId == null) return null;
+    return printers.getById(fallbackId);
   }
 
   // --- Print Mode ---
 
-  Future<PrintMode> getPrintMode() async {
-    final String? modeName = _prefs?.getString(AppConstants.keyPrintMode);
-    if (modeName == null) return PrintMode.compatibilityMode;
-    return PrintMode.values.firstWhere(
-      (m) => m.name == modeName,
-      orElse: () => PrintMode.compatibilityMode,
-    );
-  }
+  Future<PrintMode> getPrintMode() => settings.getPrintMode();
 
-  Future<void> setPrintMode(PrintMode mode) async {
-    await _prefs?.setString(AppConstants.keyPrintMode, mode.name);
-  }
-
-  // --- Print Queue ---
-
-  Future<List<PrintJob>> getQueue() async {
-    final String? raw = _prefs?.getString(AppConstants.keyPrintQueue);
-    if (raw == null || raw.isEmpty) return [];
-    try {
-      final List<dynamic> list = jsonDecode(raw);
-      return list
-          .map((e) => PrintJob.fromJson(e as Map<String, dynamic>))
-          .toList();
-    } catch (e) {
-      return [];
-    }
-  }
-
-  Future<void> saveQueue(List<PrintJob> queue) async {
-    final raw = jsonEncode(queue.map((j) => j.toJson()).toList());
-    await _prefs?.setString(AppConstants.keyPrintQueue, raw);
-  }
+  Future<void> setPrintMode(PrintMode mode) => settings.setPrintMode(mode);
 
   // --- Print History ---
 
-  Future<List<PrintHistoryItem>> getHistory() async {
-    final String? raw = _prefs?.getString(AppConstants.keyPrintHistory);
-    if (raw == null || raw.isEmpty) return [];
-    try {
-      final List<dynamic> list = jsonDecode(raw);
-      return list
-          .map((e) => PrintHistoryItem.fromJson(e as Map<String, dynamic>))
-          .toList();
-    } catch (e) {
-      return [];
-    }
-  }
+  Future<List<PrintHistoryItem>> getHistory({int? limit}) =>
+      printJobs.getHistory(limit: limit);
 
-  Future<void> addHistoryItem(PrintHistoryItem item) async {
-    final history = await getHistory();
-    history.insert(0, item); // latest first
-    if (history.length > 200) {
-      history.removeLast(); // keep last 200 records
-    }
-    final raw = jsonEncode(history.map((h) => h.toJson()).toList());
-    await _prefs?.setString(AppConstants.keyPrintHistory, raw);
-  }
+  Future<void> addHistoryItem(PrintHistoryItem item, {String? jobId}) =>
+      printJobs.addHistory(item, jobId: jobId);
 
   Future<void> clearHistory() async {
-    await _prefs?.remove(AppConstants.keyPrintHistory);
+    await db.transaction(() async {
+      await printJobs.clearHistory();
+      await audit.record(
+        action: 'print_history.cleared',
+        entity: 'print_history',
+      );
+    });
   }
 }

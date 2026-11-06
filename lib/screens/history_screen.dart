@@ -26,7 +26,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Future<void> _loadHistory() async {
     setState(() => _isLoading = true);
     final storage = await StorageService.getInstance();
-    final list = await storage.getHistory();
+    final list = await storage.getHistory(limit: 500);
     if (mounted) {
       setState(() {
         _history = list;

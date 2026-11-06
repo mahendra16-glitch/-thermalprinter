@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../models/print_mode.dart';
+import '../models/printer_device.dart';
 import '../services/storage_service.dart';
 import '../services/pos_integration_service.dart';
+import 'backup_screen.dart';
+import 'business_profile_screen.dart';
 import 'diagnostics_screen.dart';
 import 'test_screen.dart';
 
@@ -18,12 +21,116 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final TextEditingController _jsonController = TextEditingController();
   bool _isSendingPosJob = false;
   String? _posResult;
+  List<PrinterDevice> _printers = [];
+  String? _fallbackPrinterId;
 
   @override
   void initState() {
     super.initState();
     _loadPrintMode();
+    _loadFallback();
     _loadSampleJson();
+  }
+
+  Future<void> _loadFallback() async {
+    final storage = await StorageService.getInstance();
+    final printers = await storage.getSavedPrinters();
+    final fallback = await storage.settings.getFallbackPrinterId();
+    if (mounted) {
+      setState(() {
+        _printers = printers;
+        _fallbackPrinterId = printers.any((p) => p.id == fallback)
+            ? fallback
+            : null;
+      });
+    }
+  }
+
+  Future<void> _setFallback(String? printerId) async {
+    final storage = await StorageService.getInstance();
+    await storage.settings.setFallbackPrinterId(printerId);
+    if (mounted) setState(() => _fallbackPrinterId = printerId);
+  }
+
+  Widget _navTile({
+    required IconData icon,
+    required Color color,
+    required String title,
+    required String subtitle,
+    required Widget Function() page,
+  }) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: CircleAvatar(
+        backgroundColor: color,
+        child: Icon(icon, color: Colors.white),
+      ),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+      subtitle: Text(
+        subtitle,
+        style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+      ),
+      trailing: const Icon(Icons.chevron_right_rounded),
+      onTap: () async {
+        await Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => page()));
+        _loadFallback();
+      },
+    );
+  }
+
+  Widget _buildBusinessSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _navTile(
+          icon: Icons.storefront_rounded,
+          color: const Color(0xFF0F766E),
+          title: 'Business Profile',
+          subtitle: 'Restaurant name, address, phone, GSTIN, FSSAI, UPI ID.',
+          page: () => const BusinessProfileScreen(),
+        ),
+        _navTile(
+          icon: Icons.backup_rounded,
+          color: const Color(0xFF7C3AED),
+          title: 'Backup',
+          subtitle: 'Save a verified copy of all local data and share it.',
+          page: () => const BackupScreen(),
+        ),
+        const SizedBox(height: 16),
+        const Text(
+          'Fallback printer',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 4),
+        const Text(
+          "Used when a job's role (e.g. Kitchen) has no printer assigned. "
+          'With "None", such jobs fail and show the reason in the queue.',
+          style: TextStyle(color: Color(0xFF64748B), fontSize: 13),
+        ),
+        const SizedBox(height: 8),
+        DropdownButtonFormField<String?>(
+          key: ValueKey(_fallbackPrinterId),
+          initialValue: _fallbackPrinterId,
+          isExpanded: true,
+          decoration: const InputDecoration(border: OutlineInputBorder()),
+          items: [
+            const DropdownMenuItem<String?>(
+              value: null,
+              child: Text('None (fail if no printer for the role)'),
+            ),
+            ..._printers.map(
+              (p) => DropdownMenuItem<String?>(
+                value: p.id,
+                child: Text('${p.name} (${p.role.label})'),
+              ),
+            ),
+          ],
+          onChanged: _setFallback,
+        ),
+        const Divider(height: 32),
+      ],
+    );
   }
 
   Future<void> _loadPrintMode() async {
@@ -107,6 +214,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _buildBusinessSection(),
+
             // Smart Print Engine Mode
             const Text(
               'Smart Print Engine Mode',

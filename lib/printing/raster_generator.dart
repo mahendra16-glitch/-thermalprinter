@@ -69,14 +69,36 @@ class RasterGenerator {
     final int width = uiImage.width;
     final int height = uiImage.height;
 
-    // Convert RGBA byte data to image.Image
+    return rgbaToEscPosRaster(
+      byteData.buffer.asUint8List(
+        byteData.offsetInBytes,
+        byteData.lengthInBytes,
+      ),
+      width: width,
+      height: height,
+    );
+  }
+
+  /// Converts raw RGBA8888 pixels (as produced by
+  /// `ui.Image.toByteData(format: rawRgba)`) to an ESC/POS raster command.
+  static List<int> rgbaToEscPosRaster(
+    Uint8List rgba, {
+    required int width,
+    required int height,
+    int threshold = 160,
+  }) {
+    // The buffer is 4 bytes per pixel. `Image.fromBytes` defaults to 3
+    // channels, which shears the picture, so the channel count must be given.
     final img.Image image = img.Image.fromBytes(
       width: width,
       height: height,
-      bytes: byteData.buffer,
+      bytes: rgba.buffer,
+      bytesOffset: rgba.offsetInBytes,
+      numChannels: 4,
+      order: img.ChannelOrder.rgba,
     );
 
-    return convertImageToRasterEscPos(image);
+    return convertImageToRasterEscPos(image, threshold: threshold);
   }
 
   /// Converts an [img.Image] to 1-bit monochrome and returns ESC/POS raster command bytes.
@@ -108,6 +130,11 @@ class RasterGenerator {
           final int x = xByte * 8 + bit;
           if (x < width) {
             final pixel = srcImage.getPixel(x, y);
+            // Transparent pixels (e.g. the QR painter's background) are
+            // paper, not ink. Without this they read as RGB 0,0,0 = black.
+            if (srcImage.hasAlpha && pixel.a < pixel.maxChannelValue / 2) {
+              continue;
+            }
             // Calculate luminance (grayscale)
             final double luminance =
                 0.299 * pixel.r + 0.587 * pixel.g + 0.114 * pixel.b;

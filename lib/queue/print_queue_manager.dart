@@ -1,207 +1,284 @@
 import 'dart:async';
 
-import '../models/print_job.dart';
-import '../models/printer_device.dart';
+import 'package:flutter/foundation.dart';
+
+import '../core/util/ids.dart';
+import '../data/repositories/print_job_repository.dart';
 import '../models/pos_order.dart';
 import '../models/print_history_item.dart';
-import '../services/storage_service.dart';
+import '../models/print_job.dart';
+import '../models/print_mode.dart';
+import '../models/printer_device.dart';
 import '../printing/smart_print_engine.dart';
+import '../services/storage_service.dart';
 
+/// Sends one order to one printer. Throws on failure.
+typedef PrintExecutor = Future<void> Function(
+  PosOrder order,
+  PrinterDevice device,
+  PrintMode printMode,
+);
+
+Future<void> _defaultExecutor(
+  PosOrder order,
+  PrinterDevice device,
+  PrintMode printMode,
+) => SmartPrintEngine.printOrder(
+  order: order,
+  device: device,
+  printMode: printMode,
+);
+
+/// Persistent print queue.
+///
+/// Every state change is written to the database *before* the next step:
+/// a job is stored before it is processed and marked `printing` before any
+/// bytes are sent. A job found in `printing` at start-up is marked failed
+/// (not resent) because it may already have printed.
 class PrintQueueManager {
   static PrintQueueManager? _instance;
+  static Future<PrintQueueManager>? _opening;
+
   final StorageService _storage;
+  final PrintExecutor _executor;
 
   final List<PrintJob> _queue = [];
   bool _isProcessing = false;
   final StreamController<List<PrintJob>> _queueController =
       StreamController<List<PrintJob>>.broadcast();
 
-  PrintQueueManager._(this._storage);
+  PrintQueueManager._(this._storage, this._executor);
 
-  static Future<PrintQueueManager> getInstance() async {
-    if (_instance == null) {
+  PrintJobRepository get _jobs => _storage.printJobs;
+
+  static Future<PrintQueueManager> getInstance() {
+    final existing = _instance;
+    if (existing != null) return Future.value(existing);
+    return _opening ??= () async {
       final storage = await StorageService.getInstance();
-      _instance = PrintQueueManager._(storage);
-      await _instance!._loadQueue();
-    }
-    return _instance!;
+      final manager = PrintQueueManager._(storage, _defaultExecutor);
+      await manager._loadQueue();
+      _instance = manager;
+      unawaited(manager.processNext());
+      return manager;
+    }();
+  }
+
+  /// Creates a manager with a fake [executor] and loads the stored queue.
+  /// Does not start processing; call [processNext].
+  @visibleForTesting
+  static Future<PrintQueueManager> createForTesting(
+    StorageService storage,
+    PrintExecutor executor,
+  ) async {
+    final manager = PrintQueueManager._(storage, executor);
+    await manager._loadQueue();
+    return manager;
   }
 
   Stream<List<PrintJob>> get queueStream => _queueController.stream;
   List<PrintJob> get currentQueue => List.unmodifiable(_queue);
 
   Future<void> _loadQueue() async {
-    final saved = await _storage.getQueue();
-    _queue.clear();
-    _queue.addAll(saved);
-    _notify();
-    // Auto-process pending jobs on start
-    processNext();
+    await _jobs.failInterruptedJobs();
+    _queue
+      ..clear()
+      ..addAll(await _jobs.getAllJobs());
+    _emit();
   }
 
-  void _notify() {
-    _queueController.add(List.from(_queue));
-    _storage.saveQueue(_queue);
+  void _emit() {
+    if (!_queueController.isClosed) {
+      _queueController.add(List.unmodifiable(_queue));
+    }
   }
 
-  /// Adds a new POS print job to queue with duplicate prevention
-  Future<String> addOrderToQueue(PosOrder order) async {
-    // Prevent exact duplicate active order ID in pending/printing state
-    final existing = _queue.firstWhere(
-      (j) =>
-          j.orderId == order.orderId &&
-          (j.status == PrintJobStatus.pending ||
-              j.status == PrintJobStatus.printing),
-      orElse: () => PrintJob(id: '', orderId: ''),
-    );
-
-    if (existing.id.isNotEmpty) {
-      return existing.id; // Return existing job ID to prevent double queueing
+  /// Adds a print job for [order] and returns its id.
+  ///
+  /// If a job for the same document (same print type and order id) is
+  /// already pending or printing, that job's id is returned instead, so a
+  /// double tap cannot queue two copies. A KOT and a BILL for the same order
+  /// are different documents and are both queued.
+  Future<String> addOrderToQueue(
+    PosOrder order, {
+    String? targetPrinterId,
+  }) async {
+    final key = PrintJobRepository.sourceKeyFor(order.type, order.orderId);
+    for (final j in _queue) {
+      final active =
+          j.status == PrintJobStatus.pending ||
+          j.status == PrintJobStatus.printing;
+      if (active &&
+          PrintJobRepository.sourceKeyFor(j.printType, j.orderId) == key) {
+        return j.id;
+      }
     }
 
-    final jobId = 'JOB-${DateTime.now().millisecondsSinceEpoch}';
     final job = PrintJob(
-      id: jobId,
+      id: newId(),
       orderId: order.orderId,
       printType: order.type,
       targetRole: order.printerRole,
+      targetPrinterId: targetPrinterId,
       posOrderJson: order.toJson(),
       status: PrintJobStatus.pending,
     );
 
+    await _jobs.upsertJob(job); // persisted before anything else happens
     _queue.add(job);
-    _notify();
+    _emit();
 
-    // Trigger queue processor
-    processNext();
-
-    return jobId;
+    unawaited(processNext());
+    return job.id;
   }
 
-  /// Manual retry for a failed job
+  /// Manual retry for a failed job.
   Future<void> retryJob(String jobId) async {
-    final index = _queue.indexWhere((j) => j.id == jobId);
-    if (index >= 0) {
-      _queue[index].status = PrintJobStatus.pending;
-      _queue[index].errorMessage = null;
-      _notify();
-      processNext();
-    }
+    final job = _find(jobId);
+    if (job == null || job.status != PrintJobStatus.failed) return;
+    job.status = PrintJobStatus.pending;
+    job.errorMessage = null;
+    await _jobs.updateJobState(job);
+    _emit();
+    unawaited(processNext());
   }
 
-  /// Delete a job from the queue
+  /// Deletes a job that is not currently printing.
   Future<void> removeJob(String jobId) async {
-    _queue.removeWhere((j) => j.id == jobId);
-    _notify();
+    final job = _find(jobId);
+    if (job == null || job.status == PrintJobStatus.printing) return;
+    await _jobs.deleteJob(jobId);
+    _queue.remove(job);
+    _emit();
   }
 
-  /// Clear completed / failed jobs
+  /// Clears printed and failed jobs.
   Future<void> clearCompleted() async {
-    _queue.removeWhere(
-      (j) =>
-          j.status == PrintJobStatus.printed ||
-          j.status == PrintJobStatus.failed,
-    );
-    _notify();
+    const statuses = [PrintJobStatus.printed, PrintJobStatus.failed];
+    await _jobs.deleteJobsWithStatus(statuses);
+    _queue.removeWhere((j) => statuses.contains(j.status));
+    _emit();
   }
 
-  /// Main Queue Processing Loop
+  PrintJob? _find(String id) {
+    for (final j in _queue) {
+      if (j.id == id) return j;
+    }
+    return null;
+  }
+
+  /// Processes pending jobs one at a time until none are left.
   Future<void> processNext() async {
     if (_isProcessing) return;
     _isProcessing = true;
-
     try {
-      final pendingIndex = _queue.indexWhere(
-        (j) => j.status == PrintJobStatus.pending,
-      );
-      if (pendingIndex < 0) {
-        _isProcessing = false;
-        return;
-      }
-
-      final job = _queue[pendingIndex];
-      job.status = PrintJobStatus.printing;
-      _notify();
-
-      // Find target printer
-      PrinterDevice? device;
-      if (job.targetPrinterId != null) {
-        final printers = await _storage.getSavedPrinters();
-        device = printers.firstWhere(
-          (p) => p.id == job.targetPrinterId,
-          orElse: () => PrinterDevice(
-            id: '',
-            name: '',
-            connectionType: ConnectionType.network,
-          ),
-        );
-        if (device.id.isEmpty) device = null;
-      }
-
-      device ??= await _storage.getPrinterForRole(job.targetRole);
-
-      if (device == null) {
-        job.status = PrintJobStatus.failed;
-        job.errorMessage =
-            'No saved printer found for role ${job.targetRole.label}';
-        job.retryCount++;
-        _notify();
-        await _recordHistory(job, 'No Printer', ConnectionType.network, false);
-        _isProcessing = false;
-        processNext();
-        return;
-      }
-
-      final printMode = await _storage.getPrintMode();
-
-      if (job.posOrderJson != null) {
-        final order = PosOrder.fromJson(job.posOrderJson!);
-        try {
-          await SmartPrintEngine.printOrder(
-            order: order,
-            device: device,
-            printMode: printMode,
-          );
-
-          job.status = PrintJobStatus.printed;
-          job.processedAt = DateTime.now();
-          job.errorMessage = null;
-          _notify();
-
-          await _recordHistory(job, device.name, device.connectionType, true);
-        } catch (e) {
-          job.status = PrintJobStatus.failed;
-          job.errorMessage = e.toString().replaceAll('Exception: ', '');
-          job.retryCount++;
-          _notify();
-
-          await _recordHistory(job, device.name, device.connectionType, false);
+      while (true) {
+        PrintJob? job;
+        for (final j in _queue) {
+          if (j.status == PrintJobStatus.pending) {
+            job = j;
+            break;
+          }
         }
+        if (job == null) break;
+        await _process(job);
       }
     } finally {
       _isProcessing = false;
     }
+  }
 
-    // Process remaining jobs in queue
-    processNext();
+  Future<void> _process(PrintJob job) async {
+    final payload = job.posOrderJson;
+    if (payload == null) {
+      await _fail(job, 'Job has no printable content.', null);
+      return;
+    }
+
+    final device = await _resolvePrinter(job);
+    if (device == null) {
+      await _fail(
+        job,
+        'No printer is assigned to the ${job.targetRole.label} role and no '
+        'fallback printer is set (Settings > Fallback printer).',
+        null,
+      );
+      return;
+    }
+
+    job.status = PrintJobStatus.printing;
+    await _jobs.updateJobState(job); // persisted before bytes are sent
+    _emit();
+
+    try {
+      final order = PosOrder.fromJson(payload);
+      final mode = await _storage.getPrintMode();
+      await _executor(order, device, mode);
+
+      // "Printed" means the transport accepted every byte. It cannot prove
+      // that paper came out unless the printer reports status.
+      job.status = PrintJobStatus.printed;
+      job.processedAt = DateTime.now();
+      job.errorMessage = null;
+      await _jobs.updateJobState(job);
+      _emit();
+      await _recordHistory(job, device, true);
+    } catch (e) {
+      await _fail(job, e.toString().replaceAll('Exception: ', ''), device);
+    }
+    await _saveDeviceStatus(device);
+  }
+
+  Future<PrinterDevice?> _resolvePrinter(PrintJob job) async {
+    final targetId = job.targetPrinterId;
+    if (targetId != null) {
+      final target = await _storage.printers.getById(targetId);
+      if (target != null) return target;
+    }
+    return _storage.getPrinterForRole(job.targetRole);
+  }
+
+  Future<void> _fail(
+    PrintJob job,
+    String message,
+    PrinterDevice? device,
+  ) async {
+    job.status = PrintJobStatus.failed;
+    job.errorMessage = message;
+    job.retryCount++;
+    await _jobs.updateJobState(job);
+    _emit();
+    await _recordHistory(job, device, false);
+  }
+
+  Future<void> _saveDeviceStatus(PrinterDevice device) async {
+    try {
+      await _storage.printers.updateStatus(device);
+    } catch (e) {
+      debugPrint('Could not save printer status: $e');
+    }
   }
 
   Future<void> _recordHistory(
     PrintJob job,
-    String printerName,
-    ConnectionType connType,
+    PrinterDevice? device,
     bool isSuccess,
   ) async {
-    final historyItem = PrintHistoryItem(
-      id: 'HIST-${DateTime.now().millisecondsSinceEpoch}',
-      timestamp: DateTime.now(),
-      printerName: printerName,
-      connectionType: connType,
-      orderId: job.orderId,
-      printType: job.printType,
-      isSuccess: isSuccess,
-      errorMessage: job.errorMessage,
+    await _storage.addHistoryItem(
+      PrintHistoryItem(
+        id: newId(),
+        timestamp: DateTime.now(),
+        printerName: device?.name ?? 'No Printer',
+        connectionType: device?.connectionType ?? ConnectionType.network,
+        orderId: job.orderId,
+        printType: job.printType,
+        isSuccess: isSuccess,
+        errorMessage: job.errorMessage,
+      ),
+      jobId: job.id,
     );
-    await _storage.addHistoryItem(historyItem);
   }
+
+  @visibleForTesting
+  Future<void> dispose() => _queueController.close();
 }

@@ -3,9 +3,8 @@
 Audit date: 2026-11-06. Scope: Phase 0 only (no behaviour changed).
 Source brief: `offline_restaurant_pos_cloud_coding_master_prompt.md`.
 
-> **Repository note:** this folder is **not a git repository**. Before Phase 1,
-> run `git init` and commit the current state as the baseline so that every
-> later phase is a reviewable diff and can be rolled back.
+> **Repository note:** git was initialised at the start of Phase 1. Commit
+> `5786e70` is the untouched baseline as audited.
 
 ---
 
@@ -226,7 +225,7 @@ Baseline results (2026-11-06):
 ## 9. Phase checklist
 
 - [x] Phase 0 — audit and plan (this document)
-- [ ] Phase 1 — git baseline; format-only commit; AGP build-blocker fix; Drift DB v1 + legacy import; repositories; business profile/settings; DB backup; fixes D3/D4/D5/D13; tests
+- [x] Phase 1 — git baseline; format-only commit; AGP build-blocker fix; Drift DB v1 + legacy import; repositories; business profile/settings; DB backup; fixes D3/D4/D5/D13; tests (see §10)
 - [ ] Phase 2 — Menu
 - [ ] Phase 3 — Tables & orders
 - [ ] Phase 4 — KOT + printer fixes D1, D2, D6–D12, D14
@@ -239,3 +238,65 @@ Baseline results (2026-11-06):
 - [ ] Phase 11 — Hardening & release
 
 Manual hardware tests are still required for every transport (BT, USB, LAN) at 58 and 80mm. None have been run as part of this audit.
+
+---
+
+## 10. Phase 1 completion report (2026-11-06)
+
+### Commits
+1. `Baseline` — the project as audited, plus this document and Flutter `.gitignore` entries.
+2. `Format` — `dart format lib test`, no logic changes.
+3. `Build` — AGP 8.7.3 → **8.11.1**, Kotlin 2.1.20 → **2.2.20** in `android/settings.gradle`. These are the minimum versions Flutter 3.47.2 accepts. Flutter warns that support for both will be dropped soon; move to AGP ≥ 9.0.1 / Kotlin ≥ 2.3.20 in a separate change once the `blue_thermal_printer` namespace patch (which uses the legacy `BaseExtension` API) has been checked against AGP 9.
+4. `Phase 1` — everything below.
+
+### Features implemented
+- **Local database** (Drift on SQLite, `pos.db` in the app documents folder), schema **v1**: `migration_log`, `app_settings`, `business_profiles`, `printer_profiles`, `print_jobs`, `print_history`, `audit_log`. Foreign keys are switched on at open. The schema snapshot is saved in `drift_schemas/pos/drift_schema_v1.json`, so later versions can generate migration tests with `dart run drift_dev make-migrations`.
+- **Legacy import** (`lib/data/legacy/legacy_prefs_importer.dart`): copies printers, print mode, queue and history from `SharedPreferences` in one transaction, keeping printer ids.
+  - A job left in `printing` becomes `failed` with "may already have printed".
+  - Colliding legacy ids are re-issued.
+  - Malformed JSON aborts the whole import. Nothing is written, a banner explains what happened, and the import is retried on the next launch.
+  - Legacy keys are never modified.
+  - Completion is recorded in `app_settings.legacy_prefs_import_v1` and in `audit_log`, not in `migration_log`, which is reserved for schema versions.
+- **Repositories** (`lib/data/repositories/`): printers, print jobs/history, settings, business profile, audit. `StorageService` keeps its old method names, so the existing screens did not change.
+- **Audit log**: printer create/update/delete, setting changes, business-profile changes, history clears, backups and the legacy import are written in the same transaction as the change.
+- **Business profile screen** (Settings → Business Profile): name (required), address, phone, GSTIN, FSSAI, UPI ID and footer, with format validation. Fields start **empty**, never with demo data. Bill and KOT layouts do not read it yet (Phase 4/5), and the screen says so.
+- **Backup** (Settings → Backup): `VACUUM INTO` makes a consistent copy. Each backup is re-opened read-only, checked with `PRAGMA integrity_check`, and its schema version is checked. Backups are listed with their verification status and can be shared with the Android share sheet. Location: `Android/data/com.example.thermalprinter/files/backups/`. **Restore is not implemented yet** (Phase 11), and the screen says so.
+- **Fallback printer** (Settings): an explicit choice of printer to use when a job's role has no printer, or "None".
+- **Delete-printer confirmation dialog.**
+- `lib/core/util/`: `Money` (integer paise, strict parsing, Indian grouping `₹1,23,456.78`), `newId()` (UUID v4), `Clock` (UTC epoch-ms storage, local display).
+
+### Defects fixed
+| # | Fix |
+|---|---|
+| D3 | `RasterGenerator.rgbaToEscPosRaster` passes `numChannels: 4`. Transparent pixels are treated as paper; previously a QR code's transparent background printed as a solid black block. |
+| D4 | Queue de-duplication is per document (`printType:orderId`), so a BILL and a KOT for the same order are both queued. |
+| D5 | UUID job ids. Each job is stored, and marked `printing`, *before* bytes are sent (writes are awaited). Jobs found in `printing` at start-up are failed, not resent. Jobs with no payload fail instead of getting stuck. The recursive `processNext` is now a loop. |
+| D13 | No silent fallback to the first printer. A role with no printer uses the configured fallback printer, otherwise the job fails with a clear message. For existing users the import sets the fallback to their first printer, which preserves the old behaviour but makes it visible and changeable. |
+| new | The theme loaded the Inter font through `google_fonts`, which **downloads fonts from fonts.gstatic.com at run time**. Offline this logged errors and fell back to Roboto anyway. The theme now uses the platform font and the dependency is removed. Bundle a font asset if a custom typeface is wanted. |
+
+### Dependencies
+- Added: `drift`, `sqlite3` (bundles native SQLite for each ABI through build hooks), `path_provider`, `path`, `uuid`, `share_plus`; dev: `drift_dev`, `build_runner`.
+- Removed: `google_fonts`.
+- `permission_handler` is still declared and unused; it is wired up in Phase 4 (D11).
+- After changing tables, run `dart run build_runner build --delete-conflicting-outputs`. `app_database.g.dart` is committed.
+
+### Tests and commands (all from the project root)
+| Command | Result |
+|---|---|
+| `dart format lib test` | clean |
+| `flutter analyze` | 0 errors, 0 warnings, 14 infos (unchanged from baseline; all pre-existing deprecations) |
+| `flutter test` | **38/38 passed**: money (4), database (3), legacy import (8), printer repository/role routing (4), print queue (11), raster encoding (4), backup (3), app smoke test (1) |
+| `flutter build apk --debug` | builds; `libsqlite3.so` present for arm64-v8a, armeabi-v7a and x86_64 |
+
+### Not verified / manual tests still required
+- **No Android device was attached**, so the app was not launched. On a device:
+  1. Install the *previous* build, add printers and queue a job.
+  2. Install this build over it, and check that the printers, print mode and history are still there and the fallback printer is set to the first printer.
+  3. Create a backup and share it.
+  4. Restart with a job pending.
+- Printer hardware was not used. D3 is covered by unit tests on the byte encoding; print a raster test page on a real 58mm and 80mm printer to confirm.
+
+### Known limitations carried forward
+- D1, D2, D6–D12 and D14 remain (Phase 4). In particular, queued prints still contain test content, and Fast Mode still fails on `₹`.
+- Restore from backup is not implemented yet.
+- The `SharedPreferences` legacy keys remain on the device (read-only fallback). Delete them in a later release once the import has been confirmed in the field.

@@ -37,9 +37,31 @@ class _PrintersScreenState extends State<PrintersScreen>
     }
   }
 
-  Future<void> _deletePrinter(String printerId) async {
+  Future<void> _deletePrinter(PrinterDevice printer) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete printer?'),
+        content: Text(
+          'Remove "${printer.name}"? Jobs assigned to its role will use the '
+          'fallback printer, or fail if there is none.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
     final storage = await StorageService.getInstance();
-    await storage.deletePrinter(printerId);
+    await storage.deletePrinter(printer.id);
     _loadPrinters();
   }
 
@@ -143,7 +165,7 @@ class _PrintersScreenState extends State<PrintersScreen>
                     return PrinterCard(
                       printer: printer,
                       onEdit: () => _openEditPrinter(printer),
-                      onDelete: () => _deletePrinter(printer.id),
+                      onDelete: () => _deletePrinter(printer),
                       onUpdated: () => setState(() {}),
                     );
                   },
