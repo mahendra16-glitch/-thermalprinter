@@ -229,7 +229,7 @@ Baseline results (2026-11-06):
 - [x] Phase 2 — Menu (see §11)
 - [x] Phase 3 — Tables & orders (see §12)
 - [x] Phase 4 — KOT + printer fixes D1, D2, D6–D12, D14 (see §13)
-- [ ] Phase 5 — Billing & tax
+- [x] Phase 5 — Billing & tax (see §14)
 - [ ] Phase 6 — Payments
 - [ ] Phase 7 — Shifts & expenses
 - [ ] Phase 8 — Reports
@@ -568,3 +568,79 @@ No Android device or printer was connected, so none of these have been run.
 - **No KOT per printer type:** each station's printers all get the same layout.
 - **No ticket after a cleared job:** Reprint rebuilds from the ticket, so it still works. Only the status display loses history once jobs are cleared.
 - **USB permission:** after tapping Allow, the job must be retried (manually or with the next send); there is no broadcast receiver that resumes it automatically.
+
+---
+
+## 14. Phase 5 completion report (2026-11-07)
+
+### Commit
+- `Phase 5` — schema v5, bill calculator, bill repository, tax bill layout, billing screens, tests and this report.
+
+### Database migration v4 → v5
+- New tables (all `ON DELETE RESTRICT`):
+  - `bills`: order, bill prefix + sequence (unique together), bill number (unique), business date, status `finalized | voided`, copies of order no, type, table, customer, staff, the business header (JSON), every total (items, discount, service charge, tax, round off, grand total), the rounding mode and the full billing settings used (JSON), client request id (unique), void time and reason.
+  - `bill_lines`: one row per billed line with name, variant, add-ons, qty, rate, gross, discount share, tax rate, inclusive flag, split mode.
+  - `bill_taxes`: the tax breakdown per rate group (taxable value, CGST, SGST, IGST, other).
+- `migration_test.dart` checks every upgrade path to v5 and v1 → v5 with data.
+
+### Bill calculation (`lib/domain/billing/bill_calculator.dart`, pure Dart, integer paise)
+1. Line gross = unit price × billable qty (voided units are never billed).
+2. The order discount is shared across lines in proportion to gross, using the largest-remainder method so the shares add up exactly.
+3. Lines are grouped by tax rate, inclusive/exclusive and split mode, and tax is calculated once per group on the discounted value:
+   - Exclusive: tax = value × rate (added on top).
+   - Inclusive: tax = value × rate ÷ (100% + rate); taxable value = the rest. The customer pays the menu price.
+   - CGST + SGST: each half is calculated and rounded on its own, so the two amounts are always equal. IGST and "single line" give one amount.
+   - Half-up rounding to the paisa.
+4. Service charge (if configured for the order type) = rate × item taxable value (after discount, before tax), with its own configurable tax rate and split.
+5. The total is rounded as configured; the difference is printed as **Round off**.
+- Identity checked on 500 random orders: total = items − discount + service charge + exclusive tax + round off.
+
+### Settings (Settings › **Billing & tax**, stored as `billing_settings`)
+- Service charge % and the order types it applies to; tax on the service charge and how it is shown.
+- Rounding: none (default, unchanged from before), nearest ₹1, nearest 50 paise, always down, always up.
+- Bill number prefix (up to 10 letters, digits, `/`, `-`); each prefix has its own sequence starting at 1, so a new prefix such as `FY27/` restarts numbering. Numbers are never reused.
+- Defaults change nothing: no service charge, no rounding, no prefix. The screen states that the business must confirm its own tax settings; changes are audited and apply only to new bills.
+
+### Bill lifecycle (`BillRepository`, all transactional and audited)
+- **Preview:** calculates without saving.
+- **Finalize:** in one transaction writes the bill, lines and tax breakdown, copies the business profile, sets the order to **billed** (shown as "Payment pending"), writes audit rows on the order and the bill, and queues the bill print.
+  - Same request id → same bill (double taps make one bill).
+  - If the total differs from what staff saw in the preview, nothing is saved and the new total is shown.
+  - Items never sent to the kitchen need confirmation (the preview warns).
+  - An empty order cannot be billed.
+- A **billed** order cannot be edited ("Void the bill to make changes"), still occupies its table, and blocks a second order on that table unless staff choose to share.
+- **Void:** needs a reason; the bill and its number are kept, marked VOIDED; the order opens again; the next bill gets a new number.
+- **Print / reprint:** the first print of a bill saved without printing is a normal print; any later copy is marked **\*\*\* DUPLICATE \*\*\***. A voided bill cannot be printed. Reprinting creates no bill.
+- Menu, profile and settings changes never change a finalized bill (tested).
+
+### Printed bill (`ReceiptLayouts.taxBill`, 58mm and 80mm)
+Business name, address, phone, GSTIN and FSSAI (each only if set); bill number; date and time; order number, type and table; customer, phone and staff (if set); item, qty, rate and amount with add-ons; subtotal; discount with reason; service charge; each tax line as "CGST 2.5% on 450.00"; inclusive tax as "Incl. …" with a note that it is already in the prices; round off; TOTAL; footer. The print job carries the full bill, so a reprint is identical.
+
+### Screens
+- **Order screen:** **Generate bill** (filled when everything is in the kitchen) opens the bill preview: lines, the full breakdown, any unsent-items warning, and **Save & print** / **Save without printing**.
+- **Billed order:** blue banner "Bill N · ₹total · waiting for payment"; the totals area shows the bill breakdown; **Bill & print** opens the bill (print status, Retry print, Print/Reprint, Void bill); **Void bill** asks for a reason.
+- **Tables:** a billed table shows "Payment pending · #n" in blue with the bill total.
+- **Orders:** billed orders stay in the running list with a "Payment pending" filter and show the bill total.
+
+### Tests and commands
+| Command | Result |
+|---|---|
+| `dart format lib test` | clean |
+| `flutter analyze` | 13 infos (unchanged); no warnings or errors |
+| `flutter test` | **173/173 passed**. New: bill calculator (17: exclusive, inclusive, IGST, mixed rates with discount, exact discount shares, voids, every rounding mode, service charge rules, 500-order random identity check); bill repository (14: finalize, idempotency, changed total, unsent items, empty order, billed order locked and table busy, void and rebill, history unchanged after menu/settings/profile edits, service charge and rounding, prefixes, validation, first print vs duplicate, reprint); bill layout (3: 58/80mm content, duplicate and empty fields, JSON round trip); generate-and-void widget flow; migration v5. |
+| `flutter build apk --debug` | builds |
+
+### Manual tests still required
+No device or printer was connected.
+1. Print bills at 58mm and 80mm over Bluetooth, USB and LAN: alignment of the Item/Qty/Rate/Amount columns, long item names, tax lines, total in tall text, footer.
+2. Compare a few bills against your own calculation for your real tax profiles (inclusive and exclusive), discount and service charge settings.
+3. Save without printing, then Print (normal), then Print again (DUPLICATE).
+4. Void a bill, edit the order, and bill again: new number, old bill shows VOIDED.
+
+### Known limitations
+- **No payments yet:** a billed order stays "Payment pending" until Phase 6 adds the payment ledger (cash, UPI recording, split and partial). The bill does not yet print amount paid, balance or payment method. Phase 6 must block voiding a bill that has payments.
+- **"Bill requested"** is not a separate table state; a billed table shows "Payment pending".
+- **Discounts:** order-level only (shared across lines for tax). No item-level discount.
+- **Tax lines** are grouped by rate, not printed per item; HSN/SAC codes are not stored or printed.
+- **Bill numbering** is per prefix; changing the prefix each financial year is manual. The app does not check legal invoice-number rules.
+- **The native Kotlin engine** (Test screen only) still uses the old generic bill layout.

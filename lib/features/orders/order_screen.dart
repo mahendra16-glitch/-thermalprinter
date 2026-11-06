@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 
 import '../../core/errors.dart';
 import '../../data/repositories/menu_repository.dart';
+import '../../domain/billing/bill_models.dart';
 import '../../domain/menu/item_configuration.dart';
 import '../../domain/menu/menu_models.dart';
 import '../../domain/orders/order_models.dart';
 import '../../domain/orders/table_models.dart';
 import '../../services/storage_service.dart';
+import '../billing/bill_actions.dart';
 import '../common/time_format.dart';
 import '../menu/menu_widgets.dart';
 import 'item_options_sheet.dart';
@@ -29,6 +31,9 @@ class OrderScreen extends StatefulWidget {
 class _OrderScreenState extends State<OrderScreen>
     with SingleTickerProviderStateMixin {
   OrderDetail? _detail;
+
+  /// The current bill, once the order is billed.
+  Bill? _bill;
   MenuSnapshot? _menu;
   Map<String, RestaurantTable> _tables = {};
   StreamSubscription<OrderDetail?>? _sub;
@@ -49,10 +54,14 @@ class _OrderScreenState extends State<OrderScreen>
   Future<void> _init() async {
     final storage = await StorageService.getInstance();
     _tables = {for (final t in await storage.tables.listTables()) t.id: t};
-    _sub = storage.orders.watchDetail(widget.orderId).listen((d) {
+    _sub = storage.orders.watchDetail(widget.orderId).listen((d) async {
+      final bill = d != null && d.order.status != OrderStatus.open
+          ? await storage.bills.currentBillFor(d.order.id)
+          : null;
       if (!mounted) return;
       setState(() {
         _detail = d;
+        _bill = bill;
         _missing = d == null;
       });
     });
@@ -355,7 +364,24 @@ class _OrderScreenState extends State<OrderScreen>
     final unsent = d.lines.fold<int>(0, (n, l) => n + l.unsentQty);
     return Column(
       children: [
-        if (!o.isEditable)
+        if (o.status == OrderStatus.billed)
+          MaterialBanner(
+            backgroundColor: const Color(0xFFDBEAFE),
+            content: Text(
+              _bill == null
+                  ? 'Billed · waiting for payment'
+                  : 'Bill ${_bill!.billNumber} · ${_bill!.grandTotal.format()}'
+                        ' · waiting for payment',
+            ),
+            actions: [
+              if (_bill != null)
+                TextButton(
+                  onPressed: () => showBill(context, _bill!.id),
+                  child: const Text('View bill'),
+                ),
+            ],
+          )
+        else if (!o.isEditable)
           MaterialBanner(
             backgroundColor: Colors.grey.shade200,
             content: Text(
@@ -420,32 +446,66 @@ class _OrderScreenState extends State<OrderScreen>
         const Divider(height: 1),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: Column(
-            children: [
-              _totalRow(
-                'Items (${totals.itemCount})',
-                totals.itemsTotal.format(),
-              ),
-              if (!totals.discount.isZero)
-                _totalRow(
-                  'Discount (${o.discount.label})',
-                  '-${totals.discount.format()}',
+          child: _bill != null && o.status == OrderStatus.billed
+              ? BreakdownView(rowsForBill(_bill!))
+              : Column(
+                  children: [
+                    _totalRow(
+                      'Items (${totals.itemCount})',
+                      totals.itemsTotal.format(),
+                    ),
+                    if (!totals.discount.isZero)
+                      _totalRow(
+                        'Discount (${o.discount.label})',
+                        '-${totals.discount.format()}',
+                      ),
+                    _totalRow(
+                      'Amount before tax',
+                      totals.afterDiscount.format(),
+                      bold: true,
+                    ),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Taxes and charges are added when the bill is generated.',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Color(0xFF64748B),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              _totalRow(
-                'Amount before tax',
-                totals.afterDiscount.format(),
-                bold: true,
-              ),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Taxes and charges are added when the bill is generated.',
-                  style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
-                ),
-              ),
-            ],
-          ),
         ),
+        if (o.status == OrderStatus.billed && _bill != null)
+          SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.red,
+                      ),
+                      onPressed: () => voidBill(context, _bill!),
+                      icon: const Icon(Icons.block_rounded),
+                      label: const Text('Void bill'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: FilledButton.icon(
+                      onPressed: () => showBill(context, _bill!.id),
+                      icon: const Icon(Icons.receipt_long_rounded),
+                      label: const Text('Bill & print'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         if (o.isEditable)
           SafeArea(
             top: false,
@@ -468,6 +528,26 @@ class _OrderScreenState extends State<OrderScreen>
                     ),
                     const SizedBox(height: 8),
                   ],
+                  SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: unsent > 0
+                        ? FilledButton.tonalIcon(
+                            onPressed: _busy || d.lines.isEmpty
+                                ? null
+                                : () => _guard(() => _generateBill(o.id)),
+                            icon: const Icon(Icons.receipt_long_rounded),
+                            label: const Text('Generate bill'),
+                          )
+                        : FilledButton.icon(
+                            onPressed: _busy || d.lines.isEmpty
+                                ? null
+                                : () => _guard(() => _generateBill(o.id)),
+                            icon: const Icon(Icons.receipt_long_rounded),
+                            label: const Text('Generate bill'),
+                          ),
+                  ),
+                  const SizedBox(height: 8),
                   Row(
                     children: [
                       Expanded(
@@ -502,6 +582,10 @@ class _OrderScreenState extends State<OrderScreen>
           const SizedBox(height: 12),
       ],
     );
+  }
+
+  Future<void> _generateBill(String orderId) async {
+    await generateBill(context, orderId);
   }
 
   Widget _totalRow(String label, String value, {bool bold = false}) {

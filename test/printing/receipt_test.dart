@@ -2,6 +2,10 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:thermalprinter/core/util/money.dart';
+import 'package:thermalprinter/domain/billing/bill_calculator.dart';
+import 'package:thermalprinter/domain/billing/bill_models.dart';
+import 'package:thermalprinter/domain/menu/menu_models.dart';
 import 'package:thermalprinter/models/pos_order.dart';
 import 'package:thermalprinter/models/print_mode.dart';
 import 'package:thermalprinter/models/printer_device.dart';
@@ -132,6 +136,141 @@ void main() {
       expect(t, isNot(contains('GSTIN')));
       expect(t, isNot(contains('MYGENIE')));
       expect(t, isNot(contains('UPI')));
+    });
+
+    final taxBill = Bill(
+      id: 'b1',
+      orderId: 'o1',
+      billNumber: 'FY26/7',
+      businessDate: '2026-11-06',
+      status: BillStatus.finalized,
+      orderNo: 12,
+      orderTypeLabel: 'Dine-in',
+      tableLabel: 'T4',
+      customerName: 'Asha',
+      header: const BillHeader(
+        name: 'Spice Route',
+        address: 'MG Road, Pune',
+        gstin: '27AAAAA0000A1Z5',
+        footer: 'Thank you!',
+      ),
+      lines: const [
+        BillLine(
+          name: 'Dal Makhani',
+          qty: 2,
+          unitPrice: Money(25000),
+          gross: Money(50000),
+          taxRateBp: 500,
+        ),
+        BillLine(
+          name: 'Lassi',
+          addonsText: 'Extra malai',
+          qty: 1,
+          unitPrice: Money(10500),
+          gross: Money(10500),
+          taxRateBp: 500,
+          taxInclusive: true,
+        ),
+      ],
+      taxes: const [
+        BillTax(
+          base: TaxBase.items,
+          rateBp: 500,
+          inclusive: false,
+          splitMode: TaxSplitMode.cgstSgst,
+          taxable: Money(45000),
+          cgst: Money(1125),
+          sgst: Money(1125),
+        ),
+        BillTax(
+          base: TaxBase.items,
+          rateBp: 500,
+          inclusive: true,
+          splitMode: TaxSplitMode.cgstSgst,
+          taxable: Money(9450),
+          cgst: Money(236),
+          sgst: Money(236),
+        ),
+      ],
+      itemsTotal: const Money(60500),
+      discount: const Money(6050),
+      discountLabel: 'Discount 10% (Regular)',
+      serviceCharge: Money.zero,
+      roundOff: const Money(-0),
+      grandTotal: const Money(56700),
+      createdAt: DateTime(2026, 11, 6, 20, 15),
+    );
+
+    Future<String> printBill(PosOrder o, PrinterDevice d) async => textOf(
+      await SmartPrintEngine.generateOrderBytes(
+        order: o,
+        device: d,
+        printMode: PrintMode.fastMode,
+      ),
+    );
+
+    PosOrder billJob(Bill b) => PosOrder(
+      orderId: '12',
+      billNo: b.billNumber,
+      type: 'BILL',
+      items: const [],
+      bill: b.toJson(),
+    );
+
+    test('tax bill shows header, items and the full tax breakdown', () async {
+      for (final d in [
+        device58,
+        device58.copyWith(paperWidth: PaperWidth.mm80),
+      ]) {
+        final t = await printBill(billJob(taxBill), d);
+        expect(t, contains('Spice Route'));
+        expect(t, contains('GSTIN: 27AAAAA0000A1Z5'));
+        expect(t, contains('Bill No: FY26/7'));
+        expect(t, contains('Table T4'));
+        expect(t, contains('Customer: Asha'));
+        expect(t, contains('Dal Makhani'));
+        expect(t, contains('500.00'));
+        expect(t, contains('+ Extra malai'));
+        expect(t, contains('Discount 10% (Regular)'));
+        expect(t, contains('-60.50'));
+        expect(t, contains('CGST 2.5% on 450.00'));
+        expect(t, contains('SGST 2.5% on 450.00'));
+        expect(t, contains('11.25'));
+        expect(t, contains('Incl. CGST 2.5% on 94.50'));
+        expect(t, contains('Rs.567.00'));
+        expect(t, contains('Thank you!'));
+        expect(t, isNot(contains('DUPLICATE')));
+        expect(t, isNot(contains('PAID')));
+        expect(t, isNot(contains('Round off')));
+      }
+    });
+
+    test(
+      'a reprinted bill says DUPLICATE; empty profile fields are skipped',
+      () async {
+        final bare = Bill.fromJson({
+          ...taxBill.toJson(),
+          'header': const BillHeader(name: 'Cafe').toJson(),
+          'roundOff': 30,
+        });
+        final t = await printBill(billJob(bare).asReprint(), device58);
+        expect(t, contains('DUPLICATE'));
+        expect(t, contains('Round off'));
+        expect(t, contains('+0.30'));
+        expect(t, isNot(contains('GSTIN')));
+        expect(t, isNot(contains('FSSAI')));
+        expect(t, isNot(contains('Ph:')));
+      },
+    );
+
+    test('bill survives the print-job JSON round trip', () {
+      final back = Bill.fromJson(
+        PosOrder.fromJson(billJob(taxBill).toJson()).bill!,
+      );
+      expect(back.grandTotal, taxBill.grandTotal);
+      expect(back.taxes.last.inclusive, isTrue);
+      expect(back.lines.first.displayName, 'Dal Makhani');
+      expect(back.createdAt, taxBill.createdAt);
     });
 
     test('feed and cut follow the printer settings', () async {

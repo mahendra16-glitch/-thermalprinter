@@ -1,5 +1,9 @@
 import 'package:intl/intl.dart';
 
+import '../core/util/money.dart';
+import '../domain/billing/bill_calculator.dart';
+import '../domain/billing/bill_models.dart';
+import '../domain/menu/menu_models.dart';
 import '../models/pos_order.dart';
 import '../models/printer_device.dart';
 import 'receipt_document.dart';
@@ -15,6 +19,8 @@ class ReceiptLayouts {
         return kot(o);
       case 'PRINTER_TEST':
         return testPage(o, device);
+      case 'BILL' when o.bill != null:
+        return taxBill(Bill.fromJson(o.bill!), duplicate: o.isReprint);
       default:
         return bill(o);
     }
@@ -81,8 +87,117 @@ class ReceiptLayouts {
     return d;
   }
 
+  /// Customer bill from a finalized [Bill]: business details, items, the
+  /// full tax breakdown and the total. Only fields that are set are
+  /// printed.
+  static ReceiptDocument taxBill(Bill b, {bool duplicate = false}) {
+    final d = ReceiptDocument();
+    String amt(Money m) => m.format(symbol: false);
+    const itemFlex = [5, 1, 3, 3];
+
+    if (duplicate) {
+      d.text('*** DUPLICATE ***', align: ReceiptAlign.center, bold: true);
+    }
+    final h = b.header;
+    d.text(
+      h.name,
+      align: ReceiptAlign.center,
+      size: ReceiptTextSize.tall,
+      bold: true,
+    );
+    d.text(h.address, align: ReceiptAlign.center);
+    if (h.phone.isNotEmpty) {
+      d.text('Ph: ${h.phone}', align: ReceiptAlign.center);
+    }
+    if (h.gstin.isNotEmpty) {
+      d.text('GSTIN: ${h.gstin}', align: ReceiptAlign.center);
+    }
+    if (h.fssai.isNotEmpty) {
+      d.text('FSSAI: ${h.fssai}', align: ReceiptAlign.center);
+    }
+    d.divider();
+    d.text('Bill No: ${b.billNumber}', bold: true);
+    d.text(DateFormat('dd-MM-yyyy hh:mm a').format(b.createdAt));
+    d.text(
+      [
+        'Order #${b.orderNo}',
+        b.orderTypeLabel,
+        if (b.tableLabel.isNotEmpty) 'Table ${b.tableLabel}',
+      ].join(' | '),
+    );
+    if (b.customerName.isNotEmpty) d.text('Customer: ${b.customerName}');
+    if (b.customerPhone.isNotEmpty) d.text('Phone: ${b.customerPhone}');
+    if (b.staffName.isNotEmpty) d.text('Staff: ${b.staffName}');
+    d.divider();
+
+    d.columns(['Item', 'Qty', 'Rate', 'Amount'], flex: itemFlex, bold: true);
+    for (final l in b.lines) {
+      d.columns([
+        l.displayName,
+        '${l.qty}',
+        amt(l.unitPrice),
+        amt(l.gross),
+      ], flex: itemFlex);
+      if (l.addonsText.isNotEmpty) d.text('  + ${l.addonsText}');
+    }
+    d.divider();
+
+    void row(String label, Money m) =>
+        d.columns([label, amt(m)], flex: const [3, 1]);
+    row('Subtotal (${b.itemCount} items)', b.itemsTotal);
+    if (!b.discount.isZero) {
+      row(b.discountLabel.isEmpty ? 'Discount' : b.discountLabel, -b.discount);
+    }
+    if (!b.serviceCharge.isZero) {
+      row('Service charge ${formatBp(b.serviceChargeBp)}', b.serviceCharge);
+    }
+    var hasInclusive = false;
+    for (final t in b.taxes) {
+      if (t.tax.isZero) continue;
+      hasInclusive |= t.inclusive;
+      final on = t.base == TaxBase.serviceCharge
+          ? ' on service chg'
+          : ' on ${amt(t.taxable)}';
+      final pre = t.inclusive ? 'Incl. ' : '';
+      switch (t.splitMode) {
+        case TaxSplitMode.cgstSgst:
+          final half = t.rateBp.isEven
+              ? formatBp(t.rateBp ~/ 2)
+              : '${formatBp(t.rateBp)}/2';
+          row('${pre}CGST $half$on', t.cgst);
+          row('${pre}SGST $half$on', t.sgst);
+        case TaxSplitMode.igst:
+          row('${pre}IGST ${formatBp(t.rateBp)}$on', t.igst);
+        case TaxSplitMode.none:
+          row('${pre}Tax ${formatBp(t.rateBp)}$on', t.other);
+      }
+    }
+    if (!b.roundOff.isZero) {
+      d.columns(
+        ['Round off', '${b.roundOff.isNegative ? '' : '+'}${amt(b.roundOff)}'],
+        flex: const [3, 1],
+      );
+    }
+    d.divider('=');
+    d.columns(
+      ['TOTAL', b.grandTotal.format()],
+      flex: const [1, 1],
+      bold: true,
+      size: ReceiptTextSize.tall,
+    );
+    d.divider('=');
+    if (hasInclusive) {
+      d.text('"Incl." tax is already in the item prices.');
+    }
+    if (h.footer.isNotEmpty) {
+      d.feed();
+      d.text(h.footer, align: ReceiptAlign.center);
+    }
+    return d;
+  }
+
   /// A plain bill from the values in [o] (used by the POS-integration
-  /// payload). The full GST bill is built by the billing module.
+  /// payload). Bills made in the app use [taxBill].
   static ReceiptDocument bill(PosOrder o) {
     final d = ReceiptDocument();
     if (o.isReprint) {

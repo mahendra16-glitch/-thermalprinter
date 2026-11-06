@@ -427,7 +427,7 @@ Future<void> _merge(BuildContext context, Order o) async {
   final storage = await StorageService.getInstance();
   final tables = {for (final t in await storage.tables.listTables()) t.id: t};
   final others = (await storage.orders.listActive())
-      .where((s) => s.order.id != o.id)
+      .where((s) => s.order.id != o.id && s.order.isEditable)
       .toList();
   if (!context.mounted) return;
   if (others.isEmpty) {

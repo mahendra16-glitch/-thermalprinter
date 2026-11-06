@@ -10,7 +10,7 @@ import '../common/time_format.dart';
 import '../menu/menu_widgets.dart';
 import 'order_launcher.dart';
 
-enum _Filter { all, dineIn, takeaway, held }
+enum _Filter { all, dineIn, takeaway, held, billed }
 
 /// Running orders, plus today's closed ones.
 class OrdersScreen extends StatefulWidget {
@@ -67,6 +67,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
     _Filter.dineIn => s.order.type == OrderType.dineIn,
     _Filter.takeaway => s.order.type != OrderType.dineIn,
     _Filter.held => s.order.status == OrderStatus.held,
+    _Filter.billed => s.order.status == OrderStatus.billed,
   };
 
   Widget _tile(OrderSummary s) {
@@ -77,6 +78,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
     final color = switch (o.status) {
       OrderStatus.open => const Color(0xFFEA580C),
       OrderStatus.held => const Color(0xFF7C3AED),
+      OrderStatus.billed => const Color(0xFF2563EB),
       OrderStatus.cancelled => Colors.grey,
       _ => const Color(0xFF16A34A),
     };
@@ -100,7 +102,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
           [
             '${s.totals.itemCount} item(s)',
             if (o.customerName.isNotEmpty) o.customerName,
-            if (o.status.isActive)
+            if (o.status.occupiesTable)
               elapsedLabel(o.createdAt, DateTime.now())
             else if (o.status == OrderStatus.cancelled)
               o.cancelReason,
@@ -113,7 +115,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              s.totals.afterDiscount.format(),
+              s.displayTotal.format(),
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             SmallBadge(o.status.label, color: color),
@@ -172,6 +174,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         (_Filter.dineIn, 'Dine-in'),
                         (_Filter.takeaway, 'Takeaway'),
                         (_Filter.held, 'On hold'),
+                        (_Filter.billed, 'Payment pending'),
                       ])
                         Padding(
                           padding: const EdgeInsets.only(right: 8),

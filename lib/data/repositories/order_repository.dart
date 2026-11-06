@@ -45,13 +45,19 @@ class NewOrderRequest {
   });
 }
 
-/// An active order with its pre-tax totals, for lists and table cards.
+/// An order with its pre-tax totals, for lists and table cards.
 class OrderSummary {
   final Order order;
   final OrderTotals totals;
   final int lineCount;
 
-  const OrderSummary(this.order, this.totals, this.lineCount);
+  /// Grand total of the current (not voided) bill, once billed.
+  final Money? billTotal;
+
+  const OrderSummary(this.order, this.totals, this.lineCount, {this.billTotal});
+
+  /// The bill total once billed, otherwise the running pre-tax total.
+  Money get displayTotal => billTotal ?? totals.afterDiscount;
 }
 
 /// One timeline entry for an order (from the audit log).
@@ -76,9 +82,11 @@ class OrderRepository {
   static const int maxQty = 999;
   static const String keyDayStartHour = 'business_day_start_hour';
 
+  /// Orders still on the floor: running, on hold, or billed and waiting
+  /// for payment. They occupy their table.
   static final List<String> _activeStatuses = [
-    OrderStatus.open.name,
-    OrderStatus.held.name,
+    for (final s in OrderStatus.values)
+      if (s.occupiesTable) s.name,
   ];
 
   // ---------------------------------------------------------------- settings
@@ -195,8 +203,8 @@ class OrderRepository {
   Stream<List<OrderSummary>> watchActive() =>
       _changes().asyncMap((_) => listActive());
 
-  /// Orders of one business day that are no longer active (cancelled now;
-  /// billed and settled once billing exists), newest first.
+  /// Orders of one business day that are closed (settled or cancelled),
+  /// newest first.
   Future<List<OrderSummary>> listClosedFor(String businessDate) async {
     final rows =
         await (_db.select(_db.orders)
@@ -751,6 +759,11 @@ class OrderRepository {
   Future<OrderRow> _requireEditable(String id) async {
     final o = await _requireOrder(id);
     final status = OrderStatusX.parse(o.status);
+    if (status == OrderStatus.billed) {
+      throw ValidationException(
+        'Order #${o.orderNo} is billed. Void the bill to make changes.',
+      );
+    }
     if (!status.isActive) {
       throw ValidationException(
         'Order #${o.orderNo} is ${status.label.toLowerCase()} and cannot be '
@@ -787,11 +800,25 @@ class OrderRepository {
   }
 
   Future<List<OrderSummary>> _summaries(List<OrderRow> rows) async {
-    final lines = await _linesFor(rows.map((r) => r.id).toList());
+    final ids = rows.map((r) => r.id).toList();
+    final lines = await _linesFor(ids);
+    final bills = ids.isEmpty
+        ? const <BillRow>[]
+        : await (_db.select(_db.bills)..where(
+                (b) => b.orderId.isIn(ids) & b.status.equals('finalized'),
+              ))
+              .get();
+    final billTotal = {for (final b in bills) b.orderId: b.grandTotalPaise};
     return rows.map((r) {
       final o = _orderFromRow(r);
       final ls = lines[r.id] ?? const [];
-      return OrderSummary(o, OrderTotals.of(ls, o.discount), ls.length);
+      final bt = billTotal[r.id];
+      return OrderSummary(
+        o,
+        OrderTotals.of(ls, o.discount),
+        ls.length,
+        billTotal: bt == null ? null : Money(bt),
+      );
     }).toList();
   }
 

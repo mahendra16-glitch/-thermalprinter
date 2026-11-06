@@ -70,6 +70,10 @@ class PosOrder {
   /// Reason shown on void tickets.
   final String? reason;
 
+  /// Full finalized bill (`Bill.toJson()`) for type "BILL" jobs made by the
+  /// billing module. When set, it is printed instead of the fields above.
+  final Map<String, dynamic>? bill;
+
   PosOrder({
     required this.orderId,
     String? billNo,
@@ -99,6 +103,7 @@ class PosOrder {
     this.stationName,
     this.isReprint = false,
     this.reason,
+    this.bill,
   }) : billNo = billNo ?? orderId,
        timestamp = timestamp ?? DateTime.now();
 
@@ -130,6 +135,7 @@ class PosOrder {
     'stationName': stationName,
     'isReprint': isReprint,
     'reason': reason,
+    if (bill != null) 'bill': bill,
   };
 
   /// Same order marked as a reprint.
@@ -180,6 +186,7 @@ class PosOrder {
       stationName: json['stationName'] as String?,
       isReprint: json['isReprint'] as bool? ?? false,
       reason: json['reason'] as String?,
+      bill: (json['bill'] as Map?)?.cast<String, dynamic>(),
     );
   }
 }

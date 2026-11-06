@@ -17,21 +17,27 @@ extension OrderTypeX on OrderType {
 
 /// Order lifecycle.
 ///
-/// `open` and `held` orders are active (they occupy their table and can be
-/// edited). `billed` and `settled` are reserved for the billing and payment
-/// modules. `cancelled` orders are kept, read-only, with their reason.
+/// `open` and `held` orders are active: they can be edited. A `billed`
+/// order has a finalized bill and waits for payment; it still occupies its
+/// table but cannot be edited unless the bill is voided. `settled` is set
+/// by the payment module. `cancelled` orders are kept, read-only, with
+/// their reason.
 enum OrderStatus { open, held, billed, settled, cancelled }
 
 extension OrderStatusX on OrderStatus {
   String get label => switch (this) {
     OrderStatus.open => 'Running',
     OrderStatus.held => 'On hold',
-    OrderStatus.billed => 'Billed',
+    OrderStatus.billed => 'Payment pending',
     OrderStatus.settled => 'Settled',
     OrderStatus.cancelled => 'Cancelled',
   };
 
+  /// Can be edited (items, discount, kitchen).
   bool get isActive => this == OrderStatus.open || this == OrderStatus.held;
+
+  /// Still on the floor: shown as running and keeps its table busy.
+  bool get occupiesTable => isActive || this == OrderStatus.billed;
 
   static OrderStatus parse(String? s) =>
       OrderStatus.values.where((e) => e.name == s).firstOrNull ??

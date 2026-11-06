@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../data/db/app_database.dart';
 import '../data/legacy/legacy_prefs_importer.dart';
 import '../data/repositories/audit_repository.dart';
+import '../data/repositories/bill_repository.dart';
 import '../data/repositories/business_profile_repository.dart';
 import '../data/repositories/kitchen_repository.dart';
 import '../data/repositories/menu_repository.dart';
@@ -36,6 +37,14 @@ class StorageService {
   late final KitchenRepository kitchen = KitchenRepository(
     db,
     audit,
+    printJobs,
+  );
+  late final BillRepository bills = BillRepository(
+    db,
+    audit,
+    settings,
+    orders,
+    businessProfile,
     printJobs,
   );
 

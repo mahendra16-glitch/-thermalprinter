@@ -94,7 +94,7 @@ class _TablesScreenState extends State<TablesScreen> {
                   title: Text('Order #${o.order.orderNo}'),
                   subtitle: Text(
                     '${o.totals.itemCount} item(s) · '
-                    '${o.totals.afterDiscount.format()}',
+                    '${o.displayTotal.format()}',
                   ),
                   onTap: () => Navigator.pop(ctx, o.order.id),
                 ),
@@ -121,8 +121,12 @@ class _TablesScreenState extends State<TablesScreen> {
     final busy = orders.isNotEmpty;
     final held =
         busy && orders.every((o) => o.order.status == OrderStatus.held);
+    final billed =
+        busy && orders.every((o) => o.order.status == OrderStatus.billed);
     final color = !busy
         ? const Color(0xFF16A34A)
+        : billed
+        ? const Color(0xFF2563EB)
         : held
         ? const Color(0xFF7C3AED)
         : const Color(0xFFEA580C);
@@ -130,13 +134,12 @@ class _TablesScreenState extends State<TablesScreen> {
         ? 'Available'
         : orders.length > 1
         ? '${orders.length} orders'
+        : billed
+        ? 'Payment pending · #${orders.single.order.orderNo}'
         : held
         ? 'On hold · #${orders.single.order.orderNo}'
         : 'Running · #${orders.single.order.orderNo}';
-    final total = orders.fold(
-      0,
-      (sum, o) => sum + o.totals.afterDiscount.paise,
-    );
+    final total = orders.fold(0, (sum, o) => sum + o.displayTotal.paise);
     final oldest = busy
         ? orders
               .map((o) => o.order.createdAt)

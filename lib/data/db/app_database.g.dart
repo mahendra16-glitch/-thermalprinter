@@ -12917,6 +12917,3083 @@ class KitchenTicketLinesCompanion
   }
 }
 
+class $BillsTable extends Bills with TableInfo<$BillsTable, BillRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BillsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _orderIdMeta = const VerificationMeta(
+    'orderId',
+  );
+  @override
+  late final GeneratedColumn<String> orderId = GeneratedColumn<String>(
+    'order_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES orders (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _billPrefixMeta = const VerificationMeta(
+    'billPrefix',
+  );
+  @override
+  late final GeneratedColumn<String> billPrefix = GeneratedColumn<String>(
+    'bill_prefix',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _billSeqMeta = const VerificationMeta(
+    'billSeq',
+  );
+  @override
+  late final GeneratedColumn<int> billSeq = GeneratedColumn<int>(
+    'bill_seq',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _billNumberMeta = const VerificationMeta(
+    'billNumber',
+  );
+  @override
+  late final GeneratedColumn<String> billNumber = GeneratedColumn<String>(
+    'bill_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  static const VerificationMeta _businessDateMeta = const VerificationMeta(
+    'businessDate',
+  );
+  @override
+  late final GeneratedColumn<String> businessDate = GeneratedColumn<String>(
+    'business_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _orderNoMeta = const VerificationMeta(
+    'orderNo',
+  );
+  @override
+  late final GeneratedColumn<int> orderNo = GeneratedColumn<int>(
+    'order_no',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _orderTypeMeta = const VerificationMeta(
+    'orderType',
+  );
+  @override
+  late final GeneratedColumn<String> orderType = GeneratedColumn<String>(
+    'order_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tableLabelMeta = const VerificationMeta(
+    'tableLabel',
+  );
+  @override
+  late final GeneratedColumn<String> tableLabel = GeneratedColumn<String>(
+    'table_label',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _customerNameMeta = const VerificationMeta(
+    'customerName',
+  );
+  @override
+  late final GeneratedColumn<String> customerName = GeneratedColumn<String>(
+    'customer_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _customerPhoneMeta = const VerificationMeta(
+    'customerPhone',
+  );
+  @override
+  late final GeneratedColumn<String> customerPhone = GeneratedColumn<String>(
+    'customer_phone',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _staffNameMeta = const VerificationMeta(
+    'staffName',
+  );
+  @override
+  late final GeneratedColumn<String> staffName = GeneratedColumn<String>(
+    'staff_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _headerJsonMeta = const VerificationMeta(
+    'headerJson',
+  );
+  @override
+  late final GeneratedColumn<String> headerJson = GeneratedColumn<String>(
+    'header_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _itemsTotalPaiseMeta = const VerificationMeta(
+    'itemsTotalPaise',
+  );
+  @override
+  late final GeneratedColumn<int> itemsTotalPaise = GeneratedColumn<int>(
+    'items_total_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _discountPaiseMeta = const VerificationMeta(
+    'discountPaise',
+  );
+  @override
+  late final GeneratedColumn<int> discountPaise = GeneratedColumn<int>(
+    'discount_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _discountLabelMeta = const VerificationMeta(
+    'discountLabel',
+  );
+  @override
+  late final GeneratedColumn<String> discountLabel = GeneratedColumn<String>(
+    'discount_label',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _serviceChargePaiseMeta =
+      const VerificationMeta('serviceChargePaise');
+  @override
+  late final GeneratedColumn<int> serviceChargePaise = GeneratedColumn<int>(
+    'service_charge_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _serviceChargeBpMeta = const VerificationMeta(
+    'serviceChargeBp',
+  );
+  @override
+  late final GeneratedColumn<int> serviceChargeBp = GeneratedColumn<int>(
+    'service_charge_bp',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _taxPaiseMeta = const VerificationMeta(
+    'taxPaise',
+  );
+  @override
+  late final GeneratedColumn<int> taxPaise = GeneratedColumn<int>(
+    'tax_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _roundOffPaiseMeta = const VerificationMeta(
+    'roundOffPaise',
+  );
+  @override
+  late final GeneratedColumn<int> roundOffPaise = GeneratedColumn<int>(
+    'round_off_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _grandTotalPaiseMeta = const VerificationMeta(
+    'grandTotalPaise',
+  );
+  @override
+  late final GeneratedColumn<int> grandTotalPaise = GeneratedColumn<int>(
+    'grand_total_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _roundingMeta = const VerificationMeta(
+    'rounding',
+  );
+  @override
+  late final GeneratedColumn<String> rounding = GeneratedColumn<String>(
+    'rounding',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _settingsJsonMeta = const VerificationMeta(
+    'settingsJson',
+  );
+  @override
+  late final GeneratedColumn<String> settingsJson = GeneratedColumn<String>(
+    'settings_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _clientRequestIdMeta = const VerificationMeta(
+    'clientRequestId',
+  );
+  @override
+  late final GeneratedColumn<String> clientRequestId = GeneratedColumn<String>(
+    'client_request_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _voidedAtMeta = const VerificationMeta(
+    'voidedAt',
+  );
+  @override
+  late final GeneratedColumn<int> voidedAt = GeneratedColumn<int>(
+    'voided_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _voidReasonMeta = const VerificationMeta(
+    'voidReason',
+  );
+  @override
+  late final GeneratedColumn<String> voidReason = GeneratedColumn<String>(
+    'void_reason',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    orderId,
+    billPrefix,
+    billSeq,
+    billNumber,
+    businessDate,
+    status,
+    orderNo,
+    orderType,
+    tableLabel,
+    customerName,
+    customerPhone,
+    staffName,
+    headerJson,
+    itemsTotalPaise,
+    discountPaise,
+    discountLabel,
+    serviceChargePaise,
+    serviceChargeBp,
+    taxPaise,
+    roundOffPaise,
+    grandTotalPaise,
+    rounding,
+    settingsJson,
+    clientRequestId,
+    createdAt,
+    voidedAt,
+    voidReason,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'bills';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BillRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('order_id')) {
+      context.handle(
+        _orderIdMeta,
+        orderId.isAcceptableOrUnknown(data['order_id']!, _orderIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_orderIdMeta);
+    }
+    if (data.containsKey('bill_prefix')) {
+      context.handle(
+        _billPrefixMeta,
+        billPrefix.isAcceptableOrUnknown(data['bill_prefix']!, _billPrefixMeta),
+      );
+    }
+    if (data.containsKey('bill_seq')) {
+      context.handle(
+        _billSeqMeta,
+        billSeq.isAcceptableOrUnknown(data['bill_seq']!, _billSeqMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_billSeqMeta);
+    }
+    if (data.containsKey('bill_number')) {
+      context.handle(
+        _billNumberMeta,
+        billNumber.isAcceptableOrUnknown(data['bill_number']!, _billNumberMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_billNumberMeta);
+    }
+    if (data.containsKey('business_date')) {
+      context.handle(
+        _businessDateMeta,
+        businessDate.isAcceptableOrUnknown(
+          data['business_date']!,
+          _businessDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_businessDateMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('order_no')) {
+      context.handle(
+        _orderNoMeta,
+        orderNo.isAcceptableOrUnknown(data['order_no']!, _orderNoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_orderNoMeta);
+    }
+    if (data.containsKey('order_type')) {
+      context.handle(
+        _orderTypeMeta,
+        orderType.isAcceptableOrUnknown(data['order_type']!, _orderTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_orderTypeMeta);
+    }
+    if (data.containsKey('table_label')) {
+      context.handle(
+        _tableLabelMeta,
+        tableLabel.isAcceptableOrUnknown(data['table_label']!, _tableLabelMeta),
+      );
+    }
+    if (data.containsKey('customer_name')) {
+      context.handle(
+        _customerNameMeta,
+        customerName.isAcceptableOrUnknown(
+          data['customer_name']!,
+          _customerNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('customer_phone')) {
+      context.handle(
+        _customerPhoneMeta,
+        customerPhone.isAcceptableOrUnknown(
+          data['customer_phone']!,
+          _customerPhoneMeta,
+        ),
+      );
+    }
+    if (data.containsKey('staff_name')) {
+      context.handle(
+        _staffNameMeta,
+        staffName.isAcceptableOrUnknown(data['staff_name']!, _staffNameMeta),
+      );
+    }
+    if (data.containsKey('header_json')) {
+      context.handle(
+        _headerJsonMeta,
+        headerJson.isAcceptableOrUnknown(data['header_json']!, _headerJsonMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_headerJsonMeta);
+    }
+    if (data.containsKey('items_total_paise')) {
+      context.handle(
+        _itemsTotalPaiseMeta,
+        itemsTotalPaise.isAcceptableOrUnknown(
+          data['items_total_paise']!,
+          _itemsTotalPaiseMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_itemsTotalPaiseMeta);
+    }
+    if (data.containsKey('discount_paise')) {
+      context.handle(
+        _discountPaiseMeta,
+        discountPaise.isAcceptableOrUnknown(
+          data['discount_paise']!,
+          _discountPaiseMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_discountPaiseMeta);
+    }
+    if (data.containsKey('discount_label')) {
+      context.handle(
+        _discountLabelMeta,
+        discountLabel.isAcceptableOrUnknown(
+          data['discount_label']!,
+          _discountLabelMeta,
+        ),
+      );
+    }
+    if (data.containsKey('service_charge_paise')) {
+      context.handle(
+        _serviceChargePaiseMeta,
+        serviceChargePaise.isAcceptableOrUnknown(
+          data['service_charge_paise']!,
+          _serviceChargePaiseMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_serviceChargePaiseMeta);
+    }
+    if (data.containsKey('service_charge_bp')) {
+      context.handle(
+        _serviceChargeBpMeta,
+        serviceChargeBp.isAcceptableOrUnknown(
+          data['service_charge_bp']!,
+          _serviceChargeBpMeta,
+        ),
+      );
+    }
+    if (data.containsKey('tax_paise')) {
+      context.handle(
+        _taxPaiseMeta,
+        taxPaise.isAcceptableOrUnknown(data['tax_paise']!, _taxPaiseMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_taxPaiseMeta);
+    }
+    if (data.containsKey('round_off_paise')) {
+      context.handle(
+        _roundOffPaiseMeta,
+        roundOffPaise.isAcceptableOrUnknown(
+          data['round_off_paise']!,
+          _roundOffPaiseMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_roundOffPaiseMeta);
+    }
+    if (data.containsKey('grand_total_paise')) {
+      context.handle(
+        _grandTotalPaiseMeta,
+        grandTotalPaise.isAcceptableOrUnknown(
+          data['grand_total_paise']!,
+          _grandTotalPaiseMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_grandTotalPaiseMeta);
+    }
+    if (data.containsKey('rounding')) {
+      context.handle(
+        _roundingMeta,
+        rounding.isAcceptableOrUnknown(data['rounding']!, _roundingMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_roundingMeta);
+    }
+    if (data.containsKey('settings_json')) {
+      context.handle(
+        _settingsJsonMeta,
+        settingsJson.isAcceptableOrUnknown(
+          data['settings_json']!,
+          _settingsJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_settingsJsonMeta);
+    }
+    if (data.containsKey('client_request_id')) {
+      context.handle(
+        _clientRequestIdMeta,
+        clientRequestId.isAcceptableOrUnknown(
+          data['client_request_id']!,
+          _clientRequestIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_clientRequestIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('voided_at')) {
+      context.handle(
+        _voidedAtMeta,
+        voidedAt.isAcceptableOrUnknown(data['voided_at']!, _voidedAtMeta),
+      );
+    }
+    if (data.containsKey('void_reason')) {
+      context.handle(
+        _voidReasonMeta,
+        voidReason.isAcceptableOrUnknown(data['void_reason']!, _voidReasonMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BillRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BillRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      orderId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}order_id'],
+      )!,
+      billPrefix: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bill_prefix'],
+      )!,
+      billSeq: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}bill_seq'],
+      )!,
+      billNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bill_number'],
+      )!,
+      businessDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}business_date'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      orderNo: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}order_no'],
+      )!,
+      orderType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}order_type'],
+      )!,
+      tableLabel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}table_label'],
+      )!,
+      customerName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}customer_name'],
+      )!,
+      customerPhone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}customer_phone'],
+      )!,
+      staffName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}staff_name'],
+      )!,
+      headerJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}header_json'],
+      )!,
+      itemsTotalPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}items_total_paise'],
+      )!,
+      discountPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}discount_paise'],
+      )!,
+      discountLabel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}discount_label'],
+      )!,
+      serviceChargePaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}service_charge_paise'],
+      )!,
+      serviceChargeBp: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}service_charge_bp'],
+      )!,
+      taxPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}tax_paise'],
+      )!,
+      roundOffPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}round_off_paise'],
+      )!,
+      grandTotalPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}grand_total_paise'],
+      )!,
+      rounding: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}rounding'],
+      )!,
+      settingsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}settings_json'],
+      )!,
+      clientRequestId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}client_request_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      voidedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}voided_at'],
+      ),
+      voidReason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}void_reason'],
+      )!,
+    );
+  }
+
+  @override
+  $BillsTable createAlias(String alias) {
+    return $BillsTable(attachedDatabase, alias);
+  }
+}
+
+class BillRow extends DataClass implements Insertable<BillRow> {
+  final String id;
+  final String orderId;
+
+  /// Bill number = prefix + sequence. Each prefix has its own sequence.
+  final String billPrefix;
+  final int billSeq;
+  final String billNumber;
+  final String businessDate;
+
+  /// `BillStatus.name`: finalized | voided.
+  final String status;
+  final int orderNo;
+  final String orderType;
+  final String tableLabel;
+  final String customerName;
+  final String customerPhone;
+  final String staffName;
+
+  /// `BillHeader` JSON: business name, address, GSTIN… at billing time.
+  final String headerJson;
+  final int itemsTotalPaise;
+  final int discountPaise;
+  final String discountLabel;
+  final int serviceChargePaise;
+  final int serviceChargeBp;
+
+  /// All tax, inclusive and exclusive.
+  final int taxPaise;
+  final int roundOffPaise;
+  final int grandTotalPaise;
+
+  /// `RoundingMode.name` used for this bill.
+  final String rounding;
+
+  /// `BillingSettings` JSON used for this bill.
+  final String settingsJson;
+  final String clientRequestId;
+  final int createdAt;
+  final int? voidedAt;
+  final String voidReason;
+  const BillRow({
+    required this.id,
+    required this.orderId,
+    required this.billPrefix,
+    required this.billSeq,
+    required this.billNumber,
+    required this.businessDate,
+    required this.status,
+    required this.orderNo,
+    required this.orderType,
+    required this.tableLabel,
+    required this.customerName,
+    required this.customerPhone,
+    required this.staffName,
+    required this.headerJson,
+    required this.itemsTotalPaise,
+    required this.discountPaise,
+    required this.discountLabel,
+    required this.serviceChargePaise,
+    required this.serviceChargeBp,
+    required this.taxPaise,
+    required this.roundOffPaise,
+    required this.grandTotalPaise,
+    required this.rounding,
+    required this.settingsJson,
+    required this.clientRequestId,
+    required this.createdAt,
+    this.voidedAt,
+    required this.voidReason,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['order_id'] = Variable<String>(orderId);
+    map['bill_prefix'] = Variable<String>(billPrefix);
+    map['bill_seq'] = Variable<int>(billSeq);
+    map['bill_number'] = Variable<String>(billNumber);
+    map['business_date'] = Variable<String>(businessDate);
+    map['status'] = Variable<String>(status);
+    map['order_no'] = Variable<int>(orderNo);
+    map['order_type'] = Variable<String>(orderType);
+    map['table_label'] = Variable<String>(tableLabel);
+    map['customer_name'] = Variable<String>(customerName);
+    map['customer_phone'] = Variable<String>(customerPhone);
+    map['staff_name'] = Variable<String>(staffName);
+    map['header_json'] = Variable<String>(headerJson);
+    map['items_total_paise'] = Variable<int>(itemsTotalPaise);
+    map['discount_paise'] = Variable<int>(discountPaise);
+    map['discount_label'] = Variable<String>(discountLabel);
+    map['service_charge_paise'] = Variable<int>(serviceChargePaise);
+    map['service_charge_bp'] = Variable<int>(serviceChargeBp);
+    map['tax_paise'] = Variable<int>(taxPaise);
+    map['round_off_paise'] = Variable<int>(roundOffPaise);
+    map['grand_total_paise'] = Variable<int>(grandTotalPaise);
+    map['rounding'] = Variable<String>(rounding);
+    map['settings_json'] = Variable<String>(settingsJson);
+    map['client_request_id'] = Variable<String>(clientRequestId);
+    map['created_at'] = Variable<int>(createdAt);
+    if (!nullToAbsent || voidedAt != null) {
+      map['voided_at'] = Variable<int>(voidedAt);
+    }
+    map['void_reason'] = Variable<String>(voidReason);
+    return map;
+  }
+
+  BillsCompanion toCompanion(bool nullToAbsent) {
+    return BillsCompanion(
+      id: Value(id),
+      orderId: Value(orderId),
+      billPrefix: Value(billPrefix),
+      billSeq: Value(billSeq),
+      billNumber: Value(billNumber),
+      businessDate: Value(businessDate),
+      status: Value(status),
+      orderNo: Value(orderNo),
+      orderType: Value(orderType),
+      tableLabel: Value(tableLabel),
+      customerName: Value(customerName),
+      customerPhone: Value(customerPhone),
+      staffName: Value(staffName),
+      headerJson: Value(headerJson),
+      itemsTotalPaise: Value(itemsTotalPaise),
+      discountPaise: Value(discountPaise),
+      discountLabel: Value(discountLabel),
+      serviceChargePaise: Value(serviceChargePaise),
+      serviceChargeBp: Value(serviceChargeBp),
+      taxPaise: Value(taxPaise),
+      roundOffPaise: Value(roundOffPaise),
+      grandTotalPaise: Value(grandTotalPaise),
+      rounding: Value(rounding),
+      settingsJson: Value(settingsJson),
+      clientRequestId: Value(clientRequestId),
+      createdAt: Value(createdAt),
+      voidedAt: voidedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(voidedAt),
+      voidReason: Value(voidReason),
+    );
+  }
+
+  factory BillRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BillRow(
+      id: serializer.fromJson<String>(json['id']),
+      orderId: serializer.fromJson<String>(json['orderId']),
+      billPrefix: serializer.fromJson<String>(json['billPrefix']),
+      billSeq: serializer.fromJson<int>(json['billSeq']),
+      billNumber: serializer.fromJson<String>(json['billNumber']),
+      businessDate: serializer.fromJson<String>(json['businessDate']),
+      status: serializer.fromJson<String>(json['status']),
+      orderNo: serializer.fromJson<int>(json['orderNo']),
+      orderType: serializer.fromJson<String>(json['orderType']),
+      tableLabel: serializer.fromJson<String>(json['tableLabel']),
+      customerName: serializer.fromJson<String>(json['customerName']),
+      customerPhone: serializer.fromJson<String>(json['customerPhone']),
+      staffName: serializer.fromJson<String>(json['staffName']),
+      headerJson: serializer.fromJson<String>(json['headerJson']),
+      itemsTotalPaise: serializer.fromJson<int>(json['itemsTotalPaise']),
+      discountPaise: serializer.fromJson<int>(json['discountPaise']),
+      discountLabel: serializer.fromJson<String>(json['discountLabel']),
+      serviceChargePaise: serializer.fromJson<int>(json['serviceChargePaise']),
+      serviceChargeBp: serializer.fromJson<int>(json['serviceChargeBp']),
+      taxPaise: serializer.fromJson<int>(json['taxPaise']),
+      roundOffPaise: serializer.fromJson<int>(json['roundOffPaise']),
+      grandTotalPaise: serializer.fromJson<int>(json['grandTotalPaise']),
+      rounding: serializer.fromJson<String>(json['rounding']),
+      settingsJson: serializer.fromJson<String>(json['settingsJson']),
+      clientRequestId: serializer.fromJson<String>(json['clientRequestId']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      voidedAt: serializer.fromJson<int?>(json['voidedAt']),
+      voidReason: serializer.fromJson<String>(json['voidReason']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'orderId': serializer.toJson<String>(orderId),
+      'billPrefix': serializer.toJson<String>(billPrefix),
+      'billSeq': serializer.toJson<int>(billSeq),
+      'billNumber': serializer.toJson<String>(billNumber),
+      'businessDate': serializer.toJson<String>(businessDate),
+      'status': serializer.toJson<String>(status),
+      'orderNo': serializer.toJson<int>(orderNo),
+      'orderType': serializer.toJson<String>(orderType),
+      'tableLabel': serializer.toJson<String>(tableLabel),
+      'customerName': serializer.toJson<String>(customerName),
+      'customerPhone': serializer.toJson<String>(customerPhone),
+      'staffName': serializer.toJson<String>(staffName),
+      'headerJson': serializer.toJson<String>(headerJson),
+      'itemsTotalPaise': serializer.toJson<int>(itemsTotalPaise),
+      'discountPaise': serializer.toJson<int>(discountPaise),
+      'discountLabel': serializer.toJson<String>(discountLabel),
+      'serviceChargePaise': serializer.toJson<int>(serviceChargePaise),
+      'serviceChargeBp': serializer.toJson<int>(serviceChargeBp),
+      'taxPaise': serializer.toJson<int>(taxPaise),
+      'roundOffPaise': serializer.toJson<int>(roundOffPaise),
+      'grandTotalPaise': serializer.toJson<int>(grandTotalPaise),
+      'rounding': serializer.toJson<String>(rounding),
+      'settingsJson': serializer.toJson<String>(settingsJson),
+      'clientRequestId': serializer.toJson<String>(clientRequestId),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'voidedAt': serializer.toJson<int?>(voidedAt),
+      'voidReason': serializer.toJson<String>(voidReason),
+    };
+  }
+
+  BillRow copyWith({
+    String? id,
+    String? orderId,
+    String? billPrefix,
+    int? billSeq,
+    String? billNumber,
+    String? businessDate,
+    String? status,
+    int? orderNo,
+    String? orderType,
+    String? tableLabel,
+    String? customerName,
+    String? customerPhone,
+    String? staffName,
+    String? headerJson,
+    int? itemsTotalPaise,
+    int? discountPaise,
+    String? discountLabel,
+    int? serviceChargePaise,
+    int? serviceChargeBp,
+    int? taxPaise,
+    int? roundOffPaise,
+    int? grandTotalPaise,
+    String? rounding,
+    String? settingsJson,
+    String? clientRequestId,
+    int? createdAt,
+    Value<int?> voidedAt = const Value.absent(),
+    String? voidReason,
+  }) => BillRow(
+    id: id ?? this.id,
+    orderId: orderId ?? this.orderId,
+    billPrefix: billPrefix ?? this.billPrefix,
+    billSeq: billSeq ?? this.billSeq,
+    billNumber: billNumber ?? this.billNumber,
+    businessDate: businessDate ?? this.businessDate,
+    status: status ?? this.status,
+    orderNo: orderNo ?? this.orderNo,
+    orderType: orderType ?? this.orderType,
+    tableLabel: tableLabel ?? this.tableLabel,
+    customerName: customerName ?? this.customerName,
+    customerPhone: customerPhone ?? this.customerPhone,
+    staffName: staffName ?? this.staffName,
+    headerJson: headerJson ?? this.headerJson,
+    itemsTotalPaise: itemsTotalPaise ?? this.itemsTotalPaise,
+    discountPaise: discountPaise ?? this.discountPaise,
+    discountLabel: discountLabel ?? this.discountLabel,
+    serviceChargePaise: serviceChargePaise ?? this.serviceChargePaise,
+    serviceChargeBp: serviceChargeBp ?? this.serviceChargeBp,
+    taxPaise: taxPaise ?? this.taxPaise,
+    roundOffPaise: roundOffPaise ?? this.roundOffPaise,
+    grandTotalPaise: grandTotalPaise ?? this.grandTotalPaise,
+    rounding: rounding ?? this.rounding,
+    settingsJson: settingsJson ?? this.settingsJson,
+    clientRequestId: clientRequestId ?? this.clientRequestId,
+    createdAt: createdAt ?? this.createdAt,
+    voidedAt: voidedAt.present ? voidedAt.value : this.voidedAt,
+    voidReason: voidReason ?? this.voidReason,
+  );
+  BillRow copyWithCompanion(BillsCompanion data) {
+    return BillRow(
+      id: data.id.present ? data.id.value : this.id,
+      orderId: data.orderId.present ? data.orderId.value : this.orderId,
+      billPrefix: data.billPrefix.present
+          ? data.billPrefix.value
+          : this.billPrefix,
+      billSeq: data.billSeq.present ? data.billSeq.value : this.billSeq,
+      billNumber: data.billNumber.present
+          ? data.billNumber.value
+          : this.billNumber,
+      businessDate: data.businessDate.present
+          ? data.businessDate.value
+          : this.businessDate,
+      status: data.status.present ? data.status.value : this.status,
+      orderNo: data.orderNo.present ? data.orderNo.value : this.orderNo,
+      orderType: data.orderType.present ? data.orderType.value : this.orderType,
+      tableLabel: data.tableLabel.present
+          ? data.tableLabel.value
+          : this.tableLabel,
+      customerName: data.customerName.present
+          ? data.customerName.value
+          : this.customerName,
+      customerPhone: data.customerPhone.present
+          ? data.customerPhone.value
+          : this.customerPhone,
+      staffName: data.staffName.present ? data.staffName.value : this.staffName,
+      headerJson: data.headerJson.present
+          ? data.headerJson.value
+          : this.headerJson,
+      itemsTotalPaise: data.itemsTotalPaise.present
+          ? data.itemsTotalPaise.value
+          : this.itemsTotalPaise,
+      discountPaise: data.discountPaise.present
+          ? data.discountPaise.value
+          : this.discountPaise,
+      discountLabel: data.discountLabel.present
+          ? data.discountLabel.value
+          : this.discountLabel,
+      serviceChargePaise: data.serviceChargePaise.present
+          ? data.serviceChargePaise.value
+          : this.serviceChargePaise,
+      serviceChargeBp: data.serviceChargeBp.present
+          ? data.serviceChargeBp.value
+          : this.serviceChargeBp,
+      taxPaise: data.taxPaise.present ? data.taxPaise.value : this.taxPaise,
+      roundOffPaise: data.roundOffPaise.present
+          ? data.roundOffPaise.value
+          : this.roundOffPaise,
+      grandTotalPaise: data.grandTotalPaise.present
+          ? data.grandTotalPaise.value
+          : this.grandTotalPaise,
+      rounding: data.rounding.present ? data.rounding.value : this.rounding,
+      settingsJson: data.settingsJson.present
+          ? data.settingsJson.value
+          : this.settingsJson,
+      clientRequestId: data.clientRequestId.present
+          ? data.clientRequestId.value
+          : this.clientRequestId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      voidedAt: data.voidedAt.present ? data.voidedAt.value : this.voidedAt,
+      voidReason: data.voidReason.present
+          ? data.voidReason.value
+          : this.voidReason,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BillRow(')
+          ..write('id: $id, ')
+          ..write('orderId: $orderId, ')
+          ..write('billPrefix: $billPrefix, ')
+          ..write('billSeq: $billSeq, ')
+          ..write('billNumber: $billNumber, ')
+          ..write('businessDate: $businessDate, ')
+          ..write('status: $status, ')
+          ..write('orderNo: $orderNo, ')
+          ..write('orderType: $orderType, ')
+          ..write('tableLabel: $tableLabel, ')
+          ..write('customerName: $customerName, ')
+          ..write('customerPhone: $customerPhone, ')
+          ..write('staffName: $staffName, ')
+          ..write('headerJson: $headerJson, ')
+          ..write('itemsTotalPaise: $itemsTotalPaise, ')
+          ..write('discountPaise: $discountPaise, ')
+          ..write('discountLabel: $discountLabel, ')
+          ..write('serviceChargePaise: $serviceChargePaise, ')
+          ..write('serviceChargeBp: $serviceChargeBp, ')
+          ..write('taxPaise: $taxPaise, ')
+          ..write('roundOffPaise: $roundOffPaise, ')
+          ..write('grandTotalPaise: $grandTotalPaise, ')
+          ..write('rounding: $rounding, ')
+          ..write('settingsJson: $settingsJson, ')
+          ..write('clientRequestId: $clientRequestId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('voidedAt: $voidedAt, ')
+          ..write('voidReason: $voidReason')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    id,
+    orderId,
+    billPrefix,
+    billSeq,
+    billNumber,
+    businessDate,
+    status,
+    orderNo,
+    orderType,
+    tableLabel,
+    customerName,
+    customerPhone,
+    staffName,
+    headerJson,
+    itemsTotalPaise,
+    discountPaise,
+    discountLabel,
+    serviceChargePaise,
+    serviceChargeBp,
+    taxPaise,
+    roundOffPaise,
+    grandTotalPaise,
+    rounding,
+    settingsJson,
+    clientRequestId,
+    createdAt,
+    voidedAt,
+    voidReason,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BillRow &&
+          other.id == this.id &&
+          other.orderId == this.orderId &&
+          other.billPrefix == this.billPrefix &&
+          other.billSeq == this.billSeq &&
+          other.billNumber == this.billNumber &&
+          other.businessDate == this.businessDate &&
+          other.status == this.status &&
+          other.orderNo == this.orderNo &&
+          other.orderType == this.orderType &&
+          other.tableLabel == this.tableLabel &&
+          other.customerName == this.customerName &&
+          other.customerPhone == this.customerPhone &&
+          other.staffName == this.staffName &&
+          other.headerJson == this.headerJson &&
+          other.itemsTotalPaise == this.itemsTotalPaise &&
+          other.discountPaise == this.discountPaise &&
+          other.discountLabel == this.discountLabel &&
+          other.serviceChargePaise == this.serviceChargePaise &&
+          other.serviceChargeBp == this.serviceChargeBp &&
+          other.taxPaise == this.taxPaise &&
+          other.roundOffPaise == this.roundOffPaise &&
+          other.grandTotalPaise == this.grandTotalPaise &&
+          other.rounding == this.rounding &&
+          other.settingsJson == this.settingsJson &&
+          other.clientRequestId == this.clientRequestId &&
+          other.createdAt == this.createdAt &&
+          other.voidedAt == this.voidedAt &&
+          other.voidReason == this.voidReason);
+}
+
+class BillsCompanion extends UpdateCompanion<BillRow> {
+  final Value<String> id;
+  final Value<String> orderId;
+  final Value<String> billPrefix;
+  final Value<int> billSeq;
+  final Value<String> billNumber;
+  final Value<String> businessDate;
+  final Value<String> status;
+  final Value<int> orderNo;
+  final Value<String> orderType;
+  final Value<String> tableLabel;
+  final Value<String> customerName;
+  final Value<String> customerPhone;
+  final Value<String> staffName;
+  final Value<String> headerJson;
+  final Value<int> itemsTotalPaise;
+  final Value<int> discountPaise;
+  final Value<String> discountLabel;
+  final Value<int> serviceChargePaise;
+  final Value<int> serviceChargeBp;
+  final Value<int> taxPaise;
+  final Value<int> roundOffPaise;
+  final Value<int> grandTotalPaise;
+  final Value<String> rounding;
+  final Value<String> settingsJson;
+  final Value<String> clientRequestId;
+  final Value<int> createdAt;
+  final Value<int?> voidedAt;
+  final Value<String> voidReason;
+  final Value<int> rowid;
+  const BillsCompanion({
+    this.id = const Value.absent(),
+    this.orderId = const Value.absent(),
+    this.billPrefix = const Value.absent(),
+    this.billSeq = const Value.absent(),
+    this.billNumber = const Value.absent(),
+    this.businessDate = const Value.absent(),
+    this.status = const Value.absent(),
+    this.orderNo = const Value.absent(),
+    this.orderType = const Value.absent(),
+    this.tableLabel = const Value.absent(),
+    this.customerName = const Value.absent(),
+    this.customerPhone = const Value.absent(),
+    this.staffName = const Value.absent(),
+    this.headerJson = const Value.absent(),
+    this.itemsTotalPaise = const Value.absent(),
+    this.discountPaise = const Value.absent(),
+    this.discountLabel = const Value.absent(),
+    this.serviceChargePaise = const Value.absent(),
+    this.serviceChargeBp = const Value.absent(),
+    this.taxPaise = const Value.absent(),
+    this.roundOffPaise = const Value.absent(),
+    this.grandTotalPaise = const Value.absent(),
+    this.rounding = const Value.absent(),
+    this.settingsJson = const Value.absent(),
+    this.clientRequestId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.voidedAt = const Value.absent(),
+    this.voidReason = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BillsCompanion.insert({
+    required String id,
+    required String orderId,
+    this.billPrefix = const Value.absent(),
+    required int billSeq,
+    required String billNumber,
+    required String businessDate,
+    required String status,
+    required int orderNo,
+    required String orderType,
+    this.tableLabel = const Value.absent(),
+    this.customerName = const Value.absent(),
+    this.customerPhone = const Value.absent(),
+    this.staffName = const Value.absent(),
+    required String headerJson,
+    required int itemsTotalPaise,
+    required int discountPaise,
+    this.discountLabel = const Value.absent(),
+    required int serviceChargePaise,
+    this.serviceChargeBp = const Value.absent(),
+    required int taxPaise,
+    required int roundOffPaise,
+    required int grandTotalPaise,
+    required String rounding,
+    required String settingsJson,
+    required String clientRequestId,
+    required int createdAt,
+    this.voidedAt = const Value.absent(),
+    this.voidReason = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       orderId = Value(orderId),
+       billSeq = Value(billSeq),
+       billNumber = Value(billNumber),
+       businessDate = Value(businessDate),
+       status = Value(status),
+       orderNo = Value(orderNo),
+       orderType = Value(orderType),
+       headerJson = Value(headerJson),
+       itemsTotalPaise = Value(itemsTotalPaise),
+       discountPaise = Value(discountPaise),
+       serviceChargePaise = Value(serviceChargePaise),
+       taxPaise = Value(taxPaise),
+       roundOffPaise = Value(roundOffPaise),
+       grandTotalPaise = Value(grandTotalPaise),
+       rounding = Value(rounding),
+       settingsJson = Value(settingsJson),
+       clientRequestId = Value(clientRequestId),
+       createdAt = Value(createdAt);
+  static Insertable<BillRow> custom({
+    Expression<String>? id,
+    Expression<String>? orderId,
+    Expression<String>? billPrefix,
+    Expression<int>? billSeq,
+    Expression<String>? billNumber,
+    Expression<String>? businessDate,
+    Expression<String>? status,
+    Expression<int>? orderNo,
+    Expression<String>? orderType,
+    Expression<String>? tableLabel,
+    Expression<String>? customerName,
+    Expression<String>? customerPhone,
+    Expression<String>? staffName,
+    Expression<String>? headerJson,
+    Expression<int>? itemsTotalPaise,
+    Expression<int>? discountPaise,
+    Expression<String>? discountLabel,
+    Expression<int>? serviceChargePaise,
+    Expression<int>? serviceChargeBp,
+    Expression<int>? taxPaise,
+    Expression<int>? roundOffPaise,
+    Expression<int>? grandTotalPaise,
+    Expression<String>? rounding,
+    Expression<String>? settingsJson,
+    Expression<String>? clientRequestId,
+    Expression<int>? createdAt,
+    Expression<int>? voidedAt,
+    Expression<String>? voidReason,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (orderId != null) 'order_id': orderId,
+      if (billPrefix != null) 'bill_prefix': billPrefix,
+      if (billSeq != null) 'bill_seq': billSeq,
+      if (billNumber != null) 'bill_number': billNumber,
+      if (businessDate != null) 'business_date': businessDate,
+      if (status != null) 'status': status,
+      if (orderNo != null) 'order_no': orderNo,
+      if (orderType != null) 'order_type': orderType,
+      if (tableLabel != null) 'table_label': tableLabel,
+      if (customerName != null) 'customer_name': customerName,
+      if (customerPhone != null) 'customer_phone': customerPhone,
+      if (staffName != null) 'staff_name': staffName,
+      if (headerJson != null) 'header_json': headerJson,
+      if (itemsTotalPaise != null) 'items_total_paise': itemsTotalPaise,
+      if (discountPaise != null) 'discount_paise': discountPaise,
+      if (discountLabel != null) 'discount_label': discountLabel,
+      if (serviceChargePaise != null)
+        'service_charge_paise': serviceChargePaise,
+      if (serviceChargeBp != null) 'service_charge_bp': serviceChargeBp,
+      if (taxPaise != null) 'tax_paise': taxPaise,
+      if (roundOffPaise != null) 'round_off_paise': roundOffPaise,
+      if (grandTotalPaise != null) 'grand_total_paise': grandTotalPaise,
+      if (rounding != null) 'rounding': rounding,
+      if (settingsJson != null) 'settings_json': settingsJson,
+      if (clientRequestId != null) 'client_request_id': clientRequestId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (voidedAt != null) 'voided_at': voidedAt,
+      if (voidReason != null) 'void_reason': voidReason,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BillsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? orderId,
+    Value<String>? billPrefix,
+    Value<int>? billSeq,
+    Value<String>? billNumber,
+    Value<String>? businessDate,
+    Value<String>? status,
+    Value<int>? orderNo,
+    Value<String>? orderType,
+    Value<String>? tableLabel,
+    Value<String>? customerName,
+    Value<String>? customerPhone,
+    Value<String>? staffName,
+    Value<String>? headerJson,
+    Value<int>? itemsTotalPaise,
+    Value<int>? discountPaise,
+    Value<String>? discountLabel,
+    Value<int>? serviceChargePaise,
+    Value<int>? serviceChargeBp,
+    Value<int>? taxPaise,
+    Value<int>? roundOffPaise,
+    Value<int>? grandTotalPaise,
+    Value<String>? rounding,
+    Value<String>? settingsJson,
+    Value<String>? clientRequestId,
+    Value<int>? createdAt,
+    Value<int?>? voidedAt,
+    Value<String>? voidReason,
+    Value<int>? rowid,
+  }) {
+    return BillsCompanion(
+      id: id ?? this.id,
+      orderId: orderId ?? this.orderId,
+      billPrefix: billPrefix ?? this.billPrefix,
+      billSeq: billSeq ?? this.billSeq,
+      billNumber: billNumber ?? this.billNumber,
+      businessDate: businessDate ?? this.businessDate,
+      status: status ?? this.status,
+      orderNo: orderNo ?? this.orderNo,
+      orderType: orderType ?? this.orderType,
+      tableLabel: tableLabel ?? this.tableLabel,
+      customerName: customerName ?? this.customerName,
+      customerPhone: customerPhone ?? this.customerPhone,
+      staffName: staffName ?? this.staffName,
+      headerJson: headerJson ?? this.headerJson,
+      itemsTotalPaise: itemsTotalPaise ?? this.itemsTotalPaise,
+      discountPaise: discountPaise ?? this.discountPaise,
+      discountLabel: discountLabel ?? this.discountLabel,
+      serviceChargePaise: serviceChargePaise ?? this.serviceChargePaise,
+      serviceChargeBp: serviceChargeBp ?? this.serviceChargeBp,
+      taxPaise: taxPaise ?? this.taxPaise,
+      roundOffPaise: roundOffPaise ?? this.roundOffPaise,
+      grandTotalPaise: grandTotalPaise ?? this.grandTotalPaise,
+      rounding: rounding ?? this.rounding,
+      settingsJson: settingsJson ?? this.settingsJson,
+      clientRequestId: clientRequestId ?? this.clientRequestId,
+      createdAt: createdAt ?? this.createdAt,
+      voidedAt: voidedAt ?? this.voidedAt,
+      voidReason: voidReason ?? this.voidReason,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (orderId.present) {
+      map['order_id'] = Variable<String>(orderId.value);
+    }
+    if (billPrefix.present) {
+      map['bill_prefix'] = Variable<String>(billPrefix.value);
+    }
+    if (billSeq.present) {
+      map['bill_seq'] = Variable<int>(billSeq.value);
+    }
+    if (billNumber.present) {
+      map['bill_number'] = Variable<String>(billNumber.value);
+    }
+    if (businessDate.present) {
+      map['business_date'] = Variable<String>(businessDate.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (orderNo.present) {
+      map['order_no'] = Variable<int>(orderNo.value);
+    }
+    if (orderType.present) {
+      map['order_type'] = Variable<String>(orderType.value);
+    }
+    if (tableLabel.present) {
+      map['table_label'] = Variable<String>(tableLabel.value);
+    }
+    if (customerName.present) {
+      map['customer_name'] = Variable<String>(customerName.value);
+    }
+    if (customerPhone.present) {
+      map['customer_phone'] = Variable<String>(customerPhone.value);
+    }
+    if (staffName.present) {
+      map['staff_name'] = Variable<String>(staffName.value);
+    }
+    if (headerJson.present) {
+      map['header_json'] = Variable<String>(headerJson.value);
+    }
+    if (itemsTotalPaise.present) {
+      map['items_total_paise'] = Variable<int>(itemsTotalPaise.value);
+    }
+    if (discountPaise.present) {
+      map['discount_paise'] = Variable<int>(discountPaise.value);
+    }
+    if (discountLabel.present) {
+      map['discount_label'] = Variable<String>(discountLabel.value);
+    }
+    if (serviceChargePaise.present) {
+      map['service_charge_paise'] = Variable<int>(serviceChargePaise.value);
+    }
+    if (serviceChargeBp.present) {
+      map['service_charge_bp'] = Variable<int>(serviceChargeBp.value);
+    }
+    if (taxPaise.present) {
+      map['tax_paise'] = Variable<int>(taxPaise.value);
+    }
+    if (roundOffPaise.present) {
+      map['round_off_paise'] = Variable<int>(roundOffPaise.value);
+    }
+    if (grandTotalPaise.present) {
+      map['grand_total_paise'] = Variable<int>(grandTotalPaise.value);
+    }
+    if (rounding.present) {
+      map['rounding'] = Variable<String>(rounding.value);
+    }
+    if (settingsJson.present) {
+      map['settings_json'] = Variable<String>(settingsJson.value);
+    }
+    if (clientRequestId.present) {
+      map['client_request_id'] = Variable<String>(clientRequestId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (voidedAt.present) {
+      map['voided_at'] = Variable<int>(voidedAt.value);
+    }
+    if (voidReason.present) {
+      map['void_reason'] = Variable<String>(voidReason.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BillsCompanion(')
+          ..write('id: $id, ')
+          ..write('orderId: $orderId, ')
+          ..write('billPrefix: $billPrefix, ')
+          ..write('billSeq: $billSeq, ')
+          ..write('billNumber: $billNumber, ')
+          ..write('businessDate: $businessDate, ')
+          ..write('status: $status, ')
+          ..write('orderNo: $orderNo, ')
+          ..write('orderType: $orderType, ')
+          ..write('tableLabel: $tableLabel, ')
+          ..write('customerName: $customerName, ')
+          ..write('customerPhone: $customerPhone, ')
+          ..write('staffName: $staffName, ')
+          ..write('headerJson: $headerJson, ')
+          ..write('itemsTotalPaise: $itemsTotalPaise, ')
+          ..write('discountPaise: $discountPaise, ')
+          ..write('discountLabel: $discountLabel, ')
+          ..write('serviceChargePaise: $serviceChargePaise, ')
+          ..write('serviceChargeBp: $serviceChargeBp, ')
+          ..write('taxPaise: $taxPaise, ')
+          ..write('roundOffPaise: $roundOffPaise, ')
+          ..write('grandTotalPaise: $grandTotalPaise, ')
+          ..write('rounding: $rounding, ')
+          ..write('settingsJson: $settingsJson, ')
+          ..write('clientRequestId: $clientRequestId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('voidedAt: $voidedAt, ')
+          ..write('voidReason: $voidReason, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BillLinesTable extends BillLines
+    with TableInfo<$BillLinesTable, BillLineRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BillLinesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _billIdMeta = const VerificationMeta('billId');
+  @override
+  late final GeneratedColumn<String> billId = GeneratedColumn<String>(
+    'bill_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES bills (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _orderLineIdMeta = const VerificationMeta(
+    'orderLineId',
+  );
+  @override
+  late final GeneratedColumn<String> orderLineId = GeneratedColumn<String>(
+    'order_line_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES order_lines (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _variantTextMeta = const VerificationMeta(
+    'variantText',
+  );
+  @override
+  late final GeneratedColumn<String> variantText = GeneratedColumn<String>(
+    'variant_text',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _addonsTextMeta = const VerificationMeta(
+    'addonsText',
+  );
+  @override
+  late final GeneratedColumn<String> addonsText = GeneratedColumn<String>(
+    'addons_text',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _qtyMeta = const VerificationMeta('qty');
+  @override
+  late final GeneratedColumn<int> qty = GeneratedColumn<int>(
+    'qty',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unitPricePaiseMeta = const VerificationMeta(
+    'unitPricePaise',
+  );
+  @override
+  late final GeneratedColumn<int> unitPricePaise = GeneratedColumn<int>(
+    'unit_price_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _grossPaiseMeta = const VerificationMeta(
+    'grossPaise',
+  );
+  @override
+  late final GeneratedColumn<int> grossPaise = GeneratedColumn<int>(
+    'gross_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _discountPaiseMeta = const VerificationMeta(
+    'discountPaise',
+  );
+  @override
+  late final GeneratedColumn<int> discountPaise = GeneratedColumn<int>(
+    'discount_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _taxRateBpMeta = const VerificationMeta(
+    'taxRateBp',
+  );
+  @override
+  late final GeneratedColumn<int> taxRateBp = GeneratedColumn<int>(
+    'tax_rate_bp',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _taxInclusiveMeta = const VerificationMeta(
+    'taxInclusive',
+  );
+  @override
+  late final GeneratedColumn<bool> taxInclusive = GeneratedColumn<bool>(
+    'tax_inclusive',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("tax_inclusive" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _taxSplitModeMeta = const VerificationMeta(
+    'taxSplitMode',
+  );
+  @override
+  late final GeneratedColumn<String> taxSplitMode = GeneratedColumn<String>(
+    'tax_split_mode',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    billId,
+    orderLineId,
+    name,
+    variantText,
+    addonsText,
+    qty,
+    unitPricePaise,
+    grossPaise,
+    discountPaise,
+    taxRateBp,
+    taxInclusive,
+    taxSplitMode,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'bill_lines';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BillLineRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('bill_id')) {
+      context.handle(
+        _billIdMeta,
+        billId.isAcceptableOrUnknown(data['bill_id']!, _billIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_billIdMeta);
+    }
+    if (data.containsKey('order_line_id')) {
+      context.handle(
+        _orderLineIdMeta,
+        orderLineId.isAcceptableOrUnknown(
+          data['order_line_id']!,
+          _orderLineIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_orderLineIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('variant_text')) {
+      context.handle(
+        _variantTextMeta,
+        variantText.isAcceptableOrUnknown(
+          data['variant_text']!,
+          _variantTextMeta,
+        ),
+      );
+    }
+    if (data.containsKey('addons_text')) {
+      context.handle(
+        _addonsTextMeta,
+        addonsText.isAcceptableOrUnknown(data['addons_text']!, _addonsTextMeta),
+      );
+    }
+    if (data.containsKey('qty')) {
+      context.handle(
+        _qtyMeta,
+        qty.isAcceptableOrUnknown(data['qty']!, _qtyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_qtyMeta);
+    }
+    if (data.containsKey('unit_price_paise')) {
+      context.handle(
+        _unitPricePaiseMeta,
+        unitPricePaise.isAcceptableOrUnknown(
+          data['unit_price_paise']!,
+          _unitPricePaiseMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_unitPricePaiseMeta);
+    }
+    if (data.containsKey('gross_paise')) {
+      context.handle(
+        _grossPaiseMeta,
+        grossPaise.isAcceptableOrUnknown(data['gross_paise']!, _grossPaiseMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_grossPaiseMeta);
+    }
+    if (data.containsKey('discount_paise')) {
+      context.handle(
+        _discountPaiseMeta,
+        discountPaise.isAcceptableOrUnknown(
+          data['discount_paise']!,
+          _discountPaiseMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_discountPaiseMeta);
+    }
+    if (data.containsKey('tax_rate_bp')) {
+      context.handle(
+        _taxRateBpMeta,
+        taxRateBp.isAcceptableOrUnknown(data['tax_rate_bp']!, _taxRateBpMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_taxRateBpMeta);
+    }
+    if (data.containsKey('tax_inclusive')) {
+      context.handle(
+        _taxInclusiveMeta,
+        taxInclusive.isAcceptableOrUnknown(
+          data['tax_inclusive']!,
+          _taxInclusiveMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_taxInclusiveMeta);
+    }
+    if (data.containsKey('tax_split_mode')) {
+      context.handle(
+        _taxSplitModeMeta,
+        taxSplitMode.isAcceptableOrUnknown(
+          data['tax_split_mode']!,
+          _taxSplitModeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_taxSplitModeMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BillLineRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BillLineRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      billId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bill_id'],
+      )!,
+      orderLineId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}order_line_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      variantText: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}variant_text'],
+      )!,
+      addonsText: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}addons_text'],
+      )!,
+      qty: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}qty'],
+      )!,
+      unitPricePaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}unit_price_paise'],
+      )!,
+      grossPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}gross_paise'],
+      )!,
+      discountPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}discount_paise'],
+      )!,
+      taxRateBp: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}tax_rate_bp'],
+      )!,
+      taxInclusive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}tax_inclusive'],
+      )!,
+      taxSplitMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tax_split_mode'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $BillLinesTable createAlias(String alias) {
+    return $BillLinesTable(attachedDatabase, alias);
+  }
+}
+
+class BillLineRow extends DataClass implements Insertable<BillLineRow> {
+  final String id;
+  final String billId;
+  final String orderLineId;
+  final String name;
+  final String variantText;
+  final String addonsText;
+  final int qty;
+  final int unitPricePaise;
+  final int grossPaise;
+
+  /// This line's share of the order discount.
+  final int discountPaise;
+  final int taxRateBp;
+  final bool taxInclusive;
+  final String taxSplitMode;
+  final int sortOrder;
+  const BillLineRow({
+    required this.id,
+    required this.billId,
+    required this.orderLineId,
+    required this.name,
+    required this.variantText,
+    required this.addonsText,
+    required this.qty,
+    required this.unitPricePaise,
+    required this.grossPaise,
+    required this.discountPaise,
+    required this.taxRateBp,
+    required this.taxInclusive,
+    required this.taxSplitMode,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['bill_id'] = Variable<String>(billId);
+    map['order_line_id'] = Variable<String>(orderLineId);
+    map['name'] = Variable<String>(name);
+    map['variant_text'] = Variable<String>(variantText);
+    map['addons_text'] = Variable<String>(addonsText);
+    map['qty'] = Variable<int>(qty);
+    map['unit_price_paise'] = Variable<int>(unitPricePaise);
+    map['gross_paise'] = Variable<int>(grossPaise);
+    map['discount_paise'] = Variable<int>(discountPaise);
+    map['tax_rate_bp'] = Variable<int>(taxRateBp);
+    map['tax_inclusive'] = Variable<bool>(taxInclusive);
+    map['tax_split_mode'] = Variable<String>(taxSplitMode);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  BillLinesCompanion toCompanion(bool nullToAbsent) {
+    return BillLinesCompanion(
+      id: Value(id),
+      billId: Value(billId),
+      orderLineId: Value(orderLineId),
+      name: Value(name),
+      variantText: Value(variantText),
+      addonsText: Value(addonsText),
+      qty: Value(qty),
+      unitPricePaise: Value(unitPricePaise),
+      grossPaise: Value(grossPaise),
+      discountPaise: Value(discountPaise),
+      taxRateBp: Value(taxRateBp),
+      taxInclusive: Value(taxInclusive),
+      taxSplitMode: Value(taxSplitMode),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory BillLineRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BillLineRow(
+      id: serializer.fromJson<String>(json['id']),
+      billId: serializer.fromJson<String>(json['billId']),
+      orderLineId: serializer.fromJson<String>(json['orderLineId']),
+      name: serializer.fromJson<String>(json['name']),
+      variantText: serializer.fromJson<String>(json['variantText']),
+      addonsText: serializer.fromJson<String>(json['addonsText']),
+      qty: serializer.fromJson<int>(json['qty']),
+      unitPricePaise: serializer.fromJson<int>(json['unitPricePaise']),
+      grossPaise: serializer.fromJson<int>(json['grossPaise']),
+      discountPaise: serializer.fromJson<int>(json['discountPaise']),
+      taxRateBp: serializer.fromJson<int>(json['taxRateBp']),
+      taxInclusive: serializer.fromJson<bool>(json['taxInclusive']),
+      taxSplitMode: serializer.fromJson<String>(json['taxSplitMode']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'billId': serializer.toJson<String>(billId),
+      'orderLineId': serializer.toJson<String>(orderLineId),
+      'name': serializer.toJson<String>(name),
+      'variantText': serializer.toJson<String>(variantText),
+      'addonsText': serializer.toJson<String>(addonsText),
+      'qty': serializer.toJson<int>(qty),
+      'unitPricePaise': serializer.toJson<int>(unitPricePaise),
+      'grossPaise': serializer.toJson<int>(grossPaise),
+      'discountPaise': serializer.toJson<int>(discountPaise),
+      'taxRateBp': serializer.toJson<int>(taxRateBp),
+      'taxInclusive': serializer.toJson<bool>(taxInclusive),
+      'taxSplitMode': serializer.toJson<String>(taxSplitMode),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  BillLineRow copyWith({
+    String? id,
+    String? billId,
+    String? orderLineId,
+    String? name,
+    String? variantText,
+    String? addonsText,
+    int? qty,
+    int? unitPricePaise,
+    int? grossPaise,
+    int? discountPaise,
+    int? taxRateBp,
+    bool? taxInclusive,
+    String? taxSplitMode,
+    int? sortOrder,
+  }) => BillLineRow(
+    id: id ?? this.id,
+    billId: billId ?? this.billId,
+    orderLineId: orderLineId ?? this.orderLineId,
+    name: name ?? this.name,
+    variantText: variantText ?? this.variantText,
+    addonsText: addonsText ?? this.addonsText,
+    qty: qty ?? this.qty,
+    unitPricePaise: unitPricePaise ?? this.unitPricePaise,
+    grossPaise: grossPaise ?? this.grossPaise,
+    discountPaise: discountPaise ?? this.discountPaise,
+    taxRateBp: taxRateBp ?? this.taxRateBp,
+    taxInclusive: taxInclusive ?? this.taxInclusive,
+    taxSplitMode: taxSplitMode ?? this.taxSplitMode,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  BillLineRow copyWithCompanion(BillLinesCompanion data) {
+    return BillLineRow(
+      id: data.id.present ? data.id.value : this.id,
+      billId: data.billId.present ? data.billId.value : this.billId,
+      orderLineId: data.orderLineId.present
+          ? data.orderLineId.value
+          : this.orderLineId,
+      name: data.name.present ? data.name.value : this.name,
+      variantText: data.variantText.present
+          ? data.variantText.value
+          : this.variantText,
+      addonsText: data.addonsText.present
+          ? data.addonsText.value
+          : this.addonsText,
+      qty: data.qty.present ? data.qty.value : this.qty,
+      unitPricePaise: data.unitPricePaise.present
+          ? data.unitPricePaise.value
+          : this.unitPricePaise,
+      grossPaise: data.grossPaise.present
+          ? data.grossPaise.value
+          : this.grossPaise,
+      discountPaise: data.discountPaise.present
+          ? data.discountPaise.value
+          : this.discountPaise,
+      taxRateBp: data.taxRateBp.present ? data.taxRateBp.value : this.taxRateBp,
+      taxInclusive: data.taxInclusive.present
+          ? data.taxInclusive.value
+          : this.taxInclusive,
+      taxSplitMode: data.taxSplitMode.present
+          ? data.taxSplitMode.value
+          : this.taxSplitMode,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BillLineRow(')
+          ..write('id: $id, ')
+          ..write('billId: $billId, ')
+          ..write('orderLineId: $orderLineId, ')
+          ..write('name: $name, ')
+          ..write('variantText: $variantText, ')
+          ..write('addonsText: $addonsText, ')
+          ..write('qty: $qty, ')
+          ..write('unitPricePaise: $unitPricePaise, ')
+          ..write('grossPaise: $grossPaise, ')
+          ..write('discountPaise: $discountPaise, ')
+          ..write('taxRateBp: $taxRateBp, ')
+          ..write('taxInclusive: $taxInclusive, ')
+          ..write('taxSplitMode: $taxSplitMode, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    billId,
+    orderLineId,
+    name,
+    variantText,
+    addonsText,
+    qty,
+    unitPricePaise,
+    grossPaise,
+    discountPaise,
+    taxRateBp,
+    taxInclusive,
+    taxSplitMode,
+    sortOrder,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BillLineRow &&
+          other.id == this.id &&
+          other.billId == this.billId &&
+          other.orderLineId == this.orderLineId &&
+          other.name == this.name &&
+          other.variantText == this.variantText &&
+          other.addonsText == this.addonsText &&
+          other.qty == this.qty &&
+          other.unitPricePaise == this.unitPricePaise &&
+          other.grossPaise == this.grossPaise &&
+          other.discountPaise == this.discountPaise &&
+          other.taxRateBp == this.taxRateBp &&
+          other.taxInclusive == this.taxInclusive &&
+          other.taxSplitMode == this.taxSplitMode &&
+          other.sortOrder == this.sortOrder);
+}
+
+class BillLinesCompanion extends UpdateCompanion<BillLineRow> {
+  final Value<String> id;
+  final Value<String> billId;
+  final Value<String> orderLineId;
+  final Value<String> name;
+  final Value<String> variantText;
+  final Value<String> addonsText;
+  final Value<int> qty;
+  final Value<int> unitPricePaise;
+  final Value<int> grossPaise;
+  final Value<int> discountPaise;
+  final Value<int> taxRateBp;
+  final Value<bool> taxInclusive;
+  final Value<String> taxSplitMode;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const BillLinesCompanion({
+    this.id = const Value.absent(),
+    this.billId = const Value.absent(),
+    this.orderLineId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.variantText = const Value.absent(),
+    this.addonsText = const Value.absent(),
+    this.qty = const Value.absent(),
+    this.unitPricePaise = const Value.absent(),
+    this.grossPaise = const Value.absent(),
+    this.discountPaise = const Value.absent(),
+    this.taxRateBp = const Value.absent(),
+    this.taxInclusive = const Value.absent(),
+    this.taxSplitMode = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BillLinesCompanion.insert({
+    required String id,
+    required String billId,
+    required String orderLineId,
+    required String name,
+    this.variantText = const Value.absent(),
+    this.addonsText = const Value.absent(),
+    required int qty,
+    required int unitPricePaise,
+    required int grossPaise,
+    required int discountPaise,
+    required int taxRateBp,
+    required bool taxInclusive,
+    required String taxSplitMode,
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       billId = Value(billId),
+       orderLineId = Value(orderLineId),
+       name = Value(name),
+       qty = Value(qty),
+       unitPricePaise = Value(unitPricePaise),
+       grossPaise = Value(grossPaise),
+       discountPaise = Value(discountPaise),
+       taxRateBp = Value(taxRateBp),
+       taxInclusive = Value(taxInclusive),
+       taxSplitMode = Value(taxSplitMode);
+  static Insertable<BillLineRow> custom({
+    Expression<String>? id,
+    Expression<String>? billId,
+    Expression<String>? orderLineId,
+    Expression<String>? name,
+    Expression<String>? variantText,
+    Expression<String>? addonsText,
+    Expression<int>? qty,
+    Expression<int>? unitPricePaise,
+    Expression<int>? grossPaise,
+    Expression<int>? discountPaise,
+    Expression<int>? taxRateBp,
+    Expression<bool>? taxInclusive,
+    Expression<String>? taxSplitMode,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (billId != null) 'bill_id': billId,
+      if (orderLineId != null) 'order_line_id': orderLineId,
+      if (name != null) 'name': name,
+      if (variantText != null) 'variant_text': variantText,
+      if (addonsText != null) 'addons_text': addonsText,
+      if (qty != null) 'qty': qty,
+      if (unitPricePaise != null) 'unit_price_paise': unitPricePaise,
+      if (grossPaise != null) 'gross_paise': grossPaise,
+      if (discountPaise != null) 'discount_paise': discountPaise,
+      if (taxRateBp != null) 'tax_rate_bp': taxRateBp,
+      if (taxInclusive != null) 'tax_inclusive': taxInclusive,
+      if (taxSplitMode != null) 'tax_split_mode': taxSplitMode,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BillLinesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? billId,
+    Value<String>? orderLineId,
+    Value<String>? name,
+    Value<String>? variantText,
+    Value<String>? addonsText,
+    Value<int>? qty,
+    Value<int>? unitPricePaise,
+    Value<int>? grossPaise,
+    Value<int>? discountPaise,
+    Value<int>? taxRateBp,
+    Value<bool>? taxInclusive,
+    Value<String>? taxSplitMode,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return BillLinesCompanion(
+      id: id ?? this.id,
+      billId: billId ?? this.billId,
+      orderLineId: orderLineId ?? this.orderLineId,
+      name: name ?? this.name,
+      variantText: variantText ?? this.variantText,
+      addonsText: addonsText ?? this.addonsText,
+      qty: qty ?? this.qty,
+      unitPricePaise: unitPricePaise ?? this.unitPricePaise,
+      grossPaise: grossPaise ?? this.grossPaise,
+      discountPaise: discountPaise ?? this.discountPaise,
+      taxRateBp: taxRateBp ?? this.taxRateBp,
+      taxInclusive: taxInclusive ?? this.taxInclusive,
+      taxSplitMode: taxSplitMode ?? this.taxSplitMode,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (billId.present) {
+      map['bill_id'] = Variable<String>(billId.value);
+    }
+    if (orderLineId.present) {
+      map['order_line_id'] = Variable<String>(orderLineId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (variantText.present) {
+      map['variant_text'] = Variable<String>(variantText.value);
+    }
+    if (addonsText.present) {
+      map['addons_text'] = Variable<String>(addonsText.value);
+    }
+    if (qty.present) {
+      map['qty'] = Variable<int>(qty.value);
+    }
+    if (unitPricePaise.present) {
+      map['unit_price_paise'] = Variable<int>(unitPricePaise.value);
+    }
+    if (grossPaise.present) {
+      map['gross_paise'] = Variable<int>(grossPaise.value);
+    }
+    if (discountPaise.present) {
+      map['discount_paise'] = Variable<int>(discountPaise.value);
+    }
+    if (taxRateBp.present) {
+      map['tax_rate_bp'] = Variable<int>(taxRateBp.value);
+    }
+    if (taxInclusive.present) {
+      map['tax_inclusive'] = Variable<bool>(taxInclusive.value);
+    }
+    if (taxSplitMode.present) {
+      map['tax_split_mode'] = Variable<String>(taxSplitMode.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BillLinesCompanion(')
+          ..write('id: $id, ')
+          ..write('billId: $billId, ')
+          ..write('orderLineId: $orderLineId, ')
+          ..write('name: $name, ')
+          ..write('variantText: $variantText, ')
+          ..write('addonsText: $addonsText, ')
+          ..write('qty: $qty, ')
+          ..write('unitPricePaise: $unitPricePaise, ')
+          ..write('grossPaise: $grossPaise, ')
+          ..write('discountPaise: $discountPaise, ')
+          ..write('taxRateBp: $taxRateBp, ')
+          ..write('taxInclusive: $taxInclusive, ')
+          ..write('taxSplitMode: $taxSplitMode, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BillTaxesTable extends BillTaxes
+    with TableInfo<$BillTaxesTable, BillTaxRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BillTaxesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _billIdMeta = const VerificationMeta('billId');
+  @override
+  late final GeneratedColumn<String> billId = GeneratedColumn<String>(
+    'bill_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES bills (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _baseMeta = const VerificationMeta('base');
+  @override
+  late final GeneratedColumn<String> base = GeneratedColumn<String>(
+    'base',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _rateBpMeta = const VerificationMeta('rateBp');
+  @override
+  late final GeneratedColumn<int> rateBp = GeneratedColumn<int>(
+    'rate_bp',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _inclusiveMeta = const VerificationMeta(
+    'inclusive',
+  );
+  @override
+  late final GeneratedColumn<bool> inclusive = GeneratedColumn<bool>(
+    'inclusive',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("inclusive" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _splitModeMeta = const VerificationMeta(
+    'splitMode',
+  );
+  @override
+  late final GeneratedColumn<String> splitMode = GeneratedColumn<String>(
+    'split_mode',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _taxablePaiseMeta = const VerificationMeta(
+    'taxablePaise',
+  );
+  @override
+  late final GeneratedColumn<int> taxablePaise = GeneratedColumn<int>(
+    'taxable_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _cgstPaiseMeta = const VerificationMeta(
+    'cgstPaise',
+  );
+  @override
+  late final GeneratedColumn<int> cgstPaise = GeneratedColumn<int>(
+    'cgst_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _sgstPaiseMeta = const VerificationMeta(
+    'sgstPaise',
+  );
+  @override
+  late final GeneratedColumn<int> sgstPaise = GeneratedColumn<int>(
+    'sgst_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _igstPaiseMeta = const VerificationMeta(
+    'igstPaise',
+  );
+  @override
+  late final GeneratedColumn<int> igstPaise = GeneratedColumn<int>(
+    'igst_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _otherPaiseMeta = const VerificationMeta(
+    'otherPaise',
+  );
+  @override
+  late final GeneratedColumn<int> otherPaise = GeneratedColumn<int>(
+    'other_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    billId,
+    base,
+    rateBp,
+    inclusive,
+    splitMode,
+    taxablePaise,
+    cgstPaise,
+    sgstPaise,
+    igstPaise,
+    otherPaise,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'bill_taxes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BillTaxRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('bill_id')) {
+      context.handle(
+        _billIdMeta,
+        billId.isAcceptableOrUnknown(data['bill_id']!, _billIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_billIdMeta);
+    }
+    if (data.containsKey('base')) {
+      context.handle(
+        _baseMeta,
+        base.isAcceptableOrUnknown(data['base']!, _baseMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_baseMeta);
+    }
+    if (data.containsKey('rate_bp')) {
+      context.handle(
+        _rateBpMeta,
+        rateBp.isAcceptableOrUnknown(data['rate_bp']!, _rateBpMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_rateBpMeta);
+    }
+    if (data.containsKey('inclusive')) {
+      context.handle(
+        _inclusiveMeta,
+        inclusive.isAcceptableOrUnknown(data['inclusive']!, _inclusiveMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_inclusiveMeta);
+    }
+    if (data.containsKey('split_mode')) {
+      context.handle(
+        _splitModeMeta,
+        splitMode.isAcceptableOrUnknown(data['split_mode']!, _splitModeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_splitModeMeta);
+    }
+    if (data.containsKey('taxable_paise')) {
+      context.handle(
+        _taxablePaiseMeta,
+        taxablePaise.isAcceptableOrUnknown(
+          data['taxable_paise']!,
+          _taxablePaiseMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_taxablePaiseMeta);
+    }
+    if (data.containsKey('cgst_paise')) {
+      context.handle(
+        _cgstPaiseMeta,
+        cgstPaise.isAcceptableOrUnknown(data['cgst_paise']!, _cgstPaiseMeta),
+      );
+    }
+    if (data.containsKey('sgst_paise')) {
+      context.handle(
+        _sgstPaiseMeta,
+        sgstPaise.isAcceptableOrUnknown(data['sgst_paise']!, _sgstPaiseMeta),
+      );
+    }
+    if (data.containsKey('igst_paise')) {
+      context.handle(
+        _igstPaiseMeta,
+        igstPaise.isAcceptableOrUnknown(data['igst_paise']!, _igstPaiseMeta),
+      );
+    }
+    if (data.containsKey('other_paise')) {
+      context.handle(
+        _otherPaiseMeta,
+        otherPaise.isAcceptableOrUnknown(data['other_paise']!, _otherPaiseMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BillTaxRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BillTaxRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      billId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bill_id'],
+      )!,
+      base: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}base'],
+      )!,
+      rateBp: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rate_bp'],
+      )!,
+      inclusive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}inclusive'],
+      )!,
+      splitMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}split_mode'],
+      )!,
+      taxablePaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}taxable_paise'],
+      )!,
+      cgstPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}cgst_paise'],
+      )!,
+      sgstPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sgst_paise'],
+      )!,
+      igstPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}igst_paise'],
+      )!,
+      otherPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}other_paise'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $BillTaxesTable createAlias(String alias) {
+    return $BillTaxesTable(attachedDatabase, alias);
+  }
+}
+
+class BillTaxRow extends DataClass implements Insertable<BillTaxRow> {
+  final String id;
+  final String billId;
+
+  /// `TaxBase.name`: items | serviceCharge.
+  final String base;
+  final int rateBp;
+  final bool inclusive;
+  final String splitMode;
+  final int taxablePaise;
+  final int cgstPaise;
+  final int sgstPaise;
+  final int igstPaise;
+  final int otherPaise;
+  final int sortOrder;
+  const BillTaxRow({
+    required this.id,
+    required this.billId,
+    required this.base,
+    required this.rateBp,
+    required this.inclusive,
+    required this.splitMode,
+    required this.taxablePaise,
+    required this.cgstPaise,
+    required this.sgstPaise,
+    required this.igstPaise,
+    required this.otherPaise,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['bill_id'] = Variable<String>(billId);
+    map['base'] = Variable<String>(base);
+    map['rate_bp'] = Variable<int>(rateBp);
+    map['inclusive'] = Variable<bool>(inclusive);
+    map['split_mode'] = Variable<String>(splitMode);
+    map['taxable_paise'] = Variable<int>(taxablePaise);
+    map['cgst_paise'] = Variable<int>(cgstPaise);
+    map['sgst_paise'] = Variable<int>(sgstPaise);
+    map['igst_paise'] = Variable<int>(igstPaise);
+    map['other_paise'] = Variable<int>(otherPaise);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  BillTaxesCompanion toCompanion(bool nullToAbsent) {
+    return BillTaxesCompanion(
+      id: Value(id),
+      billId: Value(billId),
+      base: Value(base),
+      rateBp: Value(rateBp),
+      inclusive: Value(inclusive),
+      splitMode: Value(splitMode),
+      taxablePaise: Value(taxablePaise),
+      cgstPaise: Value(cgstPaise),
+      sgstPaise: Value(sgstPaise),
+      igstPaise: Value(igstPaise),
+      otherPaise: Value(otherPaise),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory BillTaxRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BillTaxRow(
+      id: serializer.fromJson<String>(json['id']),
+      billId: serializer.fromJson<String>(json['billId']),
+      base: serializer.fromJson<String>(json['base']),
+      rateBp: serializer.fromJson<int>(json['rateBp']),
+      inclusive: serializer.fromJson<bool>(json['inclusive']),
+      splitMode: serializer.fromJson<String>(json['splitMode']),
+      taxablePaise: serializer.fromJson<int>(json['taxablePaise']),
+      cgstPaise: serializer.fromJson<int>(json['cgstPaise']),
+      sgstPaise: serializer.fromJson<int>(json['sgstPaise']),
+      igstPaise: serializer.fromJson<int>(json['igstPaise']),
+      otherPaise: serializer.fromJson<int>(json['otherPaise']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'billId': serializer.toJson<String>(billId),
+      'base': serializer.toJson<String>(base),
+      'rateBp': serializer.toJson<int>(rateBp),
+      'inclusive': serializer.toJson<bool>(inclusive),
+      'splitMode': serializer.toJson<String>(splitMode),
+      'taxablePaise': serializer.toJson<int>(taxablePaise),
+      'cgstPaise': serializer.toJson<int>(cgstPaise),
+      'sgstPaise': serializer.toJson<int>(sgstPaise),
+      'igstPaise': serializer.toJson<int>(igstPaise),
+      'otherPaise': serializer.toJson<int>(otherPaise),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  BillTaxRow copyWith({
+    String? id,
+    String? billId,
+    String? base,
+    int? rateBp,
+    bool? inclusive,
+    String? splitMode,
+    int? taxablePaise,
+    int? cgstPaise,
+    int? sgstPaise,
+    int? igstPaise,
+    int? otherPaise,
+    int? sortOrder,
+  }) => BillTaxRow(
+    id: id ?? this.id,
+    billId: billId ?? this.billId,
+    base: base ?? this.base,
+    rateBp: rateBp ?? this.rateBp,
+    inclusive: inclusive ?? this.inclusive,
+    splitMode: splitMode ?? this.splitMode,
+    taxablePaise: taxablePaise ?? this.taxablePaise,
+    cgstPaise: cgstPaise ?? this.cgstPaise,
+    sgstPaise: sgstPaise ?? this.sgstPaise,
+    igstPaise: igstPaise ?? this.igstPaise,
+    otherPaise: otherPaise ?? this.otherPaise,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  BillTaxRow copyWithCompanion(BillTaxesCompanion data) {
+    return BillTaxRow(
+      id: data.id.present ? data.id.value : this.id,
+      billId: data.billId.present ? data.billId.value : this.billId,
+      base: data.base.present ? data.base.value : this.base,
+      rateBp: data.rateBp.present ? data.rateBp.value : this.rateBp,
+      inclusive: data.inclusive.present ? data.inclusive.value : this.inclusive,
+      splitMode: data.splitMode.present ? data.splitMode.value : this.splitMode,
+      taxablePaise: data.taxablePaise.present
+          ? data.taxablePaise.value
+          : this.taxablePaise,
+      cgstPaise: data.cgstPaise.present ? data.cgstPaise.value : this.cgstPaise,
+      sgstPaise: data.sgstPaise.present ? data.sgstPaise.value : this.sgstPaise,
+      igstPaise: data.igstPaise.present ? data.igstPaise.value : this.igstPaise,
+      otherPaise: data.otherPaise.present
+          ? data.otherPaise.value
+          : this.otherPaise,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BillTaxRow(')
+          ..write('id: $id, ')
+          ..write('billId: $billId, ')
+          ..write('base: $base, ')
+          ..write('rateBp: $rateBp, ')
+          ..write('inclusive: $inclusive, ')
+          ..write('splitMode: $splitMode, ')
+          ..write('taxablePaise: $taxablePaise, ')
+          ..write('cgstPaise: $cgstPaise, ')
+          ..write('sgstPaise: $sgstPaise, ')
+          ..write('igstPaise: $igstPaise, ')
+          ..write('otherPaise: $otherPaise, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    billId,
+    base,
+    rateBp,
+    inclusive,
+    splitMode,
+    taxablePaise,
+    cgstPaise,
+    sgstPaise,
+    igstPaise,
+    otherPaise,
+    sortOrder,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BillTaxRow &&
+          other.id == this.id &&
+          other.billId == this.billId &&
+          other.base == this.base &&
+          other.rateBp == this.rateBp &&
+          other.inclusive == this.inclusive &&
+          other.splitMode == this.splitMode &&
+          other.taxablePaise == this.taxablePaise &&
+          other.cgstPaise == this.cgstPaise &&
+          other.sgstPaise == this.sgstPaise &&
+          other.igstPaise == this.igstPaise &&
+          other.otherPaise == this.otherPaise &&
+          other.sortOrder == this.sortOrder);
+}
+
+class BillTaxesCompanion extends UpdateCompanion<BillTaxRow> {
+  final Value<String> id;
+  final Value<String> billId;
+  final Value<String> base;
+  final Value<int> rateBp;
+  final Value<bool> inclusive;
+  final Value<String> splitMode;
+  final Value<int> taxablePaise;
+  final Value<int> cgstPaise;
+  final Value<int> sgstPaise;
+  final Value<int> igstPaise;
+  final Value<int> otherPaise;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const BillTaxesCompanion({
+    this.id = const Value.absent(),
+    this.billId = const Value.absent(),
+    this.base = const Value.absent(),
+    this.rateBp = const Value.absent(),
+    this.inclusive = const Value.absent(),
+    this.splitMode = const Value.absent(),
+    this.taxablePaise = const Value.absent(),
+    this.cgstPaise = const Value.absent(),
+    this.sgstPaise = const Value.absent(),
+    this.igstPaise = const Value.absent(),
+    this.otherPaise = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BillTaxesCompanion.insert({
+    required String id,
+    required String billId,
+    required String base,
+    required int rateBp,
+    required bool inclusive,
+    required String splitMode,
+    required int taxablePaise,
+    this.cgstPaise = const Value.absent(),
+    this.sgstPaise = const Value.absent(),
+    this.igstPaise = const Value.absent(),
+    this.otherPaise = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       billId = Value(billId),
+       base = Value(base),
+       rateBp = Value(rateBp),
+       inclusive = Value(inclusive),
+       splitMode = Value(splitMode),
+       taxablePaise = Value(taxablePaise);
+  static Insertable<BillTaxRow> custom({
+    Expression<String>? id,
+    Expression<String>? billId,
+    Expression<String>? base,
+    Expression<int>? rateBp,
+    Expression<bool>? inclusive,
+    Expression<String>? splitMode,
+    Expression<int>? taxablePaise,
+    Expression<int>? cgstPaise,
+    Expression<int>? sgstPaise,
+    Expression<int>? igstPaise,
+    Expression<int>? otherPaise,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (billId != null) 'bill_id': billId,
+      if (base != null) 'base': base,
+      if (rateBp != null) 'rate_bp': rateBp,
+      if (inclusive != null) 'inclusive': inclusive,
+      if (splitMode != null) 'split_mode': splitMode,
+      if (taxablePaise != null) 'taxable_paise': taxablePaise,
+      if (cgstPaise != null) 'cgst_paise': cgstPaise,
+      if (sgstPaise != null) 'sgst_paise': sgstPaise,
+      if (igstPaise != null) 'igst_paise': igstPaise,
+      if (otherPaise != null) 'other_paise': otherPaise,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BillTaxesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? billId,
+    Value<String>? base,
+    Value<int>? rateBp,
+    Value<bool>? inclusive,
+    Value<String>? splitMode,
+    Value<int>? taxablePaise,
+    Value<int>? cgstPaise,
+    Value<int>? sgstPaise,
+    Value<int>? igstPaise,
+    Value<int>? otherPaise,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return BillTaxesCompanion(
+      id: id ?? this.id,
+      billId: billId ?? this.billId,
+      base: base ?? this.base,
+      rateBp: rateBp ?? this.rateBp,
+      inclusive: inclusive ?? this.inclusive,
+      splitMode: splitMode ?? this.splitMode,
+      taxablePaise: taxablePaise ?? this.taxablePaise,
+      cgstPaise: cgstPaise ?? this.cgstPaise,
+      sgstPaise: sgstPaise ?? this.sgstPaise,
+      igstPaise: igstPaise ?? this.igstPaise,
+      otherPaise: otherPaise ?? this.otherPaise,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (billId.present) {
+      map['bill_id'] = Variable<String>(billId.value);
+    }
+    if (base.present) {
+      map['base'] = Variable<String>(base.value);
+    }
+    if (rateBp.present) {
+      map['rate_bp'] = Variable<int>(rateBp.value);
+    }
+    if (inclusive.present) {
+      map['inclusive'] = Variable<bool>(inclusive.value);
+    }
+    if (splitMode.present) {
+      map['split_mode'] = Variable<String>(splitMode.value);
+    }
+    if (taxablePaise.present) {
+      map['taxable_paise'] = Variable<int>(taxablePaise.value);
+    }
+    if (cgstPaise.present) {
+      map['cgst_paise'] = Variable<int>(cgstPaise.value);
+    }
+    if (sgstPaise.present) {
+      map['sgst_paise'] = Variable<int>(sgstPaise.value);
+    }
+    if (igstPaise.present) {
+      map['igst_paise'] = Variable<int>(igstPaise.value);
+    }
+    if (otherPaise.present) {
+      map['other_paise'] = Variable<int>(otherPaise.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BillTaxesCompanion(')
+          ..write('id: $id, ')
+          ..write('billId: $billId, ')
+          ..write('base: $base, ')
+          ..write('rateBp: $rateBp, ')
+          ..write('inclusive: $inclusive, ')
+          ..write('splitMode: $splitMode, ')
+          ..write('taxablePaise: $taxablePaise, ')
+          ..write('cgstPaise: $cgstPaise, ')
+          ..write('sgstPaise: $sgstPaise, ')
+          ..write('igstPaise: $igstPaise, ')
+          ..write('otherPaise: $otherPaise, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -12957,6 +16034,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $KitchenTicketsTable kitchenTickets = $KitchenTicketsTable(this);
   late final $KitchenTicketLinesTable kitchenTicketLines =
       $KitchenTicketLinesTable(this);
+  late final $BillsTable bills = $BillsTable(this);
+  late final $BillLinesTable billLines = $BillLinesTable(this);
+  late final $BillTaxesTable billTaxes = $BillTaxesTable(this);
   late final Index idxPrintJobsStatus = Index(
     'idx_print_jobs_status',
     'CREATE INDEX idx_print_jobs_status ON print_jobs (status)',
@@ -13025,6 +16105,26 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_kitchen_ticket_lines_ticket',
     'CREATE INDEX idx_kitchen_ticket_lines_ticket ON kitchen_ticket_lines (ticket_id)',
   );
+  late final Index idxBillsOrder = Index(
+    'idx_bills_order',
+    'CREATE INDEX idx_bills_order ON bills (order_id)',
+  );
+  late final Index idxBillsBusinessDate = Index(
+    'idx_bills_business_date',
+    'CREATE INDEX idx_bills_business_date ON bills (business_date)',
+  );
+  late final Index idxBillsPrefixSeq = Index(
+    'idx_bills_prefix_seq',
+    'CREATE UNIQUE INDEX idx_bills_prefix_seq ON bills (bill_prefix, bill_seq)',
+  );
+  late final Index idxBillLinesBill = Index(
+    'idx_bill_lines_bill',
+    'CREATE INDEX idx_bill_lines_bill ON bill_lines (bill_id)',
+  );
+  late final Index idxBillTaxesBill = Index(
+    'idx_bill_taxes_bill',
+    'CREATE INDEX idx_bill_taxes_bill ON bill_taxes (bill_id)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -13052,6 +16152,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     stationPrinters,
     kitchenTickets,
     kitchenTicketLines,
+    bills,
+    billLines,
+    billTaxes,
     idxPrintJobsStatus,
     idxPrintJobsSourceKey,
     idxPrintHistoryAt,
@@ -13069,6 +16172,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     idxOrderLineOptionsLine,
     idxKitchenTicketsOrder,
     idxKitchenTicketLinesTicket,
+    idxBillsOrder,
+    idxBillsBusinessDate,
+    idxBillsPrefixSeq,
+    idxBillLinesBill,
+    idxBillTaxesBill,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -19421,6 +22529,25 @@ final class $$OrdersTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$BillsTable, List<BillRow>> _billsRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.bills,
+    aliasName: 'orders__id__bills__order_id',
+  );
+
+  $$BillsTableProcessedTableManager get billsRefs {
+    final manager = $$BillsTableTableManager(
+      $_db,
+      $_db.bills,
+    ).filter((f) => f.orderId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_billsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$OrdersTableFilterComposer
@@ -19591,6 +22718,31 @@ class $$OrdersTableFilterComposer
           }) => $$KitchenTicketsTableFilterComposer(
             $db: $db,
             $table: $db.kitchenTickets,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> billsRefs(
+    Expression<bool> Function($$BillsTableFilterComposer f) f,
+  ) {
+    final $$BillsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.bills,
+      getReferencedColumn: (t) => t.orderId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BillsTableFilterComposer(
+            $db: $db,
+            $table: $db.bills,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -19883,6 +23035,31 @@ class $$OrdersTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> billsRefs<T extends Object>(
+    Expression<T> Function($$BillsTableAnnotationComposer a) f,
+  ) {
+    final $$BillsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.bills,
+      getReferencedColumn: (t) => t.orderId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BillsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.bills,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$OrdersTableTableManager
@@ -19902,6 +23079,7 @@ class $$OrdersTableTableManager
             bool tableId,
             bool orderLinesRefs,
             bool kitchenTicketsRefs,
+            bool billsRefs,
           })
         > {
   $$OrdersTableTableManager(_$AppDatabase db, $OrdersTable table)
@@ -20020,12 +23198,14 @@ class $$OrdersTableTableManager
                 tableId = false,
                 orderLinesRefs = false,
                 kitchenTicketsRefs = false,
+                billsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (orderLinesRefs) db.orderLines,
                     if (kitchenTicketsRefs) db.kitchenTickets,
+                    if (billsRefs) db.bills,
                   ],
                   addJoins:
                       <
@@ -20099,6 +23279,22 @@ class $$OrdersTableTableManager
                           referencedColumn: 'order_id',
                           typedResults: items,
                         ),
+                      if (billsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          OrderRow,
+                          $OrdersTable,
+                          BillRow,
+                          $BillsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$OrdersTableReferences
+                              ._billsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$OrdersTableReferences(db, table, p0).billsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'order_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -20123,6 +23319,7 @@ typedef $$OrdersTableProcessedTableManager =
         bool tableId,
         bool orderLinesRefs,
         bool kitchenTicketsRefs,
+        bool billsRefs,
       })
     >;
 typedef $$OrderLinesTableCreateCompanionBuilder = OrderLinesCompanion Function({
@@ -20247,6 +23444,24 @@ final class $$OrderLinesTableReferences
     final cache = $_typedResult.readTableOrNull(
       _kitchenTicketLinesRefsTable($_db),
     );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$BillLinesTable, List<BillLineRow>>
+  _billLinesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.billLines,
+    aliasName: 'order_lines__id__bill_lines__order_line_id',
+  );
+
+  $$BillLinesTableProcessedTableManager get billLinesRefs {
+    final manager = $$BillLinesTableTableManager(
+      $_db,
+      $_db.billLines,
+    ).filter((f) => f.orderLineId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_billLinesRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -20434,6 +23649,31 @@ class $$OrderLinesTableFilterComposer
           }) => $$KitchenTicketLinesTableFilterComposer(
             $db: $db,
             $table: $db.kitchenTicketLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> billLinesRefs(
+    Expression<bool> Function($$BillLinesTableFilterComposer f) f,
+  ) {
+    final $$BillLinesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.billLines,
+      getReferencedColumn: (t) => t.orderLineId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BillLinesTableFilterComposer(
+            $db: $db,
+            $table: $db.billLines,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -20753,6 +23993,31 @@ class $$OrderLinesTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> billLinesRefs<T extends Object>(
+    Expression<T> Function($$BillLinesTableAnnotationComposer a) f,
+  ) {
+    final $$BillLinesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.billLines,
+      getReferencedColumn: (t) => t.orderLineId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BillLinesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.billLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$OrderLinesTableTableManager
@@ -20773,6 +24038,7 @@ class $$OrderLinesTableTableManager
             bool menuItemId,
             bool orderLineOptionsRefs,
             bool kitchenTicketLinesRefs,
+            bool billLinesRefs,
           })
         > {
   $$OrderLinesTableTableManager(_$AppDatabase db, $OrderLinesTable table)
@@ -20888,12 +24154,14 @@ class $$OrderLinesTableTableManager
                 menuItemId = false,
                 orderLineOptionsRefs = false,
                 kitchenTicketLinesRefs = false,
+                billLinesRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (orderLineOptionsRefs) db.orderLineOptions,
                     if (kitchenTicketLinesRefs) db.kitchenTicketLines,
+                    if (billLinesRefs) db.billLines,
                   ],
                   addJoins:
                       <
@@ -20978,6 +24246,26 @@ class $$OrderLinesTableTableManager
                           referencedColumn: 'order_line_id',
                           typedResults: items,
                         ),
+                      if (billLinesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          OrderLineRow,
+                          $OrderLinesTable,
+                          BillLineRow,
+                          $BillLinesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$OrderLinesTableReferences
+                              ._billLinesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$OrderLinesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).billLinesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'order_line_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -21003,6 +24291,7 @@ typedef $$OrderLinesTableProcessedTableManager =
         bool menuItemId,
         bool orderLineOptionsRefs,
         bool kitchenTicketLinesRefs,
+        bool billLinesRefs,
       })
     >;
 typedef $$OrderLineOptionsTableCreateCompanionBuilder =
@@ -22545,6 +25834,2014 @@ typedef $$KitchenTicketLinesTableProcessedTableManager =
       KitchenTicketLineRow,
       PrefetchHooks Function({bool ticketId, bool orderLineId})
     >;
+typedef $$BillsTableCreateCompanionBuilder = BillsCompanion Function({
+  required String id,
+  required String orderId,
+  Value<String> billPrefix,
+  required int billSeq,
+  required String billNumber,
+  required String businessDate,
+  required String status,
+  required int orderNo,
+  required String orderType,
+  Value<String> tableLabel,
+  Value<String> customerName,
+  Value<String> customerPhone,
+  Value<String> staffName,
+  required String headerJson,
+  required int itemsTotalPaise,
+  required int discountPaise,
+  Value<String> discountLabel,
+  required int serviceChargePaise,
+  Value<int> serviceChargeBp,
+  required int taxPaise,
+  required int roundOffPaise,
+  required int grandTotalPaise,
+  required String rounding,
+  required String settingsJson,
+  required String clientRequestId,
+  required int createdAt,
+  Value<int?> voidedAt,
+  Value<String> voidReason,
+  Value<int> rowid,
+});
+typedef $$BillsTableUpdateCompanionBuilder = BillsCompanion Function({
+  Value<String> id,
+  Value<String> orderId,
+  Value<String> billPrefix,
+  Value<int> billSeq,
+  Value<String> billNumber,
+  Value<String> businessDate,
+  Value<String> status,
+  Value<int> orderNo,
+  Value<String> orderType,
+  Value<String> tableLabel,
+  Value<String> customerName,
+  Value<String> customerPhone,
+  Value<String> staffName,
+  Value<String> headerJson,
+  Value<int> itemsTotalPaise,
+  Value<int> discountPaise,
+  Value<String> discountLabel,
+  Value<int> serviceChargePaise,
+  Value<int> serviceChargeBp,
+  Value<int> taxPaise,
+  Value<int> roundOffPaise,
+  Value<int> grandTotalPaise,
+  Value<String> rounding,
+  Value<String> settingsJson,
+  Value<String> clientRequestId,
+  Value<int> createdAt,
+  Value<int?> voidedAt,
+  Value<String> voidReason,
+  Value<int> rowid,
+});
+
+final class $$BillsTableReferences
+    extends BaseReferences<_$AppDatabase, $BillsTable, BillRow> {
+  $$BillsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $OrdersTable _orderIdTable(_$AppDatabase db) =>
+      db.orders.createAlias('bills__order_id__orders__id');
+
+  $$OrdersTableProcessedTableManager get orderId {
+    final $_column = $_itemColumn<String>('order_id')!;
+
+    final manager = $$OrdersTableTableManager(
+      $_db,
+      $_db.orders,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_orderIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$BillLinesTable, List<BillLineRow>>
+  _billLinesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.billLines,
+    aliasName: 'bills__id__bill_lines__bill_id',
+  );
+
+  $$BillLinesTableProcessedTableManager get billLinesRefs {
+    final manager = $$BillLinesTableTableManager(
+      $_db,
+      $_db.billLines,
+    ).filter((f) => f.billId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_billLinesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$BillTaxesTable, List<BillTaxRow>>
+  _billTaxesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.billTaxes,
+    aliasName: 'bills__id__bill_taxes__bill_id',
+  );
+
+  $$BillTaxesTableProcessedTableManager get billTaxesRefs {
+    final manager = $$BillTaxesTableTableManager(
+      $_db,
+      $_db.billTaxes,
+    ).filter((f) => f.billId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_billTaxesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$BillsTableFilterComposer extends Composer<_$AppDatabase, $BillsTable> {
+  $$BillsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get billPrefix => $composableBuilder(
+    column: $table.billPrefix,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get billSeq => $composableBuilder(
+    column: $table.billSeq,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get billNumber => $composableBuilder(
+    column: $table.billNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get businessDate => $composableBuilder(
+    column: $table.businessDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get orderNo => $composableBuilder(
+    column: $table.orderNo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get orderType => $composableBuilder(
+    column: $table.orderType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tableLabel => $composableBuilder(
+    column: $table.tableLabel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get customerName => $composableBuilder(
+    column: $table.customerName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get customerPhone => $composableBuilder(
+    column: $table.customerPhone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get staffName => $composableBuilder(
+    column: $table.staffName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get headerJson => $composableBuilder(
+    column: $table.headerJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get itemsTotalPaise => $composableBuilder(
+    column: $table.itemsTotalPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get discountPaise => $composableBuilder(
+    column: $table.discountPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get discountLabel => $composableBuilder(
+    column: $table.discountLabel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serviceChargePaise => $composableBuilder(
+    column: $table.serviceChargePaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serviceChargeBp => $composableBuilder(
+    column: $table.serviceChargeBp,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get taxPaise => $composableBuilder(
+    column: $table.taxPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get roundOffPaise => $composableBuilder(
+    column: $table.roundOffPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get grandTotalPaise => $composableBuilder(
+    column: $table.grandTotalPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get rounding => $composableBuilder(
+    column: $table.rounding,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get settingsJson => $composableBuilder(
+    column: $table.settingsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clientRequestId => $composableBuilder(
+    column: $table.clientRequestId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get voidedAt => $composableBuilder(
+    column: $table.voidedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get voidReason => $composableBuilder(
+    column: $table.voidReason,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$OrdersTableFilterComposer get orderId {
+    final $$OrdersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.orderId,
+      referencedTable: $db.orders,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrdersTableFilterComposer(
+            $db: $db,
+            $table: $db.orders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> billLinesRefs(
+    Expression<bool> Function($$BillLinesTableFilterComposer f) f,
+  ) {
+    final $$BillLinesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.billLines,
+      getReferencedColumn: (t) => t.billId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BillLinesTableFilterComposer(
+            $db: $db,
+            $table: $db.billLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> billTaxesRefs(
+    Expression<bool> Function($$BillTaxesTableFilterComposer f) f,
+  ) {
+    final $$BillTaxesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.billTaxes,
+      getReferencedColumn: (t) => t.billId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BillTaxesTableFilterComposer(
+            $db: $db,
+            $table: $db.billTaxes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$BillsTableOrderingComposer
+    extends Composer<_$AppDatabase, $BillsTable> {
+  $$BillsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get billPrefix => $composableBuilder(
+    column: $table.billPrefix,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get billSeq => $composableBuilder(
+    column: $table.billSeq,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get billNumber => $composableBuilder(
+    column: $table.billNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get businessDate => $composableBuilder(
+    column: $table.businessDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get orderNo => $composableBuilder(
+    column: $table.orderNo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get orderType => $composableBuilder(
+    column: $table.orderType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tableLabel => $composableBuilder(
+    column: $table.tableLabel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get customerName => $composableBuilder(
+    column: $table.customerName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get customerPhone => $composableBuilder(
+    column: $table.customerPhone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get staffName => $composableBuilder(
+    column: $table.staffName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get headerJson => $composableBuilder(
+    column: $table.headerJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get itemsTotalPaise => $composableBuilder(
+    column: $table.itemsTotalPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get discountPaise => $composableBuilder(
+    column: $table.discountPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get discountLabel => $composableBuilder(
+    column: $table.discountLabel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serviceChargePaise => $composableBuilder(
+    column: $table.serviceChargePaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serviceChargeBp => $composableBuilder(
+    column: $table.serviceChargeBp,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get taxPaise => $composableBuilder(
+    column: $table.taxPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get roundOffPaise => $composableBuilder(
+    column: $table.roundOffPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get grandTotalPaise => $composableBuilder(
+    column: $table.grandTotalPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get rounding => $composableBuilder(
+    column: $table.rounding,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get settingsJson => $composableBuilder(
+    column: $table.settingsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clientRequestId => $composableBuilder(
+    column: $table.clientRequestId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get voidedAt => $composableBuilder(
+    column: $table.voidedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get voidReason => $composableBuilder(
+    column: $table.voidReason,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$OrdersTableOrderingComposer get orderId {
+    final $$OrdersTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.orderId,
+      referencedTable: $db.orders,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrdersTableOrderingComposer(
+            $db: $db,
+            $table: $db.orders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BillsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BillsTable> {
+  $$BillsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get billPrefix => $composableBuilder(
+    column: $table.billPrefix,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get billSeq =>
+      $composableBuilder(column: $table.billSeq, builder: (column) => column);
+
+  GeneratedColumn<String> get billNumber => $composableBuilder(
+    column: $table.billNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get businessDate => $composableBuilder(
+    column: $table.businessDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<int> get orderNo =>
+      $composableBuilder(column: $table.orderNo, builder: (column) => column);
+
+  GeneratedColumn<String> get orderType =>
+      $composableBuilder(column: $table.orderType, builder: (column) => column);
+
+  GeneratedColumn<String> get tableLabel => $composableBuilder(
+    column: $table.tableLabel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get customerName => $composableBuilder(
+    column: $table.customerName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get customerPhone => $composableBuilder(
+    column: $table.customerPhone,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get staffName =>
+      $composableBuilder(column: $table.staffName, builder: (column) => column);
+
+  GeneratedColumn<String> get headerJson => $composableBuilder(
+    column: $table.headerJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get itemsTotalPaise => $composableBuilder(
+    column: $table.itemsTotalPaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get discountPaise => $composableBuilder(
+    column: $table.discountPaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get discountLabel => $composableBuilder(
+    column: $table.discountLabel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get serviceChargePaise => $composableBuilder(
+    column: $table.serviceChargePaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get serviceChargeBp => $composableBuilder(
+    column: $table.serviceChargeBp,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get taxPaise =>
+      $composableBuilder(column: $table.taxPaise, builder: (column) => column);
+
+  GeneratedColumn<int> get roundOffPaise => $composableBuilder(
+    column: $table.roundOffPaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get grandTotalPaise => $composableBuilder(
+    column: $table.grandTotalPaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get rounding =>
+      $composableBuilder(column: $table.rounding, builder: (column) => column);
+
+  GeneratedColumn<String> get settingsJson => $composableBuilder(
+    column: $table.settingsJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get clientRequestId => $composableBuilder(
+    column: $table.clientRequestId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get voidedAt =>
+      $composableBuilder(column: $table.voidedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get voidReason => $composableBuilder(
+    column: $table.voidReason,
+    builder: (column) => column,
+  );
+
+  $$OrdersTableAnnotationComposer get orderId {
+    final $$OrdersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.orderId,
+      referencedTable: $db.orders,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrdersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.orders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> billLinesRefs<T extends Object>(
+    Expression<T> Function($$BillLinesTableAnnotationComposer a) f,
+  ) {
+    final $$BillLinesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.billLines,
+      getReferencedColumn: (t) => t.billId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BillLinesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.billLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> billTaxesRefs<T extends Object>(
+    Expression<T> Function($$BillTaxesTableAnnotationComposer a) f,
+  ) {
+    final $$BillTaxesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.billTaxes,
+      getReferencedColumn: (t) => t.billId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BillTaxesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.billTaxes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$BillsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BillsTable,
+          BillRow,
+          $$BillsTableFilterComposer,
+          $$BillsTableOrderingComposer,
+          $$BillsTableAnnotationComposer,
+          $$BillsTableCreateCompanionBuilder,
+          $$BillsTableUpdateCompanionBuilder,
+          (BillRow, $$BillsTableReferences),
+          BillRow,
+          PrefetchHooks Function({
+            bool orderId,
+            bool billLinesRefs,
+            bool billTaxesRefs,
+          })
+        > {
+  $$BillsTableTableManager(_$AppDatabase db, $BillsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BillsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BillsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BillsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> orderId = const Value.absent(),
+                Value<String> billPrefix = const Value.absent(),
+                Value<int> billSeq = const Value.absent(),
+                Value<String> billNumber = const Value.absent(),
+                Value<String> businessDate = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> orderNo = const Value.absent(),
+                Value<String> orderType = const Value.absent(),
+                Value<String> tableLabel = const Value.absent(),
+                Value<String> customerName = const Value.absent(),
+                Value<String> customerPhone = const Value.absent(),
+                Value<String> staffName = const Value.absent(),
+                Value<String> headerJson = const Value.absent(),
+                Value<int> itemsTotalPaise = const Value.absent(),
+                Value<int> discountPaise = const Value.absent(),
+                Value<String> discountLabel = const Value.absent(),
+                Value<int> serviceChargePaise = const Value.absent(),
+                Value<int> serviceChargeBp = const Value.absent(),
+                Value<int> taxPaise = const Value.absent(),
+                Value<int> roundOffPaise = const Value.absent(),
+                Value<int> grandTotalPaise = const Value.absent(),
+                Value<String> rounding = const Value.absent(),
+                Value<String> settingsJson = const Value.absent(),
+                Value<String> clientRequestId = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int?> voidedAt = const Value.absent(),
+                Value<String> voidReason = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BillsCompanion(
+                id: id,
+                orderId: orderId,
+                billPrefix: billPrefix,
+                billSeq: billSeq,
+                billNumber: billNumber,
+                businessDate: businessDate,
+                status: status,
+                orderNo: orderNo,
+                orderType: orderType,
+                tableLabel: tableLabel,
+                customerName: customerName,
+                customerPhone: customerPhone,
+                staffName: staffName,
+                headerJson: headerJson,
+                itemsTotalPaise: itemsTotalPaise,
+                discountPaise: discountPaise,
+                discountLabel: discountLabel,
+                serviceChargePaise: serviceChargePaise,
+                serviceChargeBp: serviceChargeBp,
+                taxPaise: taxPaise,
+                roundOffPaise: roundOffPaise,
+                grandTotalPaise: grandTotalPaise,
+                rounding: rounding,
+                settingsJson: settingsJson,
+                clientRequestId: clientRequestId,
+                createdAt: createdAt,
+                voidedAt: voidedAt,
+                voidReason: voidReason,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String orderId,
+                Value<String> billPrefix = const Value.absent(),
+                required int billSeq,
+                required String billNumber,
+                required String businessDate,
+                required String status,
+                required int orderNo,
+                required String orderType,
+                Value<String> tableLabel = const Value.absent(),
+                Value<String> customerName = const Value.absent(),
+                Value<String> customerPhone = const Value.absent(),
+                Value<String> staffName = const Value.absent(),
+                required String headerJson,
+                required int itemsTotalPaise,
+                required int discountPaise,
+                Value<String> discountLabel = const Value.absent(),
+                required int serviceChargePaise,
+                Value<int> serviceChargeBp = const Value.absent(),
+                required int taxPaise,
+                required int roundOffPaise,
+                required int grandTotalPaise,
+                required String rounding,
+                required String settingsJson,
+                required String clientRequestId,
+                required int createdAt,
+                Value<int?> voidedAt = const Value.absent(),
+                Value<String> voidReason = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BillsCompanion.insert(
+                id: id,
+                orderId: orderId,
+                billPrefix: billPrefix,
+                billSeq: billSeq,
+                billNumber: billNumber,
+                businessDate: businessDate,
+                status: status,
+                orderNo: orderNo,
+                orderType: orderType,
+                tableLabel: tableLabel,
+                customerName: customerName,
+                customerPhone: customerPhone,
+                staffName: staffName,
+                headerJson: headerJson,
+                itemsTotalPaise: itemsTotalPaise,
+                discountPaise: discountPaise,
+                discountLabel: discountLabel,
+                serviceChargePaise: serviceChargePaise,
+                serviceChargeBp: serviceChargeBp,
+                taxPaise: taxPaise,
+                roundOffPaise: roundOffPaise,
+                grandTotalPaise: grandTotalPaise,
+                rounding: rounding,
+                settingsJson: settingsJson,
+                clientRequestId: clientRequestId,
+                createdAt: createdAt,
+                voidedAt: voidedAt,
+                voidReason: voidReason,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$BillsTable, BillRow>(table),
+                  $$BillsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                orderId = false,
+                billLinesRefs = false,
+                billTaxesRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (billLinesRefs) db.billLines,
+                    if (billTaxesRefs) db.billTaxes,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (orderId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.orderId,
+                            referencedTable: $$BillsTableReferences
+                                ._orderIdTable(db),
+                            referencedColumn: $$BillsTableReferences
+                                ._orderIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (billLinesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          BillRow,
+                          $BillsTable,
+                          BillLineRow,
+                          $BillLinesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$BillsTableReferences
+                              ._billLinesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$BillsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).billLinesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'bill_id',
+                          typedResults: items,
+                        ),
+                      if (billTaxesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          BillRow,
+                          $BillsTable,
+                          BillTaxRow,
+                          $BillTaxesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$BillsTableReferences
+                              ._billTaxesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$BillsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).billTaxesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'bill_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$BillsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BillsTable,
+      BillRow,
+      $$BillsTableFilterComposer,
+      $$BillsTableOrderingComposer,
+      $$BillsTableAnnotationComposer,
+      $$BillsTableCreateCompanionBuilder,
+      $$BillsTableUpdateCompanionBuilder,
+      (BillRow, $$BillsTableReferences),
+      BillRow,
+      PrefetchHooks Function({
+        bool orderId,
+        bool billLinesRefs,
+        bool billTaxesRefs,
+      })
+    >;
+typedef $$BillLinesTableCreateCompanionBuilder = BillLinesCompanion Function({
+  required String id,
+  required String billId,
+  required String orderLineId,
+  required String name,
+  Value<String> variantText,
+  Value<String> addonsText,
+  required int qty,
+  required int unitPricePaise,
+  required int grossPaise,
+  required int discountPaise,
+  required int taxRateBp,
+  required bool taxInclusive,
+  required String taxSplitMode,
+  Value<int> sortOrder,
+  Value<int> rowid,
+});
+typedef $$BillLinesTableUpdateCompanionBuilder = BillLinesCompanion Function({
+  Value<String> id,
+  Value<String> billId,
+  Value<String> orderLineId,
+  Value<String> name,
+  Value<String> variantText,
+  Value<String> addonsText,
+  Value<int> qty,
+  Value<int> unitPricePaise,
+  Value<int> grossPaise,
+  Value<int> discountPaise,
+  Value<int> taxRateBp,
+  Value<bool> taxInclusive,
+  Value<String> taxSplitMode,
+  Value<int> sortOrder,
+  Value<int> rowid,
+});
+
+final class $$BillLinesTableReferences
+    extends BaseReferences<_$AppDatabase, $BillLinesTable, BillLineRow> {
+  $$BillLinesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $BillsTable _billIdTable(_$AppDatabase db) =>
+      db.bills.createAlias('bill_lines__bill_id__bills__id');
+
+  $$BillsTableProcessedTableManager get billId {
+    final $_column = $_itemColumn<String>('bill_id')!;
+
+    final manager = $$BillsTableTableManager(
+      $_db,
+      $_db.bills,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_billIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $OrderLinesTable _orderLineIdTable(_$AppDatabase db) =>
+      db.orderLines.createAlias('bill_lines__order_line_id__order_lines__id');
+
+  $$OrderLinesTableProcessedTableManager get orderLineId {
+    final $_column = $_itemColumn<String>('order_line_id')!;
+
+    final manager = $$OrderLinesTableTableManager(
+      $_db,
+      $_db.orderLines,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_orderLineIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$BillLinesTableFilterComposer
+    extends Composer<_$AppDatabase, $BillLinesTable> {
+  $$BillLinesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get variantText => $composableBuilder(
+    column: $table.variantText,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get addonsText => $composableBuilder(
+    column: $table.addonsText,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get qty => $composableBuilder(
+    column: $table.qty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get unitPricePaise => $composableBuilder(
+    column: $table.unitPricePaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get grossPaise => $composableBuilder(
+    column: $table.grossPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get discountPaise => $composableBuilder(
+    column: $table.discountPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get taxRateBp => $composableBuilder(
+    column: $table.taxRateBp,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get taxInclusive => $composableBuilder(
+    column: $table.taxInclusive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get taxSplitMode => $composableBuilder(
+    column: $table.taxSplitMode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$BillsTableFilterComposer get billId {
+    final $$BillsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.billId,
+      referencedTable: $db.bills,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BillsTableFilterComposer(
+            $db: $db,
+            $table: $db.bills,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$OrderLinesTableFilterComposer get orderLineId {
+    final $$OrderLinesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.orderLineId,
+      referencedTable: $db.orderLines,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrderLinesTableFilterComposer(
+            $db: $db,
+            $table: $db.orderLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BillLinesTableOrderingComposer
+    extends Composer<_$AppDatabase, $BillLinesTable> {
+  $$BillLinesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get variantText => $composableBuilder(
+    column: $table.variantText,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get addonsText => $composableBuilder(
+    column: $table.addonsText,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get qty => $composableBuilder(
+    column: $table.qty,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get unitPricePaise => $composableBuilder(
+    column: $table.unitPricePaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get grossPaise => $composableBuilder(
+    column: $table.grossPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get discountPaise => $composableBuilder(
+    column: $table.discountPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get taxRateBp => $composableBuilder(
+    column: $table.taxRateBp,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get taxInclusive => $composableBuilder(
+    column: $table.taxInclusive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get taxSplitMode => $composableBuilder(
+    column: $table.taxSplitMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$BillsTableOrderingComposer get billId {
+    final $$BillsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.billId,
+      referencedTable: $db.bills,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BillsTableOrderingComposer(
+            $db: $db,
+            $table: $db.bills,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$OrderLinesTableOrderingComposer get orderLineId {
+    final $$OrderLinesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.orderLineId,
+      referencedTable: $db.orderLines,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrderLinesTableOrderingComposer(
+            $db: $db,
+            $table: $db.orderLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BillLinesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BillLinesTable> {
+  $$BillLinesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get variantText => $composableBuilder(
+    column: $table.variantText,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get addonsText => $composableBuilder(
+    column: $table.addonsText,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get qty =>
+      $composableBuilder(column: $table.qty, builder: (column) => column);
+
+  GeneratedColumn<int> get unitPricePaise => $composableBuilder(
+    column: $table.unitPricePaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get grossPaise => $composableBuilder(
+    column: $table.grossPaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get discountPaise => $composableBuilder(
+    column: $table.discountPaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get taxRateBp =>
+      $composableBuilder(column: $table.taxRateBp, builder: (column) => column);
+
+  GeneratedColumn<bool> get taxInclusive => $composableBuilder(
+    column: $table.taxInclusive,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get taxSplitMode => $composableBuilder(
+    column: $table.taxSplitMode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  $$BillsTableAnnotationComposer get billId {
+    final $$BillsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.billId,
+      referencedTable: $db.bills,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BillsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.bills,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$OrderLinesTableAnnotationComposer get orderLineId {
+    final $$OrderLinesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.orderLineId,
+      referencedTable: $db.orderLines,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrderLinesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.orderLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BillLinesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BillLinesTable,
+          BillLineRow,
+          $$BillLinesTableFilterComposer,
+          $$BillLinesTableOrderingComposer,
+          $$BillLinesTableAnnotationComposer,
+          $$BillLinesTableCreateCompanionBuilder,
+          $$BillLinesTableUpdateCompanionBuilder,
+          (BillLineRow, $$BillLinesTableReferences),
+          BillLineRow,
+          PrefetchHooks Function({bool billId, bool orderLineId})
+        > {
+  $$BillLinesTableTableManager(_$AppDatabase db, $BillLinesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BillLinesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BillLinesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BillLinesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> billId = const Value.absent(),
+                Value<String> orderLineId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> variantText = const Value.absent(),
+                Value<String> addonsText = const Value.absent(),
+                Value<int> qty = const Value.absent(),
+                Value<int> unitPricePaise = const Value.absent(),
+                Value<int> grossPaise = const Value.absent(),
+                Value<int> discountPaise = const Value.absent(),
+                Value<int> taxRateBp = const Value.absent(),
+                Value<bool> taxInclusive = const Value.absent(),
+                Value<String> taxSplitMode = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BillLinesCompanion(
+                id: id,
+                billId: billId,
+                orderLineId: orderLineId,
+                name: name,
+                variantText: variantText,
+                addonsText: addonsText,
+                qty: qty,
+                unitPricePaise: unitPricePaise,
+                grossPaise: grossPaise,
+                discountPaise: discountPaise,
+                taxRateBp: taxRateBp,
+                taxInclusive: taxInclusive,
+                taxSplitMode: taxSplitMode,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String billId,
+                required String orderLineId,
+                required String name,
+                Value<String> variantText = const Value.absent(),
+                Value<String> addonsText = const Value.absent(),
+                required int qty,
+                required int unitPricePaise,
+                required int grossPaise,
+                required int discountPaise,
+                required int taxRateBp,
+                required bool taxInclusive,
+                required String taxSplitMode,
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BillLinesCompanion.insert(
+                id: id,
+                billId: billId,
+                orderLineId: orderLineId,
+                name: name,
+                variantText: variantText,
+                addonsText: addonsText,
+                qty: qty,
+                unitPricePaise: unitPricePaise,
+                grossPaise: grossPaise,
+                discountPaise: discountPaise,
+                taxRateBp: taxRateBp,
+                taxInclusive: taxInclusive,
+                taxSplitMode: taxSplitMode,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$BillLinesTable, BillLineRow>(table),
+                  $$BillLinesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({billId = false, orderLineId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (billId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.billId,
+                        referencedTable: $$BillLinesTableReferences
+                            ._billIdTable(db),
+                        referencedColumn: $$BillLinesTableReferences
+                            ._billIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+                    if (orderLineId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.orderLineId,
+                        referencedTable: $$BillLinesTableReferences
+                            ._orderLineIdTable(db),
+                        referencedColumn: $$BillLinesTableReferences
+                            ._orderLineIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$BillLinesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BillLinesTable,
+      BillLineRow,
+      $$BillLinesTableFilterComposer,
+      $$BillLinesTableOrderingComposer,
+      $$BillLinesTableAnnotationComposer,
+      $$BillLinesTableCreateCompanionBuilder,
+      $$BillLinesTableUpdateCompanionBuilder,
+      (BillLineRow, $$BillLinesTableReferences),
+      BillLineRow,
+      PrefetchHooks Function({bool billId, bool orderLineId})
+    >;
+typedef $$BillTaxesTableCreateCompanionBuilder = BillTaxesCompanion Function({
+  required String id,
+  required String billId,
+  required String base,
+  required int rateBp,
+  required bool inclusive,
+  required String splitMode,
+  required int taxablePaise,
+  Value<int> cgstPaise,
+  Value<int> sgstPaise,
+  Value<int> igstPaise,
+  Value<int> otherPaise,
+  Value<int> sortOrder,
+  Value<int> rowid,
+});
+typedef $$BillTaxesTableUpdateCompanionBuilder = BillTaxesCompanion Function({
+  Value<String> id,
+  Value<String> billId,
+  Value<String> base,
+  Value<int> rateBp,
+  Value<bool> inclusive,
+  Value<String> splitMode,
+  Value<int> taxablePaise,
+  Value<int> cgstPaise,
+  Value<int> sgstPaise,
+  Value<int> igstPaise,
+  Value<int> otherPaise,
+  Value<int> sortOrder,
+  Value<int> rowid,
+});
+
+final class $$BillTaxesTableReferences
+    extends BaseReferences<_$AppDatabase, $BillTaxesTable, BillTaxRow> {
+  $$BillTaxesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $BillsTable _billIdTable(_$AppDatabase db) =>
+      db.bills.createAlias('bill_taxes__bill_id__bills__id');
+
+  $$BillsTableProcessedTableManager get billId {
+    final $_column = $_itemColumn<String>('bill_id')!;
+
+    final manager = $$BillsTableTableManager(
+      $_db,
+      $_db.bills,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_billIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$BillTaxesTableFilterComposer
+    extends Composer<_$AppDatabase, $BillTaxesTable> {
+  $$BillTaxesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get base => $composableBuilder(
+    column: $table.base,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get rateBp => $composableBuilder(
+    column: $table.rateBp,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get inclusive => $composableBuilder(
+    column: $table.inclusive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get splitMode => $composableBuilder(
+    column: $table.splitMode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get taxablePaise => $composableBuilder(
+    column: $table.taxablePaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get cgstPaise => $composableBuilder(
+    column: $table.cgstPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sgstPaise => $composableBuilder(
+    column: $table.sgstPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get igstPaise => $composableBuilder(
+    column: $table.igstPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get otherPaise => $composableBuilder(
+    column: $table.otherPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$BillsTableFilterComposer get billId {
+    final $$BillsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.billId,
+      referencedTable: $db.bills,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BillsTableFilterComposer(
+            $db: $db,
+            $table: $db.bills,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BillTaxesTableOrderingComposer
+    extends Composer<_$AppDatabase, $BillTaxesTable> {
+  $$BillTaxesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get base => $composableBuilder(
+    column: $table.base,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get rateBp => $composableBuilder(
+    column: $table.rateBp,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get inclusive => $composableBuilder(
+    column: $table.inclusive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get splitMode => $composableBuilder(
+    column: $table.splitMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get taxablePaise => $composableBuilder(
+    column: $table.taxablePaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get cgstPaise => $composableBuilder(
+    column: $table.cgstPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sgstPaise => $composableBuilder(
+    column: $table.sgstPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get igstPaise => $composableBuilder(
+    column: $table.igstPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get otherPaise => $composableBuilder(
+    column: $table.otherPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$BillsTableOrderingComposer get billId {
+    final $$BillsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.billId,
+      referencedTable: $db.bills,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BillsTableOrderingComposer(
+            $db: $db,
+            $table: $db.bills,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BillTaxesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BillTaxesTable> {
+  $$BillTaxesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get base =>
+      $composableBuilder(column: $table.base, builder: (column) => column);
+
+  GeneratedColumn<int> get rateBp =>
+      $composableBuilder(column: $table.rateBp, builder: (column) => column);
+
+  GeneratedColumn<bool> get inclusive =>
+      $composableBuilder(column: $table.inclusive, builder: (column) => column);
+
+  GeneratedColumn<String> get splitMode =>
+      $composableBuilder(column: $table.splitMode, builder: (column) => column);
+
+  GeneratedColumn<int> get taxablePaise => $composableBuilder(
+    column: $table.taxablePaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get cgstPaise =>
+      $composableBuilder(column: $table.cgstPaise, builder: (column) => column);
+
+  GeneratedColumn<int> get sgstPaise =>
+      $composableBuilder(column: $table.sgstPaise, builder: (column) => column);
+
+  GeneratedColumn<int> get igstPaise =>
+      $composableBuilder(column: $table.igstPaise, builder: (column) => column);
+
+  GeneratedColumn<int> get otherPaise => $composableBuilder(
+    column: $table.otherPaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  $$BillsTableAnnotationComposer get billId {
+    final $$BillsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.billId,
+      referencedTable: $db.bills,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$BillsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.bills,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$BillTaxesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BillTaxesTable,
+          BillTaxRow,
+          $$BillTaxesTableFilterComposer,
+          $$BillTaxesTableOrderingComposer,
+          $$BillTaxesTableAnnotationComposer,
+          $$BillTaxesTableCreateCompanionBuilder,
+          $$BillTaxesTableUpdateCompanionBuilder,
+          (BillTaxRow, $$BillTaxesTableReferences),
+          BillTaxRow,
+          PrefetchHooks Function({bool billId})
+        > {
+  $$BillTaxesTableTableManager(_$AppDatabase db, $BillTaxesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BillTaxesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BillTaxesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BillTaxesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> billId = const Value.absent(),
+                Value<String> base = const Value.absent(),
+                Value<int> rateBp = const Value.absent(),
+                Value<bool> inclusive = const Value.absent(),
+                Value<String> splitMode = const Value.absent(),
+                Value<int> taxablePaise = const Value.absent(),
+                Value<int> cgstPaise = const Value.absent(),
+                Value<int> sgstPaise = const Value.absent(),
+                Value<int> igstPaise = const Value.absent(),
+                Value<int> otherPaise = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BillTaxesCompanion(
+                id: id,
+                billId: billId,
+                base: base,
+                rateBp: rateBp,
+                inclusive: inclusive,
+                splitMode: splitMode,
+                taxablePaise: taxablePaise,
+                cgstPaise: cgstPaise,
+                sgstPaise: sgstPaise,
+                igstPaise: igstPaise,
+                otherPaise: otherPaise,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String billId,
+                required String base,
+                required int rateBp,
+                required bool inclusive,
+                required String splitMode,
+                required int taxablePaise,
+                Value<int> cgstPaise = const Value.absent(),
+                Value<int> sgstPaise = const Value.absent(),
+                Value<int> igstPaise = const Value.absent(),
+                Value<int> otherPaise = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BillTaxesCompanion.insert(
+                id: id,
+                billId: billId,
+                base: base,
+                rateBp: rateBp,
+                inclusive: inclusive,
+                splitMode: splitMode,
+                taxablePaise: taxablePaise,
+                cgstPaise: cgstPaise,
+                sgstPaise: sgstPaise,
+                igstPaise: igstPaise,
+                otherPaise: otherPaise,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$BillTaxesTable, BillTaxRow>(table),
+                  $$BillTaxesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({billId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (billId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.billId,
+                        referencedTable: $$BillTaxesTableReferences
+                            ._billIdTable(db),
+                        referencedColumn: $$BillTaxesTableReferences
+                            ._billIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$BillTaxesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BillTaxesTable,
+      BillTaxRow,
+      $$BillTaxesTableFilterComposer,
+      $$BillTaxesTableOrderingComposer,
+      $$BillTaxesTableAnnotationComposer,
+      $$BillTaxesTableCreateCompanionBuilder,
+      $$BillTaxesTableUpdateCompanionBuilder,
+      (BillTaxRow, $$BillTaxesTableReferences),
+      BillTaxRow,
+      PrefetchHooks Function({bool billId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -22593,4 +27890,10 @@ class $AppDatabaseManager {
       $$KitchenTicketsTableTableManager(_db, _db.kitchenTickets);
   $$KitchenTicketLinesTableTableManager get kitchenTicketLines =>
       $$KitchenTicketLinesTableTableManager(_db, _db.kitchenTicketLines);
+  $$BillsTableTableManager get bills =>
+      $$BillsTableTableManager(_db, _db.bills);
+  $$BillLinesTableTableManager get billLines =>
+      $$BillLinesTableTableManager(_db, _db.billLines);
+  $$BillTaxesTableTableManager get billTaxes =>
+      $$BillTaxesTableTableManager(_db, _db.billTaxes);
 }

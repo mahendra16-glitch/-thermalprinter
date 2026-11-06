@@ -537,3 +537,118 @@ class KitchenTicketLines extends Table {
   @override
   Set<Column> get primaryKey => {id};
 }
+
+// ---------------------------------------------------------------------------
+// Schema v5: bills
+// ---------------------------------------------------------------------------
+// A bill is finalized once and never edited. Correcting it means voiding it
+// (with a reason) and generating a new bill with a new number. Payment
+// status is derived from the payment ledger (Phase 6), not stored here.
+
+@DataClassName('BillRow')
+@TableIndex(name: 'idx_bills_order', columns: {#orderId})
+@TableIndex(name: 'idx_bills_business_date', columns: {#businessDate})
+@TableIndex(
+  name: 'idx_bills_prefix_seq',
+  columns: {#billPrefix, #billSeq},
+  unique: true,
+)
+class Bills extends Table {
+  TextColumn get id => text()();
+  TextColumn get orderId =>
+      text().references(Orders, #id, onDelete: KeyAction.restrict)();
+
+  /// Bill number = prefix + sequence. Each prefix has its own sequence.
+  TextColumn get billPrefix => text().withDefault(const Constant(''))();
+  IntColumn get billSeq => integer()();
+  TextColumn get billNumber => text().unique()();
+  TextColumn get businessDate => text()();
+
+  /// `BillStatus.name`: finalized | voided.
+  TextColumn get status => text()();
+
+  // Copies of order details at billing time.
+  IntColumn get orderNo => integer()();
+  TextColumn get orderType => text()();
+  TextColumn get tableLabel => text().withDefault(const Constant(''))();
+  TextColumn get customerName => text().withDefault(const Constant(''))();
+  TextColumn get customerPhone => text().withDefault(const Constant(''))();
+  TextColumn get staffName => text().withDefault(const Constant(''))();
+
+  /// `BillHeader` JSON: business name, address, GSTIN… at billing time.
+  TextColumn get headerJson => text()();
+
+  IntColumn get itemsTotalPaise => integer()();
+  IntColumn get discountPaise => integer()();
+  TextColumn get discountLabel => text().withDefault(const Constant(''))();
+  IntColumn get serviceChargePaise => integer()();
+  IntColumn get serviceChargeBp => integer().withDefault(const Constant(0))();
+
+  /// All tax, inclusive and exclusive.
+  IntColumn get taxPaise => integer()();
+  IntColumn get roundOffPaise => integer()();
+  IntColumn get grandTotalPaise => integer()();
+
+  /// `RoundingMode.name` used for this bill.
+  TextColumn get rounding => text()();
+
+  /// `BillingSettings` JSON used for this bill.
+  TextColumn get settingsJson => text()();
+  TextColumn get clientRequestId => text().unique()();
+  IntColumn get createdAt => integer()();
+  IntColumn get voidedAt => integer().nullable()();
+  TextColumn get voidReason => text().withDefault(const Constant(''))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DataClassName('BillLineRow')
+@TableIndex(name: 'idx_bill_lines_bill', columns: {#billId})
+class BillLines extends Table {
+  TextColumn get id => text()();
+  TextColumn get billId =>
+      text().references(Bills, #id, onDelete: KeyAction.restrict)();
+  TextColumn get orderLineId =>
+      text().references(OrderLines, #id, onDelete: KeyAction.restrict)();
+  TextColumn get name => text()();
+  TextColumn get variantText => text().withDefault(const Constant(''))();
+  TextColumn get addonsText => text().withDefault(const Constant(''))();
+  IntColumn get qty => integer()();
+  IntColumn get unitPricePaise => integer()();
+  IntColumn get grossPaise => integer()();
+
+  /// This line's share of the order discount.
+  IntColumn get discountPaise => integer()();
+  IntColumn get taxRateBp => integer()();
+  BoolColumn get taxInclusive => boolean()();
+  TextColumn get taxSplitMode => text()();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Tax per rate group on a bill (the printed tax breakdown).
+@DataClassName('BillTaxRow')
+@TableIndex(name: 'idx_bill_taxes_bill', columns: {#billId})
+class BillTaxes extends Table {
+  TextColumn get id => text()();
+  TextColumn get billId =>
+      text().references(Bills, #id, onDelete: KeyAction.restrict)();
+
+  /// `TaxBase.name`: items | serviceCharge.
+  TextColumn get base => text()();
+  IntColumn get rateBp => integer()();
+  BoolColumn get inclusive => boolean()();
+  TextColumn get splitMode => text()();
+  IntColumn get taxablePaise => integer()();
+  IntColumn get cgstPaise => integer().withDefault(const Constant(0))();
+  IntColumn get sgstPaise => integer().withDefault(const Constant(0))();
+  IntColumn get igstPaise => integer().withDefault(const Constant(0))();
+  IntColumn get otherPaise => integer().withDefault(const Constant(0))();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}

@@ -214,6 +214,65 @@ void main() {
     final jobs = (await tester.runAsync(() => storage.printJobs.getAllJobs()))!;
     expect(jobs.single.printType, 'KOT');
   });
+
+  testWidgets('generate, save and print a bill, then void it', (tester) async {
+    tester.view.physicalSize = const Size(1200, 900);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await seed(tester);
+    late String orderId;
+    await tester.runAsync(() async {
+      orderId = await storage.orders.createOrder(
+        const NewOrderRequest(
+          clientRequestId: 'w5',
+          type: OrderType.dineIn,
+          tableId: 't1',
+        ),
+      );
+      final tea = (await storage.menu.loadSnapshot()).items.firstWhere(
+        (i) => i.id == 'tea',
+      );
+      await storage.orders.addItem(orderId, _plain(tea), qty: 2);
+      await storage.kitchen.sendToKitchen(orderId, clientRequestId: 'k5');
+    });
+    await tester.pumpWidget(MaterialApp(home: OrderScreen(orderId: orderId)));
+    await settle(tester);
+
+    await tester.tap(find.text('Generate bill'));
+    await settle(tester);
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.textContaining('Bill preview'), findsOneWidget);
+    expect(find.text('Total'), findsOneWidget);
+    await tester.tap(find.text('Save & print'));
+    await tester.pump(const Duration(seconds: 1));
+    await settle(tester);
+    await settle(tester);
+
+    expect(find.text('Bill 1 · ₹40.00 · waiting for payment'), findsOneWidget);
+    expect(find.text('Generate bill'), findsNothing);
+    final bills = (await tester.runAsync(
+      () => storage.bills.billsForOrder(orderId),
+    ))!;
+    expect(bills.single.grandTotal, const Money(4000));
+    final jobs = (await tester.runAsync(() => storage.printJobs.getAllJobs()))!;
+    expect(jobs.where((j) => j.printType == 'BILL'), hasLength(1));
+
+    await tester.tap(find.widgetWithText(OutlinedButton, 'Void bill'));
+    await settle(tester);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.tap(find.text('Wrong item billed'));
+    await tester.pump();
+    await tester.tap(find.widgetWithText(FilledButton, 'Void bill'));
+    await tester.pump(const Duration(seconds: 1));
+    await settle(tester);
+    await settle(tester);
+    expect(find.text('Generate bill'), findsOneWidget);
+    final after = (await tester.runAsync(
+      () => storage.bills.billsForOrder(orderId),
+    ))!;
+    expect(after.single.isVoided, isTrue);
+    expect(after.single.voidReason, 'Wrong item billed');
+  });
 }
 
 ConfiguredItem _plain(MenuItem i) =>

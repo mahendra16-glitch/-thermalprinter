@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../features/billing/billing_settings_screen.dart';
 import '../models/print_mode.dart';
 import '../models/printer_device.dart';
 import '../services/storage_service.dart';
@@ -95,6 +96,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: 'Business Profile',
           subtitle: 'Restaurant name, address, phone, GSTIN, FSSAI, UPI ID.',
           page: () => const BusinessProfileScreen(),
+        ),
+        _navTile(
+          icon: Icons.receipt_long_rounded,
+          color: const Color(0xFFEA580C),
+          title: 'Billing & tax',
+          subtitle: 'Service charge, rounding, bill numbers, tax rates.',
+          page: () => const BillingSettingsScreen(),
         ),
         _navTile(
           icon: Icons.backup_rounded,

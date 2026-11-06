@@ -268,7 +268,10 @@ class TableRepository {
         await (_db.select(_db.orders)..where(
               (o) =>
                   o.tableId.isIn(areaTables) &
-                  o.status.isIn([OrderStatus.open.name, OrderStatus.held.name]),
+                  o.status.isIn([
+                    for (final s in OrderStatus.values)
+                      if (s.occupiesTable) s.name,
+                  ]),
             ))
             .get();
     return rows.length;
