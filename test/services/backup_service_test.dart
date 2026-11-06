@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
@@ -15,6 +16,7 @@ void main() {
   late BackupService backups;
 
   setUp(() async {
+    driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
     tmp = await Directory.systemTemp.createTemp('pos_backup_test');
     db = AppDatabase(NativeDatabase(File(p.join(tmp.path, 'live.db'))));
     storage = StorageService.forTesting(db);

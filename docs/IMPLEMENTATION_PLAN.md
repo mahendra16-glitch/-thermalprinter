@@ -226,7 +226,7 @@ Baseline results (2026-11-06):
 
 - [x] Phase 0 — audit and plan (this document)
 - [x] Phase 1 — git baseline; format-only commit; AGP build-blocker fix; Drift DB v1 + legacy import; repositories; business profile/settings; DB backup; fixes D3/D4/D5/D13; tests (see §10)
-- [ ] Phase 2 — Menu
+- [x] Phase 2 — Menu (see §11)
 - [ ] Phase 3 — Tables & orders
 - [ ] Phase 4 — KOT + printer fixes D1, D2, D6–D12, D14
 - [ ] Phase 5 — Billing & tax
@@ -300,3 +300,98 @@ Manual hardware tests are still required for every transport (BT, USB, LAN) at 5
 - D1, D2, D6–D12 and D14 remain (Phase 4). In particular, queued prints still contain test content, and Fast Mode still fails on `₹`.
 - Restore from backup is not implemented yet.
 - The `SharedPreferences` legacy keys remain on the device (read-only fallback). Delete them in a later release once the import has been confirmed in the field.
+
+---
+
+## 11. Phase 2 completion report (2026-11-06)
+
+### Commits
+- `Phase 2a` — schema v2, domain rules and the menu repository (with tests).
+- `Phase 2b` — menu screens, CSV import/export, widget tests and this report.
+
+### Database migration v1 → v2
+- New tables: `tax_profiles`, `kitchen_stations`, `menu_categories`, `menu_items`, `option_groups`, `option_choices`, `item_option_groups`, plus indexes on category, SKU and choice group.
+- The migration uses Drift's generated `stepByStep` (`lib/data/db/app_database.steps.dart`) and only creates tables, so existing data is untouched. `migration_log` gets a row for v2.
+- Schema snapshots are in `drift_schemas/pos/drift_schema_v1.json` and `…_v2.json`. `test/drift/pos/migration_test.dart` checks that v1 → v2 produces exactly the v2 schema, and that existing printers, jobs and settings survive the upgrade.
+- Workflow for future schema changes:
+  1. Edit `tables.dart` and bump `schemaVersion`.
+  2. Run `dart run build_runner build --delete-conflicting-outputs`.
+  3. Run `dart run drift_dev make-migrations`.
+  4. Write the `fromNToN+1` step.
+  5. Run `flutter test test/drift`.
+
+### Data rules
+- **No hard deletes anywhere in the menu.** Categories, items, option groups, choices, taxes and stations are switched off instead. A turned-off category also makes its items (and its subcategories' items) not orderable (`MenuSnapshot.isOrderable`).
+- Foreign keys are `RESTRICT`, so an item cannot point at a missing category, tax, station or group.
+- Validation lives in `MenuRepository` and is shown to staff as-is:
+  - Names are required.
+  - SKUs must be unique (case-insensitive).
+  - Two active items in one category can't share a name.
+  - Turning an item back on re-checks for duplicate names.
+  - Categories allow one level of subcategories.
+  - Option groups need max ≥ 1 and max ≥ min. Choice names must be unique within a group.
+  - Tax rates must be between 0% and 100%.
+  - A tax can't be turned off while active items use it.
+- Money is stored in integer paise and tax rates in basis points (5% = 500). No tax rate is built in, and none is created automatically. The Taxes screen tells the business to confirm its rates with an accountant.
+- Every create, update, on/off change, reorder, CSV import and CSV export writes an audit row.
+
+### Ordering logic ready for Phase 3 (`lib/domain/menu/item_configuration.dart`)
+- `validateSelection` enforces each attached, active group's min/max, rejects inactive or unknown choices, and returns staff-readable messages.
+- `configureItem` returns a `ConfiguredItem` snapshot for an order line. It holds the item name, chosen options (in group order) with their prices, the unit price (base + options), the variant text for the KOT, the tax rate, inclusive flag and split mode, and the station. Order lines will store this copy, so later menu edits cannot change a past bill.
+
+### Screens (new **Menu** tab, first in the bottom bar)
+- **Menu list:**
+  - Instant search by name or short code.
+  - Chips for All, Favourites, each category, and subcategories.
+  - Optionally show turned-off items.
+  - Headings per category, veg/non-veg/egg marks, a favourite star, and badges such as Off, Category hidden, No dine-in and No takeaway.
+  - Drag to reorder when one category with no subcategories is selected.
+  - Live refresh through Drift table watches.
+- **Item editor:**
+  - Name, price, SKU, category (including subcategories), tax, food type, dine-in and takeaway availability, favourite, and on/off.
+  - Station, preparation time and description.
+  - Attach, detach and reorder variant/add-on groups.
+- **Categories:** add, rename, move under a parent, add subcategories, on/off, drag to reorder.
+- **Variants & add-ons:** groups with kind, min and max, plus a warning when the minimum can't be met. Choices have an extra price, on/off and drag order.
+- **Taxes:** name, rate %, inclusive or exclusive, and how the bill shows it (single line, CGST + SGST, or IGST).
+- **Kitchen stations:** add, rename, on/off. Printer routing per station comes in Phase 4.
+
+### CSV (`lib/services/menu_csv_service.dart`, Menu ⋮ → Import / Export CSV)
+- **Export:** all items, including turned-off ones, with an `id` column for round-trips. UTF-8 with BOM so Excel shows ₹ and Hindi. Shared through the Android share sheet.
+- **Import flow:**
+  1. Pick a file.
+  2. Preview, with errors listed first, per-line messages, new/update/unchanged counts, and the categories that will be created.
+  3. Confirm.
+  4. The import runs in **one transaction**, so all rows are saved or none.
+- **Matching:** a row matches an existing item by `id`, then `sku`, then category + name.
+- **Updates:** a blank cell keeps the current value.
+- **Categories:** missing ones are created.
+- **Tax and station names must already exist**, so a typo can't silently change billing.
+- **Detected in the file:** duplicate SKUs, and duplicate name + category.
+- **Separators:** `;` (common in Excel) is detected automatically.
+- **Any error blocks the import.**
+- Variants and add-ons are not in the CSV.
+
+### Dependencies
+- Added `csv` 8.0.0 (parsing and encoding, delimiter auto-detection) and `file_picker` 13.3.2 (Android system file picker; no storage permission needed).
+
+### Tests and commands
+| Command | Result |
+|---|---|
+| `dart format --set-exit-if-changed lib test` | 0 files changed |
+| `flutter analyze` | 14 infos, same as baseline; no new issues (the new screens use `onReorderItem`, not the deprecated `onReorder`) |
+| `flutter test` | **79/79 passed**. New: migration (3), item configuration (13), menu repository (15), CSV (9), menu screen widgets (2). |
+| `flutter build apk --debug` | builds |
+
+### Not done / limitations
+- **Not run on a device:** no Android device or emulator was connected. Check by hand:
+  - the system file picker for CSV import;
+  - the share sheet for CSV export;
+  - drag-reorder on a touch screen;
+  - the v1 → v2 upgrade on a phone that has Phase 1 data.
+- **Deferred:** item photos. The `image_path` column exists; picking and storing a local image needs `image_picker` and is left for later.
+- **Deferred:** separate "menus" (e.g. breakfast vs dinner menus). There is one menu, organised by category and subcategory.
+- **Deferred:** Excel `.xlsx` import (CSV only; Excel can save as "CSV UTF-8").
+- **Deferred:** menu-only backup/restore. The full database backup from Phase 1 already includes the menu; restore is Phase 11.
+- **Permissions:** there are no staff permissions yet (Phase 9), so anyone can edit the menu.
+- **Phase 3 rule to add:** once orders exist, check that a turned-off item's past orders still show it. The snapshot design covers this.

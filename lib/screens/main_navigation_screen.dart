@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../features/menu/menu_screen.dart';
 import '../services/storage_service.dart';
 import 'printers_screen.dart';
 import 'queue_screen.dart';
@@ -28,6 +29,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   }
 
   final List<Widget> _screens = const [
+    MenuScreen(),
     PrintersScreen(),
     QueueScreen(),
     HistoryScreen(),
@@ -68,6 +70,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           });
         },
         items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.restaurant_menu_rounded),
+            label: 'Menu',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.print_rounded),
             label: 'Printers',
