@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../data/repositories/menu_repository.dart';
+import '../../core/errors.dart';
 import '../../domain/menu/menu_models.dart';
 
 /// The square-with-dot mark used on Indian menus (green veg, red/brown
@@ -84,7 +84,7 @@ Future<bool> runMenuAction(
       messenger.showSnackBar(SnackBar(content: Text(success)));
     }
     return true;
-  } on MenuValidationException catch (e) {
+  } on ValidationException catch (e) {
     messenger.showSnackBar(
       SnackBar(content: Text(e.message), backgroundColor: Colors.red.shade700),
     );

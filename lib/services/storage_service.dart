@@ -6,9 +6,11 @@ import '../data/legacy/legacy_prefs_importer.dart';
 import '../data/repositories/audit_repository.dart';
 import '../data/repositories/business_profile_repository.dart';
 import '../data/repositories/menu_repository.dart';
+import '../data/repositories/order_repository.dart';
 import '../data/repositories/print_job_repository.dart';
 import '../data/repositories/printer_repository.dart';
 import '../data/repositories/settings_repository.dart';
+import '../data/repositories/table_repository.dart';
 import '../models/print_history_item.dart';
 import '../models/print_mode.dart';
 import '../models/printer_device.dart';
@@ -28,6 +30,8 @@ class StorageService {
   late final BusinessProfileRepository businessProfile =
       BusinessProfileRepository(db, audit);
   late final MenuRepository menu = MenuRepository(db, audit);
+  late final TableRepository tables = TableRepository(db, audit);
+  late final OrderRepository orders = OrderRepository(db, audit, settings);
 
   /// Set when the one-time import of pre-database data failed. The legacy
   /// data is untouched and the import is retried on the next launch.

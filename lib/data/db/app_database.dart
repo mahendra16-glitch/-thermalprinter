@@ -19,6 +19,8 @@ part 'app_database.g.dart';
 ///   print_jobs, print_history, audit_log.
 /// - v2: tax_profiles, kitchen_stations, menu_categories, menu_items,
 ///   option_groups, option_choices, item_option_groups.
+/// - v3: dining_areas, restaurant_tables, orders, order_lines,
+///   order_line_options.
 @DriftDatabase(
   tables: [
     MigrationLog,
@@ -35,6 +37,11 @@ part 'app_database.g.dart';
     OptionGroups,
     OptionChoices,
     ItemOptionGroups,
+    DiningAreas,
+    RestaurantTables,
+    Orders,
+    OrderLines,
+    OrderLineOptions,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -43,7 +50,7 @@ class AppDatabase extends _$AppDatabase {
   static const String fileName = 'pos.db';
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -52,6 +59,7 @@ class AppDatabase extends _$AppDatabase {
       await _seedV1();
       await _logMigration(1, 'initial schema');
       await _logMigration(2, 'menu tables (fresh install)');
+      await _logMigration(3, 'tables and orders (fresh install)');
     },
     onUpgrade: stepByStep(
       from1To2: (m, schema) async {
@@ -67,6 +75,21 @@ class AppDatabase extends _$AppDatabase {
         await m.createIndex(schema.idxMenuItemsSku);
         await m.createIndex(schema.idxOptionChoicesGroup);
         await _logMigration(2, 'menu tables');
+      },
+      from2To3: (m, schema) async {
+        await m.createTable(schema.diningAreas);
+        await m.createTable(schema.restaurantTables);
+        await m.createTable(schema.orders);
+        await m.createTable(schema.orderLines);
+        await m.createTable(schema.orderLineOptions);
+        await m.createIndex(schema.idxRestaurantTablesArea);
+        await m.createIndex(schema.idxOrdersStatus);
+        await m.createIndex(schema.idxOrdersBusinessDate);
+        await m.createIndex(schema.idxOrdersTable);
+        await m.createIndex(schema.idxOrdersDayNumber);
+        await m.createIndex(schema.idxOrderLinesOrder);
+        await m.createIndex(schema.idxOrderLineOptionsLine);
+        await _logMigration(3, 'tables and orders');
       },
     ),
     beforeOpen: (details) async {

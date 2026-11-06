@@ -1,18 +1,15 @@
 import 'package:drift/drift.dart';
 
+import '../../core/errors.dart';
 import '../../core/util/clock.dart';
 import '../../core/util/money.dart';
 import '../db/app_database.dart';
 import '../../domain/menu/menu_models.dart';
 import 'audit_repository.dart';
 
-/// A rule was broken; [message] is shown to staff as-is.
-class MenuValidationException implements Exception {
-  final String message;
-  MenuValidationException(this.message);
-
-  @override
-  String toString() => message;
+/// A menu rule was broken; [message] is shown to staff as-is.
+class MenuValidationException extends ValidationException {
+  MenuValidationException(super.message);
 }
 
 /// Everything needed to show or order from the menu, loaded at once.

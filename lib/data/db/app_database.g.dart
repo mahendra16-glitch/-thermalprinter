@@ -7645,6 +7645,3688 @@ class ItemOptionGroupsCompanion extends UpdateCompanion<ItemOptionGroupRow> {
   }
 }
 
+class $DiningAreasTable extends DiningAreas
+    with TableInfo<$DiningAreasTable, DiningAreaRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DiningAreasTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    isActive,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'dining_areas';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DiningAreaRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DiningAreaRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DiningAreaRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $DiningAreasTable createAlias(String alias) {
+    return $DiningAreasTable(attachedDatabase, alias);
+  }
+}
+
+class DiningAreaRow extends DataClass implements Insertable<DiningAreaRow> {
+  final String id;
+  final String name;
+  final bool isActive;
+  final int sortOrder;
+  final int createdAt;
+  final int updatedAt;
+  const DiningAreaRow({
+    required this.id,
+    required this.name,
+    required this.isActive,
+    required this.sortOrder,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['is_active'] = Variable<bool>(isActive);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  DiningAreasCompanion toCompanion(bool nullToAbsent) {
+    return DiningAreasCompanion(
+      id: Value(id),
+      name: Value(name),
+      isActive: Value(isActive),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory DiningAreaRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DiningAreaRow(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'isActive': serializer.toJson<bool>(isActive),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  DiningAreaRow copyWith({
+    String? id,
+    String? name,
+    bool? isActive,
+    int? sortOrder,
+    int? createdAt,
+    int? updatedAt,
+  }) => DiningAreaRow(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    isActive: isActive ?? this.isActive,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  DiningAreaRow copyWithCompanion(DiningAreasCompanion data) {
+    return DiningAreaRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DiningAreaRow(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('isActive: $isActive, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, isActive, sortOrder, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DiningAreaRow &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.isActive == this.isActive &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class DiningAreasCompanion extends UpdateCompanion<DiningAreaRow> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<bool> isActive;
+  final Value<int> sortOrder;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const DiningAreasCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DiningAreasCompanion.insert({
+    required String id,
+    required String name,
+    this.isActive = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<DiningAreaRow> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<bool>? isActive,
+    Expression<int>? sortOrder,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (isActive != null) 'is_active': isActive,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DiningAreasCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<bool>? isActive,
+    Value<int>? sortOrder,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return DiningAreasCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      isActive: isActive ?? this.isActive,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DiningAreasCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('isActive: $isActive, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RestaurantTablesTable extends RestaurantTables
+    with TableInfo<$RestaurantTablesTable, RestaurantTableRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RestaurantTablesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _areaIdMeta = const VerificationMeta('areaId');
+  @override
+  late final GeneratedColumn<String> areaId = GeneratedColumn<String>(
+    'area_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES dining_areas (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+    'label',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _seatsMeta = const VerificationMeta('seats');
+  @override
+  late final GeneratedColumn<int> seats = GeneratedColumn<int>(
+    'seats',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    areaId,
+    label,
+    seats,
+    isActive,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'restaurant_tables';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RestaurantTableRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('area_id')) {
+      context.handle(
+        _areaIdMeta,
+        areaId.isAcceptableOrUnknown(data['area_id']!, _areaIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_areaIdMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+        _labelMeta,
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    if (data.containsKey('seats')) {
+      context.handle(
+        _seatsMeta,
+        seats.isAcceptableOrUnknown(data['seats']!, _seatsMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RestaurantTableRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RestaurantTableRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      areaId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}area_id'],
+      )!,
+      label: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}label'],
+      )!,
+      seats: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}seats'],
+      ),
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $RestaurantTablesTable createAlias(String alias) {
+    return $RestaurantTablesTable(attachedDatabase, alias);
+  }
+}
+
+class RestaurantTableRow extends DataClass
+    implements Insertable<RestaurantTableRow> {
+  final String id;
+  final String areaId;
+  final String label;
+  final int? seats;
+  final bool isActive;
+  final int sortOrder;
+  final int createdAt;
+  final int updatedAt;
+  const RestaurantTableRow({
+    required this.id,
+    required this.areaId,
+    required this.label,
+    this.seats,
+    required this.isActive,
+    required this.sortOrder,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['area_id'] = Variable<String>(areaId);
+    map['label'] = Variable<String>(label);
+    if (!nullToAbsent || seats != null) {
+      map['seats'] = Variable<int>(seats);
+    }
+    map['is_active'] = Variable<bool>(isActive);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  RestaurantTablesCompanion toCompanion(bool nullToAbsent) {
+    return RestaurantTablesCompanion(
+      id: Value(id),
+      areaId: Value(areaId),
+      label: Value(label),
+      seats: seats == null && nullToAbsent
+          ? const Value.absent()
+          : Value(seats),
+      isActive: Value(isActive),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory RestaurantTableRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RestaurantTableRow(
+      id: serializer.fromJson<String>(json['id']),
+      areaId: serializer.fromJson<String>(json['areaId']),
+      label: serializer.fromJson<String>(json['label']),
+      seats: serializer.fromJson<int?>(json['seats']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'areaId': serializer.toJson<String>(areaId),
+      'label': serializer.toJson<String>(label),
+      'seats': serializer.toJson<int?>(seats),
+      'isActive': serializer.toJson<bool>(isActive),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  RestaurantTableRow copyWith({
+    String? id,
+    String? areaId,
+    String? label,
+    Value<int?> seats = const Value.absent(),
+    bool? isActive,
+    int? sortOrder,
+    int? createdAt,
+    int? updatedAt,
+  }) => RestaurantTableRow(
+    id: id ?? this.id,
+    areaId: areaId ?? this.areaId,
+    label: label ?? this.label,
+    seats: seats.present ? seats.value : this.seats,
+    isActive: isActive ?? this.isActive,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  RestaurantTableRow copyWithCompanion(RestaurantTablesCompanion data) {
+    return RestaurantTableRow(
+      id: data.id.present ? data.id.value : this.id,
+      areaId: data.areaId.present ? data.areaId.value : this.areaId,
+      label: data.label.present ? data.label.value : this.label,
+      seats: data.seats.present ? data.seats.value : this.seats,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RestaurantTableRow(')
+          ..write('id: $id, ')
+          ..write('areaId: $areaId, ')
+          ..write('label: $label, ')
+          ..write('seats: $seats, ')
+          ..write('isActive: $isActive, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    areaId,
+    label,
+    seats,
+    isActive,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RestaurantTableRow &&
+          other.id == this.id &&
+          other.areaId == this.areaId &&
+          other.label == this.label &&
+          other.seats == this.seats &&
+          other.isActive == this.isActive &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class RestaurantTablesCompanion extends UpdateCompanion<RestaurantTableRow> {
+  final Value<String> id;
+  final Value<String> areaId;
+  final Value<String> label;
+  final Value<int?> seats;
+  final Value<bool> isActive;
+  final Value<int> sortOrder;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const RestaurantTablesCompanion({
+    this.id = const Value.absent(),
+    this.areaId = const Value.absent(),
+    this.label = const Value.absent(),
+    this.seats = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RestaurantTablesCompanion.insert({
+    required String id,
+    required String areaId,
+    required String label,
+    this.seats = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       areaId = Value(areaId),
+       label = Value(label),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<RestaurantTableRow> custom({
+    Expression<String>? id,
+    Expression<String>? areaId,
+    Expression<String>? label,
+    Expression<int>? seats,
+    Expression<bool>? isActive,
+    Expression<int>? sortOrder,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (areaId != null) 'area_id': areaId,
+      if (label != null) 'label': label,
+      if (seats != null) 'seats': seats,
+      if (isActive != null) 'is_active': isActive,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RestaurantTablesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? areaId,
+    Value<String>? label,
+    Value<int?>? seats,
+    Value<bool>? isActive,
+    Value<int>? sortOrder,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return RestaurantTablesCompanion(
+      id: id ?? this.id,
+      areaId: areaId ?? this.areaId,
+      label: label ?? this.label,
+      seats: seats ?? this.seats,
+      isActive: isActive ?? this.isActive,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (areaId.present) {
+      map['area_id'] = Variable<String>(areaId.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (seats.present) {
+      map['seats'] = Variable<int>(seats.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RestaurantTablesCompanion(')
+          ..write('id: $id, ')
+          ..write('areaId: $areaId, ')
+          ..write('label: $label, ')
+          ..write('seats: $seats, ')
+          ..write('isActive: $isActive, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $OrdersTable extends Orders with TableInfo<$OrdersTable, OrderRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $OrdersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _orderNoMeta = const VerificationMeta(
+    'orderNo',
+  );
+  @override
+  late final GeneratedColumn<int> orderNo = GeneratedColumn<int>(
+    'order_no',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _businessDateMeta = const VerificationMeta(
+    'businessDate',
+  );
+  @override
+  late final GeneratedColumn<String> businessDate = GeneratedColumn<String>(
+    'business_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _orderTypeMeta = const VerificationMeta(
+    'orderType',
+  );
+  @override
+  late final GeneratedColumn<String> orderType = GeneratedColumn<String>(
+    'order_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tableIdMeta = const VerificationMeta(
+    'tableId',
+  );
+  @override
+  late final GeneratedColumn<String> tableId = GeneratedColumn<String>(
+    'table_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES restaurant_tables (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _customerNameMeta = const VerificationMeta(
+    'customerName',
+  );
+  @override
+  late final GeneratedColumn<String> customerName = GeneratedColumn<String>(
+    'customer_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _customerPhoneMeta = const VerificationMeta(
+    'customerPhone',
+  );
+  @override
+  late final GeneratedColumn<String> customerPhone = GeneratedColumn<String>(
+    'customer_phone',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _guestsMeta = const VerificationMeta('guests');
+  @override
+  late final GeneratedColumn<int> guests = GeneratedColumn<int>(
+    'guests',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _staffIdMeta = const VerificationMeta(
+    'staffId',
+  );
+  @override
+  late final GeneratedColumn<String> staffId = GeneratedColumn<String>(
+    'staff_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _staffNameMeta = const VerificationMeta(
+    'staffName',
+  );
+  @override
+  late final GeneratedColumn<String> staffName = GeneratedColumn<String>(
+    'staff_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _discountKindMeta = const VerificationMeta(
+    'discountKind',
+  );
+  @override
+  late final GeneratedColumn<String> discountKind = GeneratedColumn<String>(
+    'discount_kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('none'),
+  );
+  static const VerificationMeta _discountValueMeta = const VerificationMeta(
+    'discountValue',
+  );
+  @override
+  late final GeneratedColumn<int> discountValue = GeneratedColumn<int>(
+    'discount_value',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _discountReasonMeta = const VerificationMeta(
+    'discountReason',
+  );
+  @override
+  late final GeneratedColumn<String> discountReason = GeneratedColumn<String>(
+    'discount_reason',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _cancelReasonMeta = const VerificationMeta(
+    'cancelReason',
+  );
+  @override
+  late final GeneratedColumn<String> cancelReason = GeneratedColumn<String>(
+    'cancel_reason',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _clientRequestIdMeta = const VerificationMeta(
+    'clientRequestId',
+  );
+  @override
+  late final GeneratedColumn<String> clientRequestId = GeneratedColumn<String>(
+    'client_request_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _closedAtMeta = const VerificationMeta(
+    'closedAt',
+  );
+  @override
+  late final GeneratedColumn<int> closedAt = GeneratedColumn<int>(
+    'closed_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    orderNo,
+    businessDate,
+    orderType,
+    tableId,
+    customerName,
+    customerPhone,
+    guests,
+    staffId,
+    staffName,
+    status,
+    notes,
+    discountKind,
+    discountValue,
+    discountReason,
+    cancelReason,
+    clientRequestId,
+    createdAt,
+    updatedAt,
+    closedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'orders';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<OrderRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('order_no')) {
+      context.handle(
+        _orderNoMeta,
+        orderNo.isAcceptableOrUnknown(data['order_no']!, _orderNoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_orderNoMeta);
+    }
+    if (data.containsKey('business_date')) {
+      context.handle(
+        _businessDateMeta,
+        businessDate.isAcceptableOrUnknown(
+          data['business_date']!,
+          _businessDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_businessDateMeta);
+    }
+    if (data.containsKey('order_type')) {
+      context.handle(
+        _orderTypeMeta,
+        orderType.isAcceptableOrUnknown(data['order_type']!, _orderTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_orderTypeMeta);
+    }
+    if (data.containsKey('table_id')) {
+      context.handle(
+        _tableIdMeta,
+        tableId.isAcceptableOrUnknown(data['table_id']!, _tableIdMeta),
+      );
+    }
+    if (data.containsKey('customer_name')) {
+      context.handle(
+        _customerNameMeta,
+        customerName.isAcceptableOrUnknown(
+          data['customer_name']!,
+          _customerNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('customer_phone')) {
+      context.handle(
+        _customerPhoneMeta,
+        customerPhone.isAcceptableOrUnknown(
+          data['customer_phone']!,
+          _customerPhoneMeta,
+        ),
+      );
+    }
+    if (data.containsKey('guests')) {
+      context.handle(
+        _guestsMeta,
+        guests.isAcceptableOrUnknown(data['guests']!, _guestsMeta),
+      );
+    }
+    if (data.containsKey('staff_id')) {
+      context.handle(
+        _staffIdMeta,
+        staffId.isAcceptableOrUnknown(data['staff_id']!, _staffIdMeta),
+      );
+    }
+    if (data.containsKey('staff_name')) {
+      context.handle(
+        _staffNameMeta,
+        staffName.isAcceptableOrUnknown(data['staff_name']!, _staffNameMeta),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('discount_kind')) {
+      context.handle(
+        _discountKindMeta,
+        discountKind.isAcceptableOrUnknown(
+          data['discount_kind']!,
+          _discountKindMeta,
+        ),
+      );
+    }
+    if (data.containsKey('discount_value')) {
+      context.handle(
+        _discountValueMeta,
+        discountValue.isAcceptableOrUnknown(
+          data['discount_value']!,
+          _discountValueMeta,
+        ),
+      );
+    }
+    if (data.containsKey('discount_reason')) {
+      context.handle(
+        _discountReasonMeta,
+        discountReason.isAcceptableOrUnknown(
+          data['discount_reason']!,
+          _discountReasonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('cancel_reason')) {
+      context.handle(
+        _cancelReasonMeta,
+        cancelReason.isAcceptableOrUnknown(
+          data['cancel_reason']!,
+          _cancelReasonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('client_request_id')) {
+      context.handle(
+        _clientRequestIdMeta,
+        clientRequestId.isAcceptableOrUnknown(
+          data['client_request_id']!,
+          _clientRequestIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_clientRequestIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('closed_at')) {
+      context.handle(
+        _closedAtMeta,
+        closedAt.isAcceptableOrUnknown(data['closed_at']!, _closedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  OrderRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return OrderRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      orderNo: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}order_no'],
+      )!,
+      businessDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}business_date'],
+      )!,
+      orderType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}order_type'],
+      )!,
+      tableId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}table_id'],
+      ),
+      customerName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}customer_name'],
+      )!,
+      customerPhone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}customer_phone'],
+      )!,
+      guests: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}guests'],
+      ),
+      staffId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}staff_id'],
+      ),
+      staffName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}staff_name'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      )!,
+      discountKind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}discount_kind'],
+      )!,
+      discountValue: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}discount_value'],
+      )!,
+      discountReason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}discount_reason'],
+      )!,
+      cancelReason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cancel_reason'],
+      )!,
+      clientRequestId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}client_request_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      closedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}closed_at'],
+      ),
+    );
+  }
+
+  @override
+  $OrdersTable createAlias(String alias) {
+    return $OrdersTable(attachedDatabase, alias);
+  }
+}
+
+class OrderRow extends DataClass implements Insertable<OrderRow> {
+  final String id;
+
+  /// Human number, sequential per business day (1, 2, 3, …).
+  final int orderNo;
+
+  /// Local business date `yyyy-MM-dd` (see the business-day start setting).
+  final String businessDate;
+
+  /// `OrderType.name`: dineIn | takeaway | delivery.
+  final String orderType;
+  final String? tableId;
+  final String customerName;
+  final String customerPhone;
+  final int? guests;
+  final String? staffId;
+  final String staffName;
+
+  /// `OrderStatus.name`.
+  final String status;
+  final String notes;
+
+  /// `DiscountKind.name`: none | percent | amount.
+  final String discountKind;
+
+  /// Basis points for percent, paise for amount.
+  final int discountValue;
+  final String discountReason;
+  final String cancelReason;
+
+  /// Set by the device that created the order; a repeated create with the
+  /// same id returns the existing order instead of making a duplicate.
+  final String clientRequestId;
+  final int createdAt;
+  final int updatedAt;
+  final int? closedAt;
+  const OrderRow({
+    required this.id,
+    required this.orderNo,
+    required this.businessDate,
+    required this.orderType,
+    this.tableId,
+    required this.customerName,
+    required this.customerPhone,
+    this.guests,
+    this.staffId,
+    required this.staffName,
+    required this.status,
+    required this.notes,
+    required this.discountKind,
+    required this.discountValue,
+    required this.discountReason,
+    required this.cancelReason,
+    required this.clientRequestId,
+    required this.createdAt,
+    required this.updatedAt,
+    this.closedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['order_no'] = Variable<int>(orderNo);
+    map['business_date'] = Variable<String>(businessDate);
+    map['order_type'] = Variable<String>(orderType);
+    if (!nullToAbsent || tableId != null) {
+      map['table_id'] = Variable<String>(tableId);
+    }
+    map['customer_name'] = Variable<String>(customerName);
+    map['customer_phone'] = Variable<String>(customerPhone);
+    if (!nullToAbsent || guests != null) {
+      map['guests'] = Variable<int>(guests);
+    }
+    if (!nullToAbsent || staffId != null) {
+      map['staff_id'] = Variable<String>(staffId);
+    }
+    map['staff_name'] = Variable<String>(staffName);
+    map['status'] = Variable<String>(status);
+    map['notes'] = Variable<String>(notes);
+    map['discount_kind'] = Variable<String>(discountKind);
+    map['discount_value'] = Variable<int>(discountValue);
+    map['discount_reason'] = Variable<String>(discountReason);
+    map['cancel_reason'] = Variable<String>(cancelReason);
+    map['client_request_id'] = Variable<String>(clientRequestId);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    if (!nullToAbsent || closedAt != null) {
+      map['closed_at'] = Variable<int>(closedAt);
+    }
+    return map;
+  }
+
+  OrdersCompanion toCompanion(bool nullToAbsent) {
+    return OrdersCompanion(
+      id: Value(id),
+      orderNo: Value(orderNo),
+      businessDate: Value(businessDate),
+      orderType: Value(orderType),
+      tableId: tableId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(tableId),
+      customerName: Value(customerName),
+      customerPhone: Value(customerPhone),
+      guests: guests == null && nullToAbsent
+          ? const Value.absent()
+          : Value(guests),
+      staffId: staffId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(staffId),
+      staffName: Value(staffName),
+      status: Value(status),
+      notes: Value(notes),
+      discountKind: Value(discountKind),
+      discountValue: Value(discountValue),
+      discountReason: Value(discountReason),
+      cancelReason: Value(cancelReason),
+      clientRequestId: Value(clientRequestId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      closedAt: closedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(closedAt),
+    );
+  }
+
+  factory OrderRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return OrderRow(
+      id: serializer.fromJson<String>(json['id']),
+      orderNo: serializer.fromJson<int>(json['orderNo']),
+      businessDate: serializer.fromJson<String>(json['businessDate']),
+      orderType: serializer.fromJson<String>(json['orderType']),
+      tableId: serializer.fromJson<String?>(json['tableId']),
+      customerName: serializer.fromJson<String>(json['customerName']),
+      customerPhone: serializer.fromJson<String>(json['customerPhone']),
+      guests: serializer.fromJson<int?>(json['guests']),
+      staffId: serializer.fromJson<String?>(json['staffId']),
+      staffName: serializer.fromJson<String>(json['staffName']),
+      status: serializer.fromJson<String>(json['status']),
+      notes: serializer.fromJson<String>(json['notes']),
+      discountKind: serializer.fromJson<String>(json['discountKind']),
+      discountValue: serializer.fromJson<int>(json['discountValue']),
+      discountReason: serializer.fromJson<String>(json['discountReason']),
+      cancelReason: serializer.fromJson<String>(json['cancelReason']),
+      clientRequestId: serializer.fromJson<String>(json['clientRequestId']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+      closedAt: serializer.fromJson<int?>(json['closedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'orderNo': serializer.toJson<int>(orderNo),
+      'businessDate': serializer.toJson<String>(businessDate),
+      'orderType': serializer.toJson<String>(orderType),
+      'tableId': serializer.toJson<String?>(tableId),
+      'customerName': serializer.toJson<String>(customerName),
+      'customerPhone': serializer.toJson<String>(customerPhone),
+      'guests': serializer.toJson<int?>(guests),
+      'staffId': serializer.toJson<String?>(staffId),
+      'staffName': serializer.toJson<String>(staffName),
+      'status': serializer.toJson<String>(status),
+      'notes': serializer.toJson<String>(notes),
+      'discountKind': serializer.toJson<String>(discountKind),
+      'discountValue': serializer.toJson<int>(discountValue),
+      'discountReason': serializer.toJson<String>(discountReason),
+      'cancelReason': serializer.toJson<String>(cancelReason),
+      'clientRequestId': serializer.toJson<String>(clientRequestId),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+      'closedAt': serializer.toJson<int?>(closedAt),
+    };
+  }
+
+  OrderRow copyWith({
+    String? id,
+    int? orderNo,
+    String? businessDate,
+    String? orderType,
+    Value<String?> tableId = const Value.absent(),
+    String? customerName,
+    String? customerPhone,
+    Value<int?> guests = const Value.absent(),
+    Value<String?> staffId = const Value.absent(),
+    String? staffName,
+    String? status,
+    String? notes,
+    String? discountKind,
+    int? discountValue,
+    String? discountReason,
+    String? cancelReason,
+    String? clientRequestId,
+    int? createdAt,
+    int? updatedAt,
+    Value<int?> closedAt = const Value.absent(),
+  }) => OrderRow(
+    id: id ?? this.id,
+    orderNo: orderNo ?? this.orderNo,
+    businessDate: businessDate ?? this.businessDate,
+    orderType: orderType ?? this.orderType,
+    tableId: tableId.present ? tableId.value : this.tableId,
+    customerName: customerName ?? this.customerName,
+    customerPhone: customerPhone ?? this.customerPhone,
+    guests: guests.present ? guests.value : this.guests,
+    staffId: staffId.present ? staffId.value : this.staffId,
+    staffName: staffName ?? this.staffName,
+    status: status ?? this.status,
+    notes: notes ?? this.notes,
+    discountKind: discountKind ?? this.discountKind,
+    discountValue: discountValue ?? this.discountValue,
+    discountReason: discountReason ?? this.discountReason,
+    cancelReason: cancelReason ?? this.cancelReason,
+    clientRequestId: clientRequestId ?? this.clientRequestId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    closedAt: closedAt.present ? closedAt.value : this.closedAt,
+  );
+  OrderRow copyWithCompanion(OrdersCompanion data) {
+    return OrderRow(
+      id: data.id.present ? data.id.value : this.id,
+      orderNo: data.orderNo.present ? data.orderNo.value : this.orderNo,
+      businessDate: data.businessDate.present
+          ? data.businessDate.value
+          : this.businessDate,
+      orderType: data.orderType.present ? data.orderType.value : this.orderType,
+      tableId: data.tableId.present ? data.tableId.value : this.tableId,
+      customerName: data.customerName.present
+          ? data.customerName.value
+          : this.customerName,
+      customerPhone: data.customerPhone.present
+          ? data.customerPhone.value
+          : this.customerPhone,
+      guests: data.guests.present ? data.guests.value : this.guests,
+      staffId: data.staffId.present ? data.staffId.value : this.staffId,
+      staffName: data.staffName.present ? data.staffName.value : this.staffName,
+      status: data.status.present ? data.status.value : this.status,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      discountKind: data.discountKind.present
+          ? data.discountKind.value
+          : this.discountKind,
+      discountValue: data.discountValue.present
+          ? data.discountValue.value
+          : this.discountValue,
+      discountReason: data.discountReason.present
+          ? data.discountReason.value
+          : this.discountReason,
+      cancelReason: data.cancelReason.present
+          ? data.cancelReason.value
+          : this.cancelReason,
+      clientRequestId: data.clientRequestId.present
+          ? data.clientRequestId.value
+          : this.clientRequestId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      closedAt: data.closedAt.present ? data.closedAt.value : this.closedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OrderRow(')
+          ..write('id: $id, ')
+          ..write('orderNo: $orderNo, ')
+          ..write('businessDate: $businessDate, ')
+          ..write('orderType: $orderType, ')
+          ..write('tableId: $tableId, ')
+          ..write('customerName: $customerName, ')
+          ..write('customerPhone: $customerPhone, ')
+          ..write('guests: $guests, ')
+          ..write('staffId: $staffId, ')
+          ..write('staffName: $staffName, ')
+          ..write('status: $status, ')
+          ..write('notes: $notes, ')
+          ..write('discountKind: $discountKind, ')
+          ..write('discountValue: $discountValue, ')
+          ..write('discountReason: $discountReason, ')
+          ..write('cancelReason: $cancelReason, ')
+          ..write('clientRequestId: $clientRequestId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('closedAt: $closedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    orderNo,
+    businessDate,
+    orderType,
+    tableId,
+    customerName,
+    customerPhone,
+    guests,
+    staffId,
+    staffName,
+    status,
+    notes,
+    discountKind,
+    discountValue,
+    discountReason,
+    cancelReason,
+    clientRequestId,
+    createdAt,
+    updatedAt,
+    closedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is OrderRow &&
+          other.id == this.id &&
+          other.orderNo == this.orderNo &&
+          other.businessDate == this.businessDate &&
+          other.orderType == this.orderType &&
+          other.tableId == this.tableId &&
+          other.customerName == this.customerName &&
+          other.customerPhone == this.customerPhone &&
+          other.guests == this.guests &&
+          other.staffId == this.staffId &&
+          other.staffName == this.staffName &&
+          other.status == this.status &&
+          other.notes == this.notes &&
+          other.discountKind == this.discountKind &&
+          other.discountValue == this.discountValue &&
+          other.discountReason == this.discountReason &&
+          other.cancelReason == this.cancelReason &&
+          other.clientRequestId == this.clientRequestId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.closedAt == this.closedAt);
+}
+
+class OrdersCompanion extends UpdateCompanion<OrderRow> {
+  final Value<String> id;
+  final Value<int> orderNo;
+  final Value<String> businessDate;
+  final Value<String> orderType;
+  final Value<String?> tableId;
+  final Value<String> customerName;
+  final Value<String> customerPhone;
+  final Value<int?> guests;
+  final Value<String?> staffId;
+  final Value<String> staffName;
+  final Value<String> status;
+  final Value<String> notes;
+  final Value<String> discountKind;
+  final Value<int> discountValue;
+  final Value<String> discountReason;
+  final Value<String> cancelReason;
+  final Value<String> clientRequestId;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int?> closedAt;
+  final Value<int> rowid;
+  const OrdersCompanion({
+    this.id = const Value.absent(),
+    this.orderNo = const Value.absent(),
+    this.businessDate = const Value.absent(),
+    this.orderType = const Value.absent(),
+    this.tableId = const Value.absent(),
+    this.customerName = const Value.absent(),
+    this.customerPhone = const Value.absent(),
+    this.guests = const Value.absent(),
+    this.staffId = const Value.absent(),
+    this.staffName = const Value.absent(),
+    this.status = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.discountKind = const Value.absent(),
+    this.discountValue = const Value.absent(),
+    this.discountReason = const Value.absent(),
+    this.cancelReason = const Value.absent(),
+    this.clientRequestId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.closedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  OrdersCompanion.insert({
+    required String id,
+    required int orderNo,
+    required String businessDate,
+    required String orderType,
+    this.tableId = const Value.absent(),
+    this.customerName = const Value.absent(),
+    this.customerPhone = const Value.absent(),
+    this.guests = const Value.absent(),
+    this.staffId = const Value.absent(),
+    this.staffName = const Value.absent(),
+    required String status,
+    this.notes = const Value.absent(),
+    this.discountKind = const Value.absent(),
+    this.discountValue = const Value.absent(),
+    this.discountReason = const Value.absent(),
+    this.cancelReason = const Value.absent(),
+    required String clientRequestId,
+    required int createdAt,
+    required int updatedAt,
+    this.closedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       orderNo = Value(orderNo),
+       businessDate = Value(businessDate),
+       orderType = Value(orderType),
+       status = Value(status),
+       clientRequestId = Value(clientRequestId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<OrderRow> custom({
+    Expression<String>? id,
+    Expression<int>? orderNo,
+    Expression<String>? businessDate,
+    Expression<String>? orderType,
+    Expression<String>? tableId,
+    Expression<String>? customerName,
+    Expression<String>? customerPhone,
+    Expression<int>? guests,
+    Expression<String>? staffId,
+    Expression<String>? staffName,
+    Expression<String>? status,
+    Expression<String>? notes,
+    Expression<String>? discountKind,
+    Expression<int>? discountValue,
+    Expression<String>? discountReason,
+    Expression<String>? cancelReason,
+    Expression<String>? clientRequestId,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? closedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (orderNo != null) 'order_no': orderNo,
+      if (businessDate != null) 'business_date': businessDate,
+      if (orderType != null) 'order_type': orderType,
+      if (tableId != null) 'table_id': tableId,
+      if (customerName != null) 'customer_name': customerName,
+      if (customerPhone != null) 'customer_phone': customerPhone,
+      if (guests != null) 'guests': guests,
+      if (staffId != null) 'staff_id': staffId,
+      if (staffName != null) 'staff_name': staffName,
+      if (status != null) 'status': status,
+      if (notes != null) 'notes': notes,
+      if (discountKind != null) 'discount_kind': discountKind,
+      if (discountValue != null) 'discount_value': discountValue,
+      if (discountReason != null) 'discount_reason': discountReason,
+      if (cancelReason != null) 'cancel_reason': cancelReason,
+      if (clientRequestId != null) 'client_request_id': clientRequestId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (closedAt != null) 'closed_at': closedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  OrdersCompanion copyWith({
+    Value<String>? id,
+    Value<int>? orderNo,
+    Value<String>? businessDate,
+    Value<String>? orderType,
+    Value<String?>? tableId,
+    Value<String>? customerName,
+    Value<String>? customerPhone,
+    Value<int?>? guests,
+    Value<String?>? staffId,
+    Value<String>? staffName,
+    Value<String>? status,
+    Value<String>? notes,
+    Value<String>? discountKind,
+    Value<int>? discountValue,
+    Value<String>? discountReason,
+    Value<String>? cancelReason,
+    Value<String>? clientRequestId,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int?>? closedAt,
+    Value<int>? rowid,
+  }) {
+    return OrdersCompanion(
+      id: id ?? this.id,
+      orderNo: orderNo ?? this.orderNo,
+      businessDate: businessDate ?? this.businessDate,
+      orderType: orderType ?? this.orderType,
+      tableId: tableId ?? this.tableId,
+      customerName: customerName ?? this.customerName,
+      customerPhone: customerPhone ?? this.customerPhone,
+      guests: guests ?? this.guests,
+      staffId: staffId ?? this.staffId,
+      staffName: staffName ?? this.staffName,
+      status: status ?? this.status,
+      notes: notes ?? this.notes,
+      discountKind: discountKind ?? this.discountKind,
+      discountValue: discountValue ?? this.discountValue,
+      discountReason: discountReason ?? this.discountReason,
+      cancelReason: cancelReason ?? this.cancelReason,
+      clientRequestId: clientRequestId ?? this.clientRequestId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      closedAt: closedAt ?? this.closedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (orderNo.present) {
+      map['order_no'] = Variable<int>(orderNo.value);
+    }
+    if (businessDate.present) {
+      map['business_date'] = Variable<String>(businessDate.value);
+    }
+    if (orderType.present) {
+      map['order_type'] = Variable<String>(orderType.value);
+    }
+    if (tableId.present) {
+      map['table_id'] = Variable<String>(tableId.value);
+    }
+    if (customerName.present) {
+      map['customer_name'] = Variable<String>(customerName.value);
+    }
+    if (customerPhone.present) {
+      map['customer_phone'] = Variable<String>(customerPhone.value);
+    }
+    if (guests.present) {
+      map['guests'] = Variable<int>(guests.value);
+    }
+    if (staffId.present) {
+      map['staff_id'] = Variable<String>(staffId.value);
+    }
+    if (staffName.present) {
+      map['staff_name'] = Variable<String>(staffName.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (discountKind.present) {
+      map['discount_kind'] = Variable<String>(discountKind.value);
+    }
+    if (discountValue.present) {
+      map['discount_value'] = Variable<int>(discountValue.value);
+    }
+    if (discountReason.present) {
+      map['discount_reason'] = Variable<String>(discountReason.value);
+    }
+    if (cancelReason.present) {
+      map['cancel_reason'] = Variable<String>(cancelReason.value);
+    }
+    if (clientRequestId.present) {
+      map['client_request_id'] = Variable<String>(clientRequestId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (closedAt.present) {
+      map['closed_at'] = Variable<int>(closedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OrdersCompanion(')
+          ..write('id: $id, ')
+          ..write('orderNo: $orderNo, ')
+          ..write('businessDate: $businessDate, ')
+          ..write('orderType: $orderType, ')
+          ..write('tableId: $tableId, ')
+          ..write('customerName: $customerName, ')
+          ..write('customerPhone: $customerPhone, ')
+          ..write('guests: $guests, ')
+          ..write('staffId: $staffId, ')
+          ..write('staffName: $staffName, ')
+          ..write('status: $status, ')
+          ..write('notes: $notes, ')
+          ..write('discountKind: $discountKind, ')
+          ..write('discountValue: $discountValue, ')
+          ..write('discountReason: $discountReason, ')
+          ..write('cancelReason: $cancelReason, ')
+          ..write('clientRequestId: $clientRequestId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('closedAt: $closedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $OrderLinesTable extends OrderLines
+    with TableInfo<$OrderLinesTable, OrderLineRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $OrderLinesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _orderIdMeta = const VerificationMeta(
+    'orderId',
+  );
+  @override
+  late final GeneratedColumn<String> orderId = GeneratedColumn<String>(
+    'order_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES orders (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _menuItemIdMeta = const VerificationMeta(
+    'menuItemId',
+  );
+  @override
+  late final GeneratedColumn<String> menuItemId = GeneratedColumn<String>(
+    'menu_item_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES menu_items (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _itemNameMeta = const VerificationMeta(
+    'itemName',
+  );
+  @override
+  late final GeneratedColumn<String> itemName = GeneratedColumn<String>(
+    'item_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _variantTextMeta = const VerificationMeta(
+    'variantText',
+  );
+  @override
+  late final GeneratedColumn<String> variantText = GeneratedColumn<String>(
+    'variant_text',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _basePricePaiseMeta = const VerificationMeta(
+    'basePricePaise',
+  );
+  @override
+  late final GeneratedColumn<int> basePricePaise = GeneratedColumn<int>(
+    'base_price_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unitPricePaiseMeta = const VerificationMeta(
+    'unitPricePaise',
+  );
+  @override
+  late final GeneratedColumn<int> unitPricePaise = GeneratedColumn<int>(
+    'unit_price_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _taxProfileIdMeta = const VerificationMeta(
+    'taxProfileId',
+  );
+  @override
+  late final GeneratedColumn<String> taxProfileId = GeneratedColumn<String>(
+    'tax_profile_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _taxRateBpMeta = const VerificationMeta(
+    'taxRateBp',
+  );
+  @override
+  late final GeneratedColumn<int> taxRateBp = GeneratedColumn<int>(
+    'tax_rate_bp',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _taxInclusiveMeta = const VerificationMeta(
+    'taxInclusive',
+  );
+  @override
+  late final GeneratedColumn<bool> taxInclusive = GeneratedColumn<bool>(
+    'tax_inclusive',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("tax_inclusive" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _taxSplitModeMeta = const VerificationMeta(
+    'taxSplitMode',
+  );
+  @override
+  late final GeneratedColumn<String> taxSplitMode = GeneratedColumn<String>(
+    'tax_split_mode',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('none'),
+  );
+  static const VerificationMeta _stationIdMeta = const VerificationMeta(
+    'stationId',
+  );
+  @override
+  late final GeneratedColumn<String> stationId = GeneratedColumn<String>(
+    'station_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _qtyMeta = const VerificationMeta('qty');
+  @override
+  late final GeneratedColumn<int> qty = GeneratedColumn<int>(
+    'qty',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sentQtyMeta = const VerificationMeta(
+    'sentQty',
+  );
+  @override
+  late final GeneratedColumn<int> sentQty = GeneratedColumn<int>(
+    'sent_qty',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _voidedQtyMeta = const VerificationMeta(
+    'voidedQty',
+  );
+  @override
+  late final GeneratedColumn<int> voidedQty = GeneratedColumn<int>(
+    'voided_qty',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    orderId,
+    menuItemId,
+    itemName,
+    variantText,
+    basePricePaise,
+    unitPricePaise,
+    taxProfileId,
+    taxRateBp,
+    taxInclusive,
+    taxSplitMode,
+    stationId,
+    qty,
+    sentQty,
+    voidedQty,
+    notes,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'order_lines';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<OrderLineRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('order_id')) {
+      context.handle(
+        _orderIdMeta,
+        orderId.isAcceptableOrUnknown(data['order_id']!, _orderIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_orderIdMeta);
+    }
+    if (data.containsKey('menu_item_id')) {
+      context.handle(
+        _menuItemIdMeta,
+        menuItemId.isAcceptableOrUnknown(
+          data['menu_item_id']!,
+          _menuItemIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('item_name')) {
+      context.handle(
+        _itemNameMeta,
+        itemName.isAcceptableOrUnknown(data['item_name']!, _itemNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_itemNameMeta);
+    }
+    if (data.containsKey('variant_text')) {
+      context.handle(
+        _variantTextMeta,
+        variantText.isAcceptableOrUnknown(
+          data['variant_text']!,
+          _variantTextMeta,
+        ),
+      );
+    }
+    if (data.containsKey('base_price_paise')) {
+      context.handle(
+        _basePricePaiseMeta,
+        basePricePaise.isAcceptableOrUnknown(
+          data['base_price_paise']!,
+          _basePricePaiseMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_basePricePaiseMeta);
+    }
+    if (data.containsKey('unit_price_paise')) {
+      context.handle(
+        _unitPricePaiseMeta,
+        unitPricePaise.isAcceptableOrUnknown(
+          data['unit_price_paise']!,
+          _unitPricePaiseMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_unitPricePaiseMeta);
+    }
+    if (data.containsKey('tax_profile_id')) {
+      context.handle(
+        _taxProfileIdMeta,
+        taxProfileId.isAcceptableOrUnknown(
+          data['tax_profile_id']!,
+          _taxProfileIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('tax_rate_bp')) {
+      context.handle(
+        _taxRateBpMeta,
+        taxRateBp.isAcceptableOrUnknown(data['tax_rate_bp']!, _taxRateBpMeta),
+      );
+    }
+    if (data.containsKey('tax_inclusive')) {
+      context.handle(
+        _taxInclusiveMeta,
+        taxInclusive.isAcceptableOrUnknown(
+          data['tax_inclusive']!,
+          _taxInclusiveMeta,
+        ),
+      );
+    }
+    if (data.containsKey('tax_split_mode')) {
+      context.handle(
+        _taxSplitModeMeta,
+        taxSplitMode.isAcceptableOrUnknown(
+          data['tax_split_mode']!,
+          _taxSplitModeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('station_id')) {
+      context.handle(
+        _stationIdMeta,
+        stationId.isAcceptableOrUnknown(data['station_id']!, _stationIdMeta),
+      );
+    }
+    if (data.containsKey('qty')) {
+      context.handle(
+        _qtyMeta,
+        qty.isAcceptableOrUnknown(data['qty']!, _qtyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_qtyMeta);
+    }
+    if (data.containsKey('sent_qty')) {
+      context.handle(
+        _sentQtyMeta,
+        sentQty.isAcceptableOrUnknown(data['sent_qty']!, _sentQtyMeta),
+      );
+    }
+    if (data.containsKey('voided_qty')) {
+      context.handle(
+        _voidedQtyMeta,
+        voidedQty.isAcceptableOrUnknown(data['voided_qty']!, _voidedQtyMeta),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  OrderLineRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return OrderLineRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      orderId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}order_id'],
+      )!,
+      menuItemId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}menu_item_id'],
+      ),
+      itemName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}item_name'],
+      )!,
+      variantText: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}variant_text'],
+      )!,
+      basePricePaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}base_price_paise'],
+      )!,
+      unitPricePaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}unit_price_paise'],
+      )!,
+      taxProfileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tax_profile_id'],
+      ),
+      taxRateBp: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}tax_rate_bp'],
+      )!,
+      taxInclusive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}tax_inclusive'],
+      )!,
+      taxSplitMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tax_split_mode'],
+      )!,
+      stationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}station_id'],
+      ),
+      qty: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}qty'],
+      )!,
+      sentQty: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sent_qty'],
+      )!,
+      voidedQty: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}voided_qty'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $OrderLinesTable createAlias(String alias) {
+    return $OrderLinesTable(attachedDatabase, alias);
+  }
+}
+
+class OrderLineRow extends DataClass implements Insertable<OrderLineRow> {
+  final String id;
+  final String orderId;
+
+  /// Reference only; the snapshot columns below are what is billed.
+  final String? menuItemId;
+  final String itemName;
+  final String variantText;
+  final int basePricePaise;
+
+  /// Base price plus all chosen options, for one unit.
+  final int unitPricePaise;
+  final String? taxProfileId;
+  final int taxRateBp;
+  final bool taxInclusive;
+  final String taxSplitMode;
+  final String? stationId;
+  final int qty;
+
+  /// Units already sent to the kitchen (KOT module). Quantity can never go
+  /// below this; sent units must be voided instead.
+  final int sentQty;
+  final int voidedQty;
+  final String notes;
+  final int sortOrder;
+  final int createdAt;
+  final int updatedAt;
+  const OrderLineRow({
+    required this.id,
+    required this.orderId,
+    this.menuItemId,
+    required this.itemName,
+    required this.variantText,
+    required this.basePricePaise,
+    required this.unitPricePaise,
+    this.taxProfileId,
+    required this.taxRateBp,
+    required this.taxInclusive,
+    required this.taxSplitMode,
+    this.stationId,
+    required this.qty,
+    required this.sentQty,
+    required this.voidedQty,
+    required this.notes,
+    required this.sortOrder,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['order_id'] = Variable<String>(orderId);
+    if (!nullToAbsent || menuItemId != null) {
+      map['menu_item_id'] = Variable<String>(menuItemId);
+    }
+    map['item_name'] = Variable<String>(itemName);
+    map['variant_text'] = Variable<String>(variantText);
+    map['base_price_paise'] = Variable<int>(basePricePaise);
+    map['unit_price_paise'] = Variable<int>(unitPricePaise);
+    if (!nullToAbsent || taxProfileId != null) {
+      map['tax_profile_id'] = Variable<String>(taxProfileId);
+    }
+    map['tax_rate_bp'] = Variable<int>(taxRateBp);
+    map['tax_inclusive'] = Variable<bool>(taxInclusive);
+    map['tax_split_mode'] = Variable<String>(taxSplitMode);
+    if (!nullToAbsent || stationId != null) {
+      map['station_id'] = Variable<String>(stationId);
+    }
+    map['qty'] = Variable<int>(qty);
+    map['sent_qty'] = Variable<int>(sentQty);
+    map['voided_qty'] = Variable<int>(voidedQty);
+    map['notes'] = Variable<String>(notes);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  OrderLinesCompanion toCompanion(bool nullToAbsent) {
+    return OrderLinesCompanion(
+      id: Value(id),
+      orderId: Value(orderId),
+      menuItemId: menuItemId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(menuItemId),
+      itemName: Value(itemName),
+      variantText: Value(variantText),
+      basePricePaise: Value(basePricePaise),
+      unitPricePaise: Value(unitPricePaise),
+      taxProfileId: taxProfileId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(taxProfileId),
+      taxRateBp: Value(taxRateBp),
+      taxInclusive: Value(taxInclusive),
+      taxSplitMode: Value(taxSplitMode),
+      stationId: stationId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(stationId),
+      qty: Value(qty),
+      sentQty: Value(sentQty),
+      voidedQty: Value(voidedQty),
+      notes: Value(notes),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory OrderLineRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return OrderLineRow(
+      id: serializer.fromJson<String>(json['id']),
+      orderId: serializer.fromJson<String>(json['orderId']),
+      menuItemId: serializer.fromJson<String?>(json['menuItemId']),
+      itemName: serializer.fromJson<String>(json['itemName']),
+      variantText: serializer.fromJson<String>(json['variantText']),
+      basePricePaise: serializer.fromJson<int>(json['basePricePaise']),
+      unitPricePaise: serializer.fromJson<int>(json['unitPricePaise']),
+      taxProfileId: serializer.fromJson<String?>(json['taxProfileId']),
+      taxRateBp: serializer.fromJson<int>(json['taxRateBp']),
+      taxInclusive: serializer.fromJson<bool>(json['taxInclusive']),
+      taxSplitMode: serializer.fromJson<String>(json['taxSplitMode']),
+      stationId: serializer.fromJson<String?>(json['stationId']),
+      qty: serializer.fromJson<int>(json['qty']),
+      sentQty: serializer.fromJson<int>(json['sentQty']),
+      voidedQty: serializer.fromJson<int>(json['voidedQty']),
+      notes: serializer.fromJson<String>(json['notes']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'orderId': serializer.toJson<String>(orderId),
+      'menuItemId': serializer.toJson<String?>(menuItemId),
+      'itemName': serializer.toJson<String>(itemName),
+      'variantText': serializer.toJson<String>(variantText),
+      'basePricePaise': serializer.toJson<int>(basePricePaise),
+      'unitPricePaise': serializer.toJson<int>(unitPricePaise),
+      'taxProfileId': serializer.toJson<String?>(taxProfileId),
+      'taxRateBp': serializer.toJson<int>(taxRateBp),
+      'taxInclusive': serializer.toJson<bool>(taxInclusive),
+      'taxSplitMode': serializer.toJson<String>(taxSplitMode),
+      'stationId': serializer.toJson<String?>(stationId),
+      'qty': serializer.toJson<int>(qty),
+      'sentQty': serializer.toJson<int>(sentQty),
+      'voidedQty': serializer.toJson<int>(voidedQty),
+      'notes': serializer.toJson<String>(notes),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  OrderLineRow copyWith({
+    String? id,
+    String? orderId,
+    Value<String?> menuItemId = const Value.absent(),
+    String? itemName,
+    String? variantText,
+    int? basePricePaise,
+    int? unitPricePaise,
+    Value<String?> taxProfileId = const Value.absent(),
+    int? taxRateBp,
+    bool? taxInclusive,
+    String? taxSplitMode,
+    Value<String?> stationId = const Value.absent(),
+    int? qty,
+    int? sentQty,
+    int? voidedQty,
+    String? notes,
+    int? sortOrder,
+    int? createdAt,
+    int? updatedAt,
+  }) => OrderLineRow(
+    id: id ?? this.id,
+    orderId: orderId ?? this.orderId,
+    menuItemId: menuItemId.present ? menuItemId.value : this.menuItemId,
+    itemName: itemName ?? this.itemName,
+    variantText: variantText ?? this.variantText,
+    basePricePaise: basePricePaise ?? this.basePricePaise,
+    unitPricePaise: unitPricePaise ?? this.unitPricePaise,
+    taxProfileId: taxProfileId.present ? taxProfileId.value : this.taxProfileId,
+    taxRateBp: taxRateBp ?? this.taxRateBp,
+    taxInclusive: taxInclusive ?? this.taxInclusive,
+    taxSplitMode: taxSplitMode ?? this.taxSplitMode,
+    stationId: stationId.present ? stationId.value : this.stationId,
+    qty: qty ?? this.qty,
+    sentQty: sentQty ?? this.sentQty,
+    voidedQty: voidedQty ?? this.voidedQty,
+    notes: notes ?? this.notes,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  OrderLineRow copyWithCompanion(OrderLinesCompanion data) {
+    return OrderLineRow(
+      id: data.id.present ? data.id.value : this.id,
+      orderId: data.orderId.present ? data.orderId.value : this.orderId,
+      menuItemId: data.menuItemId.present
+          ? data.menuItemId.value
+          : this.menuItemId,
+      itemName: data.itemName.present ? data.itemName.value : this.itemName,
+      variantText: data.variantText.present
+          ? data.variantText.value
+          : this.variantText,
+      basePricePaise: data.basePricePaise.present
+          ? data.basePricePaise.value
+          : this.basePricePaise,
+      unitPricePaise: data.unitPricePaise.present
+          ? data.unitPricePaise.value
+          : this.unitPricePaise,
+      taxProfileId: data.taxProfileId.present
+          ? data.taxProfileId.value
+          : this.taxProfileId,
+      taxRateBp: data.taxRateBp.present ? data.taxRateBp.value : this.taxRateBp,
+      taxInclusive: data.taxInclusive.present
+          ? data.taxInclusive.value
+          : this.taxInclusive,
+      taxSplitMode: data.taxSplitMode.present
+          ? data.taxSplitMode.value
+          : this.taxSplitMode,
+      stationId: data.stationId.present ? data.stationId.value : this.stationId,
+      qty: data.qty.present ? data.qty.value : this.qty,
+      sentQty: data.sentQty.present ? data.sentQty.value : this.sentQty,
+      voidedQty: data.voidedQty.present ? data.voidedQty.value : this.voidedQty,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OrderLineRow(')
+          ..write('id: $id, ')
+          ..write('orderId: $orderId, ')
+          ..write('menuItemId: $menuItemId, ')
+          ..write('itemName: $itemName, ')
+          ..write('variantText: $variantText, ')
+          ..write('basePricePaise: $basePricePaise, ')
+          ..write('unitPricePaise: $unitPricePaise, ')
+          ..write('taxProfileId: $taxProfileId, ')
+          ..write('taxRateBp: $taxRateBp, ')
+          ..write('taxInclusive: $taxInclusive, ')
+          ..write('taxSplitMode: $taxSplitMode, ')
+          ..write('stationId: $stationId, ')
+          ..write('qty: $qty, ')
+          ..write('sentQty: $sentQty, ')
+          ..write('voidedQty: $voidedQty, ')
+          ..write('notes: $notes, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    orderId,
+    menuItemId,
+    itemName,
+    variantText,
+    basePricePaise,
+    unitPricePaise,
+    taxProfileId,
+    taxRateBp,
+    taxInclusive,
+    taxSplitMode,
+    stationId,
+    qty,
+    sentQty,
+    voidedQty,
+    notes,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is OrderLineRow &&
+          other.id == this.id &&
+          other.orderId == this.orderId &&
+          other.menuItemId == this.menuItemId &&
+          other.itemName == this.itemName &&
+          other.variantText == this.variantText &&
+          other.basePricePaise == this.basePricePaise &&
+          other.unitPricePaise == this.unitPricePaise &&
+          other.taxProfileId == this.taxProfileId &&
+          other.taxRateBp == this.taxRateBp &&
+          other.taxInclusive == this.taxInclusive &&
+          other.taxSplitMode == this.taxSplitMode &&
+          other.stationId == this.stationId &&
+          other.qty == this.qty &&
+          other.sentQty == this.sentQty &&
+          other.voidedQty == this.voidedQty &&
+          other.notes == this.notes &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class OrderLinesCompanion extends UpdateCompanion<OrderLineRow> {
+  final Value<String> id;
+  final Value<String> orderId;
+  final Value<String?> menuItemId;
+  final Value<String> itemName;
+  final Value<String> variantText;
+  final Value<int> basePricePaise;
+  final Value<int> unitPricePaise;
+  final Value<String?> taxProfileId;
+  final Value<int> taxRateBp;
+  final Value<bool> taxInclusive;
+  final Value<String> taxSplitMode;
+  final Value<String?> stationId;
+  final Value<int> qty;
+  final Value<int> sentQty;
+  final Value<int> voidedQty;
+  final Value<String> notes;
+  final Value<int> sortOrder;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const OrderLinesCompanion({
+    this.id = const Value.absent(),
+    this.orderId = const Value.absent(),
+    this.menuItemId = const Value.absent(),
+    this.itemName = const Value.absent(),
+    this.variantText = const Value.absent(),
+    this.basePricePaise = const Value.absent(),
+    this.unitPricePaise = const Value.absent(),
+    this.taxProfileId = const Value.absent(),
+    this.taxRateBp = const Value.absent(),
+    this.taxInclusive = const Value.absent(),
+    this.taxSplitMode = const Value.absent(),
+    this.stationId = const Value.absent(),
+    this.qty = const Value.absent(),
+    this.sentQty = const Value.absent(),
+    this.voidedQty = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  OrderLinesCompanion.insert({
+    required String id,
+    required String orderId,
+    this.menuItemId = const Value.absent(),
+    required String itemName,
+    this.variantText = const Value.absent(),
+    required int basePricePaise,
+    required int unitPricePaise,
+    this.taxProfileId = const Value.absent(),
+    this.taxRateBp = const Value.absent(),
+    this.taxInclusive = const Value.absent(),
+    this.taxSplitMode = const Value.absent(),
+    this.stationId = const Value.absent(),
+    required int qty,
+    this.sentQty = const Value.absent(),
+    this.voidedQty = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       orderId = Value(orderId),
+       itemName = Value(itemName),
+       basePricePaise = Value(basePricePaise),
+       unitPricePaise = Value(unitPricePaise),
+       qty = Value(qty),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<OrderLineRow> custom({
+    Expression<String>? id,
+    Expression<String>? orderId,
+    Expression<String>? menuItemId,
+    Expression<String>? itemName,
+    Expression<String>? variantText,
+    Expression<int>? basePricePaise,
+    Expression<int>? unitPricePaise,
+    Expression<String>? taxProfileId,
+    Expression<int>? taxRateBp,
+    Expression<bool>? taxInclusive,
+    Expression<String>? taxSplitMode,
+    Expression<String>? stationId,
+    Expression<int>? qty,
+    Expression<int>? sentQty,
+    Expression<int>? voidedQty,
+    Expression<String>? notes,
+    Expression<int>? sortOrder,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (orderId != null) 'order_id': orderId,
+      if (menuItemId != null) 'menu_item_id': menuItemId,
+      if (itemName != null) 'item_name': itemName,
+      if (variantText != null) 'variant_text': variantText,
+      if (basePricePaise != null) 'base_price_paise': basePricePaise,
+      if (unitPricePaise != null) 'unit_price_paise': unitPricePaise,
+      if (taxProfileId != null) 'tax_profile_id': taxProfileId,
+      if (taxRateBp != null) 'tax_rate_bp': taxRateBp,
+      if (taxInclusive != null) 'tax_inclusive': taxInclusive,
+      if (taxSplitMode != null) 'tax_split_mode': taxSplitMode,
+      if (stationId != null) 'station_id': stationId,
+      if (qty != null) 'qty': qty,
+      if (sentQty != null) 'sent_qty': sentQty,
+      if (voidedQty != null) 'voided_qty': voidedQty,
+      if (notes != null) 'notes': notes,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  OrderLinesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? orderId,
+    Value<String?>? menuItemId,
+    Value<String>? itemName,
+    Value<String>? variantText,
+    Value<int>? basePricePaise,
+    Value<int>? unitPricePaise,
+    Value<String?>? taxProfileId,
+    Value<int>? taxRateBp,
+    Value<bool>? taxInclusive,
+    Value<String>? taxSplitMode,
+    Value<String?>? stationId,
+    Value<int>? qty,
+    Value<int>? sentQty,
+    Value<int>? voidedQty,
+    Value<String>? notes,
+    Value<int>? sortOrder,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return OrderLinesCompanion(
+      id: id ?? this.id,
+      orderId: orderId ?? this.orderId,
+      menuItemId: menuItemId ?? this.menuItemId,
+      itemName: itemName ?? this.itemName,
+      variantText: variantText ?? this.variantText,
+      basePricePaise: basePricePaise ?? this.basePricePaise,
+      unitPricePaise: unitPricePaise ?? this.unitPricePaise,
+      taxProfileId: taxProfileId ?? this.taxProfileId,
+      taxRateBp: taxRateBp ?? this.taxRateBp,
+      taxInclusive: taxInclusive ?? this.taxInclusive,
+      taxSplitMode: taxSplitMode ?? this.taxSplitMode,
+      stationId: stationId ?? this.stationId,
+      qty: qty ?? this.qty,
+      sentQty: sentQty ?? this.sentQty,
+      voidedQty: voidedQty ?? this.voidedQty,
+      notes: notes ?? this.notes,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (orderId.present) {
+      map['order_id'] = Variable<String>(orderId.value);
+    }
+    if (menuItemId.present) {
+      map['menu_item_id'] = Variable<String>(menuItemId.value);
+    }
+    if (itemName.present) {
+      map['item_name'] = Variable<String>(itemName.value);
+    }
+    if (variantText.present) {
+      map['variant_text'] = Variable<String>(variantText.value);
+    }
+    if (basePricePaise.present) {
+      map['base_price_paise'] = Variable<int>(basePricePaise.value);
+    }
+    if (unitPricePaise.present) {
+      map['unit_price_paise'] = Variable<int>(unitPricePaise.value);
+    }
+    if (taxProfileId.present) {
+      map['tax_profile_id'] = Variable<String>(taxProfileId.value);
+    }
+    if (taxRateBp.present) {
+      map['tax_rate_bp'] = Variable<int>(taxRateBp.value);
+    }
+    if (taxInclusive.present) {
+      map['tax_inclusive'] = Variable<bool>(taxInclusive.value);
+    }
+    if (taxSplitMode.present) {
+      map['tax_split_mode'] = Variable<String>(taxSplitMode.value);
+    }
+    if (stationId.present) {
+      map['station_id'] = Variable<String>(stationId.value);
+    }
+    if (qty.present) {
+      map['qty'] = Variable<int>(qty.value);
+    }
+    if (sentQty.present) {
+      map['sent_qty'] = Variable<int>(sentQty.value);
+    }
+    if (voidedQty.present) {
+      map['voided_qty'] = Variable<int>(voidedQty.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OrderLinesCompanion(')
+          ..write('id: $id, ')
+          ..write('orderId: $orderId, ')
+          ..write('menuItemId: $menuItemId, ')
+          ..write('itemName: $itemName, ')
+          ..write('variantText: $variantText, ')
+          ..write('basePricePaise: $basePricePaise, ')
+          ..write('unitPricePaise: $unitPricePaise, ')
+          ..write('taxProfileId: $taxProfileId, ')
+          ..write('taxRateBp: $taxRateBp, ')
+          ..write('taxInclusive: $taxInclusive, ')
+          ..write('taxSplitMode: $taxSplitMode, ')
+          ..write('stationId: $stationId, ')
+          ..write('qty: $qty, ')
+          ..write('sentQty: $sentQty, ')
+          ..write('voidedQty: $voidedQty, ')
+          ..write('notes: $notes, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $OrderLineOptionsTable extends OrderLineOptions
+    with TableInfo<$OrderLineOptionsTable, OrderLineOptionRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $OrderLineOptionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lineIdMeta = const VerificationMeta('lineId');
+  @override
+  late final GeneratedColumn<String> lineId = GeneratedColumn<String>(
+    'line_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES order_lines (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _groupIdMeta = const VerificationMeta(
+    'groupId',
+  );
+  @override
+  late final GeneratedColumn<String> groupId = GeneratedColumn<String>(
+    'group_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _groupNameMeta = const VerificationMeta(
+    'groupName',
+  );
+  @override
+  late final GeneratedColumn<String> groupName = GeneratedColumn<String>(
+    'group_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _choiceIdMeta = const VerificationMeta(
+    'choiceId',
+  );
+  @override
+  late final GeneratedColumn<String> choiceId = GeneratedColumn<String>(
+    'choice_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _priceDeltaPaiseMeta = const VerificationMeta(
+    'priceDeltaPaise',
+  );
+  @override
+  late final GeneratedColumn<int> priceDeltaPaise = GeneratedColumn<int>(
+    'price_delta_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    lineId,
+    groupId,
+    groupName,
+    kind,
+    choiceId,
+    name,
+    priceDeltaPaise,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'order_line_options';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<OrderLineOptionRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('line_id')) {
+      context.handle(
+        _lineIdMeta,
+        lineId.isAcceptableOrUnknown(data['line_id']!, _lineIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lineIdMeta);
+    }
+    if (data.containsKey('group_id')) {
+      context.handle(
+        _groupIdMeta,
+        groupId.isAcceptableOrUnknown(data['group_id']!, _groupIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_groupIdMeta);
+    }
+    if (data.containsKey('group_name')) {
+      context.handle(
+        _groupNameMeta,
+        groupName.isAcceptableOrUnknown(data['group_name']!, _groupNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_groupNameMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('choice_id')) {
+      context.handle(
+        _choiceIdMeta,
+        choiceId.isAcceptableOrUnknown(data['choice_id']!, _choiceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_choiceIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('price_delta_paise')) {
+      context.handle(
+        _priceDeltaPaiseMeta,
+        priceDeltaPaise.isAcceptableOrUnknown(
+          data['price_delta_paise']!,
+          _priceDeltaPaiseMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_priceDeltaPaiseMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  OrderLineOptionRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return OrderLineOptionRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      lineId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}line_id'],
+      )!,
+      groupId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}group_id'],
+      )!,
+      groupName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}group_name'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      choiceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}choice_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      priceDeltaPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}price_delta_paise'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $OrderLineOptionsTable createAlias(String alias) {
+    return $OrderLineOptionsTable(attachedDatabase, alias);
+  }
+}
+
+class OrderLineOptionRow extends DataClass
+    implements Insertable<OrderLineOptionRow> {
+  final String id;
+  final String lineId;
+  final String groupId;
+  final String groupName;
+
+  /// `OptionGroupKind.name`.
+  final String kind;
+  final String choiceId;
+  final String name;
+  final int priceDeltaPaise;
+  final int sortOrder;
+  const OrderLineOptionRow({
+    required this.id,
+    required this.lineId,
+    required this.groupId,
+    required this.groupName,
+    required this.kind,
+    required this.choiceId,
+    required this.name,
+    required this.priceDeltaPaise,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['line_id'] = Variable<String>(lineId);
+    map['group_id'] = Variable<String>(groupId);
+    map['group_name'] = Variable<String>(groupName);
+    map['kind'] = Variable<String>(kind);
+    map['choice_id'] = Variable<String>(choiceId);
+    map['name'] = Variable<String>(name);
+    map['price_delta_paise'] = Variable<int>(priceDeltaPaise);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  OrderLineOptionsCompanion toCompanion(bool nullToAbsent) {
+    return OrderLineOptionsCompanion(
+      id: Value(id),
+      lineId: Value(lineId),
+      groupId: Value(groupId),
+      groupName: Value(groupName),
+      kind: Value(kind),
+      choiceId: Value(choiceId),
+      name: Value(name),
+      priceDeltaPaise: Value(priceDeltaPaise),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory OrderLineOptionRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return OrderLineOptionRow(
+      id: serializer.fromJson<String>(json['id']),
+      lineId: serializer.fromJson<String>(json['lineId']),
+      groupId: serializer.fromJson<String>(json['groupId']),
+      groupName: serializer.fromJson<String>(json['groupName']),
+      kind: serializer.fromJson<String>(json['kind']),
+      choiceId: serializer.fromJson<String>(json['choiceId']),
+      name: serializer.fromJson<String>(json['name']),
+      priceDeltaPaise: serializer.fromJson<int>(json['priceDeltaPaise']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'lineId': serializer.toJson<String>(lineId),
+      'groupId': serializer.toJson<String>(groupId),
+      'groupName': serializer.toJson<String>(groupName),
+      'kind': serializer.toJson<String>(kind),
+      'choiceId': serializer.toJson<String>(choiceId),
+      'name': serializer.toJson<String>(name),
+      'priceDeltaPaise': serializer.toJson<int>(priceDeltaPaise),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  OrderLineOptionRow copyWith({
+    String? id,
+    String? lineId,
+    String? groupId,
+    String? groupName,
+    String? kind,
+    String? choiceId,
+    String? name,
+    int? priceDeltaPaise,
+    int? sortOrder,
+  }) => OrderLineOptionRow(
+    id: id ?? this.id,
+    lineId: lineId ?? this.lineId,
+    groupId: groupId ?? this.groupId,
+    groupName: groupName ?? this.groupName,
+    kind: kind ?? this.kind,
+    choiceId: choiceId ?? this.choiceId,
+    name: name ?? this.name,
+    priceDeltaPaise: priceDeltaPaise ?? this.priceDeltaPaise,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  OrderLineOptionRow copyWithCompanion(OrderLineOptionsCompanion data) {
+    return OrderLineOptionRow(
+      id: data.id.present ? data.id.value : this.id,
+      lineId: data.lineId.present ? data.lineId.value : this.lineId,
+      groupId: data.groupId.present ? data.groupId.value : this.groupId,
+      groupName: data.groupName.present ? data.groupName.value : this.groupName,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      choiceId: data.choiceId.present ? data.choiceId.value : this.choiceId,
+      name: data.name.present ? data.name.value : this.name,
+      priceDeltaPaise: data.priceDeltaPaise.present
+          ? data.priceDeltaPaise.value
+          : this.priceDeltaPaise,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OrderLineOptionRow(')
+          ..write('id: $id, ')
+          ..write('lineId: $lineId, ')
+          ..write('groupId: $groupId, ')
+          ..write('groupName: $groupName, ')
+          ..write('kind: $kind, ')
+          ..write('choiceId: $choiceId, ')
+          ..write('name: $name, ')
+          ..write('priceDeltaPaise: $priceDeltaPaise, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    lineId,
+    groupId,
+    groupName,
+    kind,
+    choiceId,
+    name,
+    priceDeltaPaise,
+    sortOrder,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is OrderLineOptionRow &&
+          other.id == this.id &&
+          other.lineId == this.lineId &&
+          other.groupId == this.groupId &&
+          other.groupName == this.groupName &&
+          other.kind == this.kind &&
+          other.choiceId == this.choiceId &&
+          other.name == this.name &&
+          other.priceDeltaPaise == this.priceDeltaPaise &&
+          other.sortOrder == this.sortOrder);
+}
+
+class OrderLineOptionsCompanion extends UpdateCompanion<OrderLineOptionRow> {
+  final Value<String> id;
+  final Value<String> lineId;
+  final Value<String> groupId;
+  final Value<String> groupName;
+  final Value<String> kind;
+  final Value<String> choiceId;
+  final Value<String> name;
+  final Value<int> priceDeltaPaise;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const OrderLineOptionsCompanion({
+    this.id = const Value.absent(),
+    this.lineId = const Value.absent(),
+    this.groupId = const Value.absent(),
+    this.groupName = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.choiceId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.priceDeltaPaise = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  OrderLineOptionsCompanion.insert({
+    required String id,
+    required String lineId,
+    required String groupId,
+    required String groupName,
+    required String kind,
+    required String choiceId,
+    required String name,
+    required int priceDeltaPaise,
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       lineId = Value(lineId),
+       groupId = Value(groupId),
+       groupName = Value(groupName),
+       kind = Value(kind),
+       choiceId = Value(choiceId),
+       name = Value(name),
+       priceDeltaPaise = Value(priceDeltaPaise);
+  static Insertable<OrderLineOptionRow> custom({
+    Expression<String>? id,
+    Expression<String>? lineId,
+    Expression<String>? groupId,
+    Expression<String>? groupName,
+    Expression<String>? kind,
+    Expression<String>? choiceId,
+    Expression<String>? name,
+    Expression<int>? priceDeltaPaise,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (lineId != null) 'line_id': lineId,
+      if (groupId != null) 'group_id': groupId,
+      if (groupName != null) 'group_name': groupName,
+      if (kind != null) 'kind': kind,
+      if (choiceId != null) 'choice_id': choiceId,
+      if (name != null) 'name': name,
+      if (priceDeltaPaise != null) 'price_delta_paise': priceDeltaPaise,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  OrderLineOptionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? lineId,
+    Value<String>? groupId,
+    Value<String>? groupName,
+    Value<String>? kind,
+    Value<String>? choiceId,
+    Value<String>? name,
+    Value<int>? priceDeltaPaise,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return OrderLineOptionsCompanion(
+      id: id ?? this.id,
+      lineId: lineId ?? this.lineId,
+      groupId: groupId ?? this.groupId,
+      groupName: groupName ?? this.groupName,
+      kind: kind ?? this.kind,
+      choiceId: choiceId ?? this.choiceId,
+      name: name ?? this.name,
+      priceDeltaPaise: priceDeltaPaise ?? this.priceDeltaPaise,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (lineId.present) {
+      map['line_id'] = Variable<String>(lineId.value);
+    }
+    if (groupId.present) {
+      map['group_id'] = Variable<String>(groupId.value);
+    }
+    if (groupName.present) {
+      map['group_name'] = Variable<String>(groupName.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (choiceId.present) {
+      map['choice_id'] = Variable<String>(choiceId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (priceDeltaPaise.present) {
+      map['price_delta_paise'] = Variable<int>(priceDeltaPaise.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OrderLineOptionsCompanion(')
+          ..write('id: $id, ')
+          ..write('lineId: $lineId, ')
+          ..write('groupId: $groupId, ')
+          ..write('groupName: $groupName, ')
+          ..write('kind: $kind, ')
+          ..write('choiceId: $choiceId, ')
+          ..write('name: $name, ')
+          ..write('priceDeltaPaise: $priceDeltaPaise, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -7668,6 +11350,15 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $OptionGroupsTable optionGroups = $OptionGroupsTable(this);
   late final $OptionChoicesTable optionChoices = $OptionChoicesTable(this);
   late final $ItemOptionGroupsTable itemOptionGroups = $ItemOptionGroupsTable(
+    this,
+  );
+  late final $DiningAreasTable diningAreas = $DiningAreasTable(this);
+  late final $RestaurantTablesTable restaurantTables = $RestaurantTablesTable(
+    this,
+  );
+  late final $OrdersTable orders = $OrdersTable(this);
+  late final $OrderLinesTable orderLines = $OrderLinesTable(this);
+  late final $OrderLineOptionsTable orderLineOptions = $OrderLineOptionsTable(
     this,
   );
   late final Index idxPrintJobsStatus = Index(
@@ -7702,6 +11393,34 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_option_choices_group',
     'CREATE INDEX idx_option_choices_group ON option_choices (group_id)',
   );
+  late final Index idxRestaurantTablesArea = Index(
+    'idx_restaurant_tables_area',
+    'CREATE INDEX idx_restaurant_tables_area ON restaurant_tables (area_id)',
+  );
+  late final Index idxOrdersStatus = Index(
+    'idx_orders_status',
+    'CREATE INDEX idx_orders_status ON orders (status)',
+  );
+  late final Index idxOrdersBusinessDate = Index(
+    'idx_orders_business_date',
+    'CREATE INDEX idx_orders_business_date ON orders (business_date)',
+  );
+  late final Index idxOrdersTable = Index(
+    'idx_orders_table',
+    'CREATE INDEX idx_orders_table ON orders (table_id)',
+  );
+  late final Index idxOrdersDayNumber = Index(
+    'idx_orders_day_number',
+    'CREATE UNIQUE INDEX idx_orders_day_number ON orders (business_date, order_no)',
+  );
+  late final Index idxOrderLinesOrder = Index(
+    'idx_order_lines_order',
+    'CREATE INDEX idx_order_lines_order ON order_lines (order_id)',
+  );
+  late final Index idxOrderLineOptionsLine = Index(
+    'idx_order_line_options_line',
+    'CREATE INDEX idx_order_line_options_line ON order_line_options (line_id)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -7721,6 +11440,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     optionGroups,
     optionChoices,
     itemOptionGroups,
+    diningAreas,
+    restaurantTables,
+    orders,
+    orderLines,
+    orderLineOptions,
     idxPrintJobsStatus,
     idxPrintJobsSourceKey,
     idxPrintHistoryAt,
@@ -7729,6 +11453,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     idxMenuItemsCategory,
     idxMenuItemsSku,
     idxOptionChoicesGroup,
+    idxRestaurantTablesArea,
+    idxOrdersStatus,
+    idxOrdersBusinessDate,
+    idxOrdersTable,
+    idxOrdersDayNumber,
+    idxOrderLinesOrder,
+    idxOrderLineOptionsLine,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -7738,6 +11469,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('item_option_groups', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'order_lines',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('order_line_options', kind: UpdateKind.delete)],
     ),
   ]);
 }
@@ -11014,6 +14752,24 @@ final class $$MenuItemsTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$OrderLinesTable, List<OrderLineRow>>
+  _orderLinesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.orderLines,
+    aliasName: 'menu_items__id__order_lines__menu_item_id',
+  );
+
+  $$OrderLinesTableProcessedTableManager get orderLinesRefs {
+    final manager = $$OrderLinesTableTableManager(
+      $_db,
+      $_db.orderLines,
+    ).filter((f) => f.menuItemId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_orderLinesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$MenuItemsTableFilterComposer
@@ -11185,6 +14941,31 @@ class $$MenuItemsTableFilterComposer
           }) => $$ItemOptionGroupsTableFilterComposer(
             $db: $db,
             $table: $db.itemOptionGroups,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> orderLinesRefs(
+    Expression<bool> Function($$OrderLinesTableFilterComposer f) f,
+  ) {
+    final $$OrderLinesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.orderLines,
+      getReferencedColumn: (t) => t.menuItemId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrderLinesTableFilterComposer(
+            $db: $db,
+            $table: $db.orderLines,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -11508,6 +15289,31 @@ class $$MenuItemsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> orderLinesRefs<T extends Object>(
+    Expression<T> Function($$OrderLinesTableAnnotationComposer a) f,
+  ) {
+    final $$OrderLinesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.orderLines,
+      getReferencedColumn: (t) => t.menuItemId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrderLinesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.orderLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$MenuItemsTableTableManager
@@ -11528,6 +15334,7 @@ class $$MenuItemsTableTableManager
             bool taxProfileId,
             bool stationId,
             bool itemOptionGroupsRefs,
+            bool orderLinesRefs,
           })
         > {
   $$MenuItemsTableTableManager(_$AppDatabase db, $MenuItemsTable table)
@@ -11639,11 +15446,13 @@ class $$MenuItemsTableTableManager
                 taxProfileId = false,
                 stationId = false,
                 itemOptionGroupsRefs = false,
+                orderLinesRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (itemOptionGroupsRefs) db.itemOptionGroups,
+                    if (orderLinesRefs) db.orderLines,
                   ],
                   addJoins:
                       <
@@ -11719,6 +15528,26 @@ class $$MenuItemsTableTableManager
                           referencedColumn: 'item_id',
                           typedResults: items,
                         ),
+                      if (orderLinesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          MenuItemRow,
+                          $MenuItemsTable,
+                          OrderLineRow,
+                          $OrderLinesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$MenuItemsTableReferences
+                              ._orderLinesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$MenuItemsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).orderLinesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'menu_item_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -11744,6 +15573,7 @@ typedef $$MenuItemsTableProcessedTableManager =
         bool taxProfileId,
         bool stationId,
         bool itemOptionGroupsRefs,
+        bool orderLinesRefs,
       })
     >;
 typedef $$OptionGroupsTableCreateCompanionBuilder =
@@ -12977,6 +16807,2694 @@ typedef $$ItemOptionGroupsTableProcessedTableManager =
       ItemOptionGroupRow,
       PrefetchHooks Function({bool itemId, bool groupId})
     >;
+typedef $$DiningAreasTableCreateCompanionBuilder =
+    DiningAreasCompanion Function({
+      required String id,
+      required String name,
+      Value<bool> isActive,
+      Value<int> sortOrder,
+      required int createdAt,
+      required int updatedAt,
+      Value<int> rowid,
+    });
+typedef $$DiningAreasTableUpdateCompanionBuilder =
+    DiningAreasCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<bool> isActive,
+      Value<int> sortOrder,
+      Value<int> createdAt,
+      Value<int> updatedAt,
+      Value<int> rowid,
+    });
+
+final class $$DiningAreasTableReferences
+    extends BaseReferences<_$AppDatabase, $DiningAreasTable, DiningAreaRow> {
+  $$DiningAreasTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$RestaurantTablesTable, List<RestaurantTableRow>>
+  _restaurantTablesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.restaurantTables,
+    aliasName: 'dining_areas__id__restaurant_tables__area_id',
+  );
+
+  $$RestaurantTablesTableProcessedTableManager get restaurantTablesRefs {
+    final manager = $$RestaurantTablesTableTableManager(
+      $_db,
+      $_db.restaurantTables,
+    ).filter((f) => f.areaId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _restaurantTablesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$DiningAreasTableFilterComposer
+    extends Composer<_$AppDatabase, $DiningAreasTable> {
+  $$DiningAreasTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> restaurantTablesRefs(
+    Expression<bool> Function($$RestaurantTablesTableFilterComposer f) f,
+  ) {
+    final $$RestaurantTablesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.restaurantTables,
+      getReferencedColumn: (t) => t.areaId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RestaurantTablesTableFilterComposer(
+            $db: $db,
+            $table: $db.restaurantTables,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$DiningAreasTableOrderingComposer
+    extends Composer<_$AppDatabase, $DiningAreasTable> {
+  $$DiningAreasTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DiningAreasTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DiningAreasTable> {
+  $$DiningAreasTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  Expression<T> restaurantTablesRefs<T extends Object>(
+    Expression<T> Function($$RestaurantTablesTableAnnotationComposer a) f,
+  ) {
+    final $$RestaurantTablesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.restaurantTables,
+      getReferencedColumn: (t) => t.areaId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RestaurantTablesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.restaurantTables,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$DiningAreasTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DiningAreasTable,
+          DiningAreaRow,
+          $$DiningAreasTableFilterComposer,
+          $$DiningAreasTableOrderingComposer,
+          $$DiningAreasTableAnnotationComposer,
+          $$DiningAreasTableCreateCompanionBuilder,
+          $$DiningAreasTableUpdateCompanionBuilder,
+          (DiningAreaRow, $$DiningAreasTableReferences),
+          DiningAreaRow,
+          PrefetchHooks Function({bool restaurantTablesRefs})
+        > {
+  $$DiningAreasTableTableManager(_$AppDatabase db, $DiningAreasTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DiningAreasTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DiningAreasTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DiningAreasTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DiningAreasCompanion(
+                id: id,
+                name: name,
+                isActive: isActive,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                Value<bool> isActive = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                required int createdAt,
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => DiningAreasCompanion.insert(
+                id: id,
+                name: name,
+                isActive: isActive,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$DiningAreasTable, DiningAreaRow>(table),
+                  $$DiningAreasTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({restaurantTablesRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (restaurantTablesRefs) db.restaurantTables,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (restaurantTablesRefs)
+                    await $_getPrefetchedDataByColumns<
+                      DiningAreaRow,
+                      $DiningAreasTable,
+                      RestaurantTableRow,
+                      $RestaurantTablesTable
+                    >(
+                      currentTable: table,
+                      referencedTable: $$DiningAreasTableReferences
+                          ._restaurantTablesRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$DiningAreasTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).restaurantTablesRefs,
+                      currentColumn: 'id',
+                      referencedColumn: 'area_id',
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$DiningAreasTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DiningAreasTable,
+      DiningAreaRow,
+      $$DiningAreasTableFilterComposer,
+      $$DiningAreasTableOrderingComposer,
+      $$DiningAreasTableAnnotationComposer,
+      $$DiningAreasTableCreateCompanionBuilder,
+      $$DiningAreasTableUpdateCompanionBuilder,
+      (DiningAreaRow, $$DiningAreasTableReferences),
+      DiningAreaRow,
+      PrefetchHooks Function({bool restaurantTablesRefs})
+    >;
+typedef $$RestaurantTablesTableCreateCompanionBuilder =
+    RestaurantTablesCompanion Function({
+      required String id,
+      required String areaId,
+      required String label,
+      Value<int?> seats,
+      Value<bool> isActive,
+      Value<int> sortOrder,
+      required int createdAt,
+      required int updatedAt,
+      Value<int> rowid,
+    });
+typedef $$RestaurantTablesTableUpdateCompanionBuilder =
+    RestaurantTablesCompanion Function({
+      Value<String> id,
+      Value<String> areaId,
+      Value<String> label,
+      Value<int?> seats,
+      Value<bool> isActive,
+      Value<int> sortOrder,
+      Value<int> createdAt,
+      Value<int> updatedAt,
+      Value<int> rowid,
+    });
+
+final class $$RestaurantTablesTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $RestaurantTablesTable,
+          RestaurantTableRow
+        > {
+  $$RestaurantTablesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $DiningAreasTable _areaIdTable(_$AppDatabase db) => db.diningAreas
+      .createAlias('restaurant_tables__area_id__dining_areas__id');
+
+  $$DiningAreasTableProcessedTableManager get areaId {
+    final $_column = $_itemColumn<String>('area_id')!;
+
+    final manager = $$DiningAreasTableTableManager(
+      $_db,
+      $_db.diningAreas,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_areaIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$OrdersTable, List<OrderRow>> _ordersRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.orders,
+    aliasName: 'restaurant_tables__id__orders__table_id',
+  );
+
+  $$OrdersTableProcessedTableManager get ordersRefs {
+    final manager = $$OrdersTableTableManager(
+      $_db,
+      $_db.orders,
+    ).filter((f) => f.tableId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_ordersRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$RestaurantTablesTableFilterComposer
+    extends Composer<_$AppDatabase, $RestaurantTablesTable> {
+  $$RestaurantTablesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get seats => $composableBuilder(
+    column: $table.seats,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$DiningAreasTableFilterComposer get areaId {
+    final $$DiningAreasTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.areaId,
+      referencedTable: $db.diningAreas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DiningAreasTableFilterComposer(
+            $db: $db,
+            $table: $db.diningAreas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> ordersRefs(
+    Expression<bool> Function($$OrdersTableFilterComposer f) f,
+  ) {
+    final $$OrdersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.orders,
+      getReferencedColumn: (t) => t.tableId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrdersTableFilterComposer(
+            $db: $db,
+            $table: $db.orders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$RestaurantTablesTableOrderingComposer
+    extends Composer<_$AppDatabase, $RestaurantTablesTable> {
+  $$RestaurantTablesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get seats => $composableBuilder(
+    column: $table.seats,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$DiningAreasTableOrderingComposer get areaId {
+    final $$DiningAreasTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.areaId,
+      referencedTable: $db.diningAreas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DiningAreasTableOrderingComposer(
+            $db: $db,
+            $table: $db.diningAreas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RestaurantTablesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RestaurantTablesTable> {
+  $$RestaurantTablesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumn<int> get seats =>
+      $composableBuilder(column: $table.seats, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$DiningAreasTableAnnotationComposer get areaId {
+    final $$DiningAreasTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.areaId,
+      referencedTable: $db.diningAreas,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DiningAreasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.diningAreas,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> ordersRefs<T extends Object>(
+    Expression<T> Function($$OrdersTableAnnotationComposer a) f,
+  ) {
+    final $$OrdersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.orders,
+      getReferencedColumn: (t) => t.tableId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrdersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.orders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$RestaurantTablesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RestaurantTablesTable,
+          RestaurantTableRow,
+          $$RestaurantTablesTableFilterComposer,
+          $$RestaurantTablesTableOrderingComposer,
+          $$RestaurantTablesTableAnnotationComposer,
+          $$RestaurantTablesTableCreateCompanionBuilder,
+          $$RestaurantTablesTableUpdateCompanionBuilder,
+          (RestaurantTableRow, $$RestaurantTablesTableReferences),
+          RestaurantTableRow,
+          PrefetchHooks Function({bool areaId, bool ordersRefs})
+        > {
+  $$RestaurantTablesTableTableManager(
+    _$AppDatabase db,
+    $RestaurantTablesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RestaurantTablesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RestaurantTablesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RestaurantTablesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> areaId = const Value.absent(),
+                Value<String> label = const Value.absent(),
+                Value<int?> seats = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RestaurantTablesCompanion(
+                id: id,
+                areaId: areaId,
+                label: label,
+                seats: seats,
+                isActive: isActive,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String areaId,
+                required String label,
+                Value<int?> seats = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                required int createdAt,
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => RestaurantTablesCompanion.insert(
+                id: id,
+                areaId: areaId,
+                label: label,
+                seats: seats,
+                isActive: isActive,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$RestaurantTablesTable, RestaurantTableRow>(
+                    table,
+                  ),
+                  $$RestaurantTablesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({areaId = false, ordersRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (ordersRefs) db.orders],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (areaId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.areaId,
+                        referencedTable: $$RestaurantTablesTableReferences
+                            ._areaIdTable(db),
+                        referencedColumn: $$RestaurantTablesTableReferences
+                            ._areaIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (ordersRefs)
+                    await $_getPrefetchedDataByColumns<
+                      RestaurantTableRow,
+                      $RestaurantTablesTable,
+                      OrderRow,
+                      $OrdersTable
+                    >(
+                      currentTable: table,
+                      referencedTable: $$RestaurantTablesTableReferences
+                          ._ordersRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$RestaurantTablesTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).ordersRefs,
+                      currentColumn: 'id',
+                      referencedColumn: 'table_id',
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$RestaurantTablesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RestaurantTablesTable,
+      RestaurantTableRow,
+      $$RestaurantTablesTableFilterComposer,
+      $$RestaurantTablesTableOrderingComposer,
+      $$RestaurantTablesTableAnnotationComposer,
+      $$RestaurantTablesTableCreateCompanionBuilder,
+      $$RestaurantTablesTableUpdateCompanionBuilder,
+      (RestaurantTableRow, $$RestaurantTablesTableReferences),
+      RestaurantTableRow,
+      PrefetchHooks Function({bool areaId, bool ordersRefs})
+    >;
+typedef $$OrdersTableCreateCompanionBuilder = OrdersCompanion Function({
+  required String id,
+  required int orderNo,
+  required String businessDate,
+  required String orderType,
+  Value<String?> tableId,
+  Value<String> customerName,
+  Value<String> customerPhone,
+  Value<int?> guests,
+  Value<String?> staffId,
+  Value<String> staffName,
+  required String status,
+  Value<String> notes,
+  Value<String> discountKind,
+  Value<int> discountValue,
+  Value<String> discountReason,
+  Value<String> cancelReason,
+  required String clientRequestId,
+  required int createdAt,
+  required int updatedAt,
+  Value<int?> closedAt,
+  Value<int> rowid,
+});
+typedef $$OrdersTableUpdateCompanionBuilder = OrdersCompanion Function({
+  Value<String> id,
+  Value<int> orderNo,
+  Value<String> businessDate,
+  Value<String> orderType,
+  Value<String?> tableId,
+  Value<String> customerName,
+  Value<String> customerPhone,
+  Value<int?> guests,
+  Value<String?> staffId,
+  Value<String> staffName,
+  Value<String> status,
+  Value<String> notes,
+  Value<String> discountKind,
+  Value<int> discountValue,
+  Value<String> discountReason,
+  Value<String> cancelReason,
+  Value<String> clientRequestId,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int?> closedAt,
+  Value<int> rowid,
+});
+
+final class $$OrdersTableReferences
+    extends BaseReferences<_$AppDatabase, $OrdersTable, OrderRow> {
+  $$OrdersTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $RestaurantTablesTable _tableIdTable(_$AppDatabase db) => db
+      .restaurantTables
+      .createAlias('orders__table_id__restaurant_tables__id');
+
+  $$RestaurantTablesTableProcessedTableManager? get tableId {
+    final $_column = $_itemColumn<String>('table_id');
+    if ($_column == null) return null;
+    final manager = $$RestaurantTablesTableTableManager(
+      $_db,
+      $_db.restaurantTables,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_tableIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$OrderLinesTable, List<OrderLineRow>>
+  _orderLinesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.orderLines,
+    aliasName: 'orders__id__order_lines__order_id',
+  );
+
+  $$OrderLinesTableProcessedTableManager get orderLinesRefs {
+    final manager = $$OrderLinesTableTableManager(
+      $_db,
+      $_db.orderLines,
+    ).filter((f) => f.orderId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_orderLinesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$OrdersTableFilterComposer
+    extends Composer<_$AppDatabase, $OrdersTable> {
+  $$OrdersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get orderNo => $composableBuilder(
+    column: $table.orderNo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get businessDate => $composableBuilder(
+    column: $table.businessDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get orderType => $composableBuilder(
+    column: $table.orderType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get customerName => $composableBuilder(
+    column: $table.customerName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get customerPhone => $composableBuilder(
+    column: $table.customerPhone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get guests => $composableBuilder(
+    column: $table.guests,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get staffId => $composableBuilder(
+    column: $table.staffId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get staffName => $composableBuilder(
+    column: $table.staffName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get discountKind => $composableBuilder(
+    column: $table.discountKind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get discountValue => $composableBuilder(
+    column: $table.discountValue,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get discountReason => $composableBuilder(
+    column: $table.discountReason,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cancelReason => $composableBuilder(
+    column: $table.cancelReason,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clientRequestId => $composableBuilder(
+    column: $table.clientRequestId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get closedAt => $composableBuilder(
+    column: $table.closedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$RestaurantTablesTableFilterComposer get tableId {
+    final $$RestaurantTablesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tableId,
+      referencedTable: $db.restaurantTables,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RestaurantTablesTableFilterComposer(
+            $db: $db,
+            $table: $db.restaurantTables,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> orderLinesRefs(
+    Expression<bool> Function($$OrderLinesTableFilterComposer f) f,
+  ) {
+    final $$OrderLinesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.orderLines,
+      getReferencedColumn: (t) => t.orderId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrderLinesTableFilterComposer(
+            $db: $db,
+            $table: $db.orderLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$OrdersTableOrderingComposer
+    extends Composer<_$AppDatabase, $OrdersTable> {
+  $$OrdersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get orderNo => $composableBuilder(
+    column: $table.orderNo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get businessDate => $composableBuilder(
+    column: $table.businessDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get orderType => $composableBuilder(
+    column: $table.orderType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get customerName => $composableBuilder(
+    column: $table.customerName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get customerPhone => $composableBuilder(
+    column: $table.customerPhone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get guests => $composableBuilder(
+    column: $table.guests,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get staffId => $composableBuilder(
+    column: $table.staffId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get staffName => $composableBuilder(
+    column: $table.staffName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get discountKind => $composableBuilder(
+    column: $table.discountKind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get discountValue => $composableBuilder(
+    column: $table.discountValue,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get discountReason => $composableBuilder(
+    column: $table.discountReason,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cancelReason => $composableBuilder(
+    column: $table.cancelReason,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clientRequestId => $composableBuilder(
+    column: $table.clientRequestId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get closedAt => $composableBuilder(
+    column: $table.closedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$RestaurantTablesTableOrderingComposer get tableId {
+    final $$RestaurantTablesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tableId,
+      referencedTable: $db.restaurantTables,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RestaurantTablesTableOrderingComposer(
+            $db: $db,
+            $table: $db.restaurantTables,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$OrdersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $OrdersTable> {
+  $$OrdersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get orderNo =>
+      $composableBuilder(column: $table.orderNo, builder: (column) => column);
+
+  GeneratedColumn<String> get businessDate => $composableBuilder(
+    column: $table.businessDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get orderType =>
+      $composableBuilder(column: $table.orderType, builder: (column) => column);
+
+  GeneratedColumn<String> get customerName => $composableBuilder(
+    column: $table.customerName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get customerPhone => $composableBuilder(
+    column: $table.customerPhone,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get guests =>
+      $composableBuilder(column: $table.guests, builder: (column) => column);
+
+  GeneratedColumn<String> get staffId =>
+      $composableBuilder(column: $table.staffId, builder: (column) => column);
+
+  GeneratedColumn<String> get staffName =>
+      $composableBuilder(column: $table.staffName, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get discountKind => $composableBuilder(
+    column: $table.discountKind,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get discountValue => $composableBuilder(
+    column: $table.discountValue,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get discountReason => $composableBuilder(
+    column: $table.discountReason,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get cancelReason => $composableBuilder(
+    column: $table.cancelReason,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get clientRequestId => $composableBuilder(
+    column: $table.clientRequestId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get closedAt =>
+      $composableBuilder(column: $table.closedAt, builder: (column) => column);
+
+  $$RestaurantTablesTableAnnotationComposer get tableId {
+    final $$RestaurantTablesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.tableId,
+      referencedTable: $db.restaurantTables,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RestaurantTablesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.restaurantTables,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> orderLinesRefs<T extends Object>(
+    Expression<T> Function($$OrderLinesTableAnnotationComposer a) f,
+  ) {
+    final $$OrderLinesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.orderLines,
+      getReferencedColumn: (t) => t.orderId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrderLinesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.orderLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$OrdersTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $OrdersTable,
+          OrderRow,
+          $$OrdersTableFilterComposer,
+          $$OrdersTableOrderingComposer,
+          $$OrdersTableAnnotationComposer,
+          $$OrdersTableCreateCompanionBuilder,
+          $$OrdersTableUpdateCompanionBuilder,
+          (OrderRow, $$OrdersTableReferences),
+          OrderRow,
+          PrefetchHooks Function({bool tableId, bool orderLinesRefs})
+        > {
+  $$OrdersTableTableManager(_$AppDatabase db, $OrdersTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$OrdersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$OrdersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$OrdersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<int> orderNo = const Value.absent(),
+                Value<String> businessDate = const Value.absent(),
+                Value<String> orderType = const Value.absent(),
+                Value<String?> tableId = const Value.absent(),
+                Value<String> customerName = const Value.absent(),
+                Value<String> customerPhone = const Value.absent(),
+                Value<int?> guests = const Value.absent(),
+                Value<String?> staffId = const Value.absent(),
+                Value<String> staffName = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<String> discountKind = const Value.absent(),
+                Value<int> discountValue = const Value.absent(),
+                Value<String> discountReason = const Value.absent(),
+                Value<String> cancelReason = const Value.absent(),
+                Value<String> clientRequestId = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int?> closedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => OrdersCompanion(
+                id: id,
+                orderNo: orderNo,
+                businessDate: businessDate,
+                orderType: orderType,
+                tableId: tableId,
+                customerName: customerName,
+                customerPhone: customerPhone,
+                guests: guests,
+                staffId: staffId,
+                staffName: staffName,
+                status: status,
+                notes: notes,
+                discountKind: discountKind,
+                discountValue: discountValue,
+                discountReason: discountReason,
+                cancelReason: cancelReason,
+                clientRequestId: clientRequestId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                closedAt: closedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required int orderNo,
+                required String businessDate,
+                required String orderType,
+                Value<String?> tableId = const Value.absent(),
+                Value<String> customerName = const Value.absent(),
+                Value<String> customerPhone = const Value.absent(),
+                Value<int?> guests = const Value.absent(),
+                Value<String?> staffId = const Value.absent(),
+                Value<String> staffName = const Value.absent(),
+                required String status,
+                Value<String> notes = const Value.absent(),
+                Value<String> discountKind = const Value.absent(),
+                Value<int> discountValue = const Value.absent(),
+                Value<String> discountReason = const Value.absent(),
+                Value<String> cancelReason = const Value.absent(),
+                required String clientRequestId,
+                required int createdAt,
+                required int updatedAt,
+                Value<int?> closedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => OrdersCompanion.insert(
+                id: id,
+                orderNo: orderNo,
+                businessDate: businessDate,
+                orderType: orderType,
+                tableId: tableId,
+                customerName: customerName,
+                customerPhone: customerPhone,
+                guests: guests,
+                staffId: staffId,
+                staffName: staffName,
+                status: status,
+                notes: notes,
+                discountKind: discountKind,
+                discountValue: discountValue,
+                discountReason: discountReason,
+                cancelReason: cancelReason,
+                clientRequestId: clientRequestId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                closedAt: closedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$OrdersTable, OrderRow>(table),
+                  $$OrdersTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({tableId = false, orderLinesRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (orderLinesRefs) db.orderLines],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (tableId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.tableId,
+                        referencedTable: $$OrdersTableReferences._tableIdTable(
+                          db,
+                        ),
+                        referencedColumn: $$OrdersTableReferences
+                            ._tableIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (orderLinesRefs)
+                    await $_getPrefetchedDataByColumns<
+                      OrderRow,
+                      $OrdersTable,
+                      OrderLineRow,
+                      $OrderLinesTable
+                    >(
+                      currentTable: table,
+                      referencedTable: $$OrdersTableReferences
+                          ._orderLinesRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$OrdersTableReferences(db, table, p0).orderLinesRefs,
+                      currentColumn: 'id',
+                      referencedColumn: 'order_id',
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$OrdersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $OrdersTable,
+      OrderRow,
+      $$OrdersTableFilterComposer,
+      $$OrdersTableOrderingComposer,
+      $$OrdersTableAnnotationComposer,
+      $$OrdersTableCreateCompanionBuilder,
+      $$OrdersTableUpdateCompanionBuilder,
+      (OrderRow, $$OrdersTableReferences),
+      OrderRow,
+      PrefetchHooks Function({bool tableId, bool orderLinesRefs})
+    >;
+typedef $$OrderLinesTableCreateCompanionBuilder = OrderLinesCompanion Function({
+  required String id,
+  required String orderId,
+  Value<String?> menuItemId,
+  required String itemName,
+  Value<String> variantText,
+  required int basePricePaise,
+  required int unitPricePaise,
+  Value<String?> taxProfileId,
+  Value<int> taxRateBp,
+  Value<bool> taxInclusive,
+  Value<String> taxSplitMode,
+  Value<String?> stationId,
+  required int qty,
+  Value<int> sentQty,
+  Value<int> voidedQty,
+  Value<String> notes,
+  Value<int> sortOrder,
+  required int createdAt,
+  required int updatedAt,
+  Value<int> rowid,
+});
+typedef $$OrderLinesTableUpdateCompanionBuilder = OrderLinesCompanion Function({
+  Value<String> id,
+  Value<String> orderId,
+  Value<String?> menuItemId,
+  Value<String> itemName,
+  Value<String> variantText,
+  Value<int> basePricePaise,
+  Value<int> unitPricePaise,
+  Value<String?> taxProfileId,
+  Value<int> taxRateBp,
+  Value<bool> taxInclusive,
+  Value<String> taxSplitMode,
+  Value<String?> stationId,
+  Value<int> qty,
+  Value<int> sentQty,
+  Value<int> voidedQty,
+  Value<String> notes,
+  Value<int> sortOrder,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int> rowid,
+});
+
+final class $$OrderLinesTableReferences
+    extends BaseReferences<_$AppDatabase, $OrderLinesTable, OrderLineRow> {
+  $$OrderLinesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $OrdersTable _orderIdTable(_$AppDatabase db) =>
+      db.orders.createAlias('order_lines__order_id__orders__id');
+
+  $$OrdersTableProcessedTableManager get orderId {
+    final $_column = $_itemColumn<String>('order_id')!;
+
+    final manager = $$OrdersTableTableManager(
+      $_db,
+      $_db.orders,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_orderIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $MenuItemsTable _menuItemIdTable(_$AppDatabase db) =>
+      db.menuItems.createAlias('order_lines__menu_item_id__menu_items__id');
+
+  $$MenuItemsTableProcessedTableManager? get menuItemId {
+    final $_column = $_itemColumn<String>('menu_item_id');
+    if ($_column == null) return null;
+    final manager = $$MenuItemsTableTableManager(
+      $_db,
+      $_db.menuItems,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_menuItemIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$OrderLineOptionsTable, List<OrderLineOptionRow>>
+  _orderLineOptionsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.orderLineOptions,
+    aliasName: 'order_lines__id__order_line_options__line_id',
+  );
+
+  $$OrderLineOptionsTableProcessedTableManager get orderLineOptionsRefs {
+    final manager = $$OrderLineOptionsTableTableManager(
+      $_db,
+      $_db.orderLineOptions,
+    ).filter((f) => f.lineId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _orderLineOptionsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$OrderLinesTableFilterComposer
+    extends Composer<_$AppDatabase, $OrderLinesTable> {
+  $$OrderLinesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get itemName => $composableBuilder(
+    column: $table.itemName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get variantText => $composableBuilder(
+    column: $table.variantText,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get basePricePaise => $composableBuilder(
+    column: $table.basePricePaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get unitPricePaise => $composableBuilder(
+    column: $table.unitPricePaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get taxProfileId => $composableBuilder(
+    column: $table.taxProfileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get taxRateBp => $composableBuilder(
+    column: $table.taxRateBp,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get taxInclusive => $composableBuilder(
+    column: $table.taxInclusive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get taxSplitMode => $composableBuilder(
+    column: $table.taxSplitMode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get stationId => $composableBuilder(
+    column: $table.stationId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get qty => $composableBuilder(
+    column: $table.qty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sentQty => $composableBuilder(
+    column: $table.sentQty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get voidedQty => $composableBuilder(
+    column: $table.voidedQty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$OrdersTableFilterComposer get orderId {
+    final $$OrdersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.orderId,
+      referencedTable: $db.orders,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrdersTableFilterComposer(
+            $db: $db,
+            $table: $db.orders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$MenuItemsTableFilterComposer get menuItemId {
+    final $$MenuItemsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.menuItemId,
+      referencedTable: $db.menuItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuItemsTableFilterComposer(
+            $db: $db,
+            $table: $db.menuItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> orderLineOptionsRefs(
+    Expression<bool> Function($$OrderLineOptionsTableFilterComposer f) f,
+  ) {
+    final $$OrderLineOptionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.orderLineOptions,
+      getReferencedColumn: (t) => t.lineId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrderLineOptionsTableFilterComposer(
+            $db: $db,
+            $table: $db.orderLineOptions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$OrderLinesTableOrderingComposer
+    extends Composer<_$AppDatabase, $OrderLinesTable> {
+  $$OrderLinesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get itemName => $composableBuilder(
+    column: $table.itemName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get variantText => $composableBuilder(
+    column: $table.variantText,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get basePricePaise => $composableBuilder(
+    column: $table.basePricePaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get unitPricePaise => $composableBuilder(
+    column: $table.unitPricePaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get taxProfileId => $composableBuilder(
+    column: $table.taxProfileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get taxRateBp => $composableBuilder(
+    column: $table.taxRateBp,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get taxInclusive => $composableBuilder(
+    column: $table.taxInclusive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get taxSplitMode => $composableBuilder(
+    column: $table.taxSplitMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get stationId => $composableBuilder(
+    column: $table.stationId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get qty => $composableBuilder(
+    column: $table.qty,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sentQty => $composableBuilder(
+    column: $table.sentQty,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get voidedQty => $composableBuilder(
+    column: $table.voidedQty,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$OrdersTableOrderingComposer get orderId {
+    final $$OrdersTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.orderId,
+      referencedTable: $db.orders,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrdersTableOrderingComposer(
+            $db: $db,
+            $table: $db.orders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$MenuItemsTableOrderingComposer get menuItemId {
+    final $$MenuItemsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.menuItemId,
+      referencedTable: $db.menuItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuItemsTableOrderingComposer(
+            $db: $db,
+            $table: $db.menuItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$OrderLinesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $OrderLinesTable> {
+  $$OrderLinesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get itemName =>
+      $composableBuilder(column: $table.itemName, builder: (column) => column);
+
+  GeneratedColumn<String> get variantText => $composableBuilder(
+    column: $table.variantText,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get basePricePaise => $composableBuilder(
+    column: $table.basePricePaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get unitPricePaise => $composableBuilder(
+    column: $table.unitPricePaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get taxProfileId => $composableBuilder(
+    column: $table.taxProfileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get taxRateBp =>
+      $composableBuilder(column: $table.taxRateBp, builder: (column) => column);
+
+  GeneratedColumn<bool> get taxInclusive => $composableBuilder(
+    column: $table.taxInclusive,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get taxSplitMode => $composableBuilder(
+    column: $table.taxSplitMode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get stationId =>
+      $composableBuilder(column: $table.stationId, builder: (column) => column);
+
+  GeneratedColumn<int> get qty =>
+      $composableBuilder(column: $table.qty, builder: (column) => column);
+
+  GeneratedColumn<int> get sentQty =>
+      $composableBuilder(column: $table.sentQty, builder: (column) => column);
+
+  GeneratedColumn<int> get voidedQty =>
+      $composableBuilder(column: $table.voidedQty, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$OrdersTableAnnotationComposer get orderId {
+    final $$OrdersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.orderId,
+      referencedTable: $db.orders,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrdersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.orders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$MenuItemsTableAnnotationComposer get menuItemId {
+    final $$MenuItemsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.menuItemId,
+      referencedTable: $db.menuItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuItemsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.menuItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> orderLineOptionsRefs<T extends Object>(
+    Expression<T> Function($$OrderLineOptionsTableAnnotationComposer a) f,
+  ) {
+    final $$OrderLineOptionsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.orderLineOptions,
+      getReferencedColumn: (t) => t.lineId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrderLineOptionsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.orderLineOptions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$OrderLinesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $OrderLinesTable,
+          OrderLineRow,
+          $$OrderLinesTableFilterComposer,
+          $$OrderLinesTableOrderingComposer,
+          $$OrderLinesTableAnnotationComposer,
+          $$OrderLinesTableCreateCompanionBuilder,
+          $$OrderLinesTableUpdateCompanionBuilder,
+          (OrderLineRow, $$OrderLinesTableReferences),
+          OrderLineRow,
+          PrefetchHooks Function({
+            bool orderId,
+            bool menuItemId,
+            bool orderLineOptionsRefs,
+          })
+        > {
+  $$OrderLinesTableTableManager(_$AppDatabase db, $OrderLinesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$OrderLinesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$OrderLinesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$OrderLinesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> orderId = const Value.absent(),
+                Value<String?> menuItemId = const Value.absent(),
+                Value<String> itemName = const Value.absent(),
+                Value<String> variantText = const Value.absent(),
+                Value<int> basePricePaise = const Value.absent(),
+                Value<int> unitPricePaise = const Value.absent(),
+                Value<String?> taxProfileId = const Value.absent(),
+                Value<int> taxRateBp = const Value.absent(),
+                Value<bool> taxInclusive = const Value.absent(),
+                Value<String> taxSplitMode = const Value.absent(),
+                Value<String?> stationId = const Value.absent(),
+                Value<int> qty = const Value.absent(),
+                Value<int> sentQty = const Value.absent(),
+                Value<int> voidedQty = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => OrderLinesCompanion(
+                id: id,
+                orderId: orderId,
+                menuItemId: menuItemId,
+                itemName: itemName,
+                variantText: variantText,
+                basePricePaise: basePricePaise,
+                unitPricePaise: unitPricePaise,
+                taxProfileId: taxProfileId,
+                taxRateBp: taxRateBp,
+                taxInclusive: taxInclusive,
+                taxSplitMode: taxSplitMode,
+                stationId: stationId,
+                qty: qty,
+                sentQty: sentQty,
+                voidedQty: voidedQty,
+                notes: notes,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String orderId,
+                Value<String?> menuItemId = const Value.absent(),
+                required String itemName,
+                Value<String> variantText = const Value.absent(),
+                required int basePricePaise,
+                required int unitPricePaise,
+                Value<String?> taxProfileId = const Value.absent(),
+                Value<int> taxRateBp = const Value.absent(),
+                Value<bool> taxInclusive = const Value.absent(),
+                Value<String> taxSplitMode = const Value.absent(),
+                Value<String?> stationId = const Value.absent(),
+                required int qty,
+                Value<int> sentQty = const Value.absent(),
+                Value<int> voidedQty = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                required int createdAt,
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => OrderLinesCompanion.insert(
+                id: id,
+                orderId: orderId,
+                menuItemId: menuItemId,
+                itemName: itemName,
+                variantText: variantText,
+                basePricePaise: basePricePaise,
+                unitPricePaise: unitPricePaise,
+                taxProfileId: taxProfileId,
+                taxRateBp: taxRateBp,
+                taxInclusive: taxInclusive,
+                taxSplitMode: taxSplitMode,
+                stationId: stationId,
+                qty: qty,
+                sentQty: sentQty,
+                voidedQty: voidedQty,
+                notes: notes,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$OrderLinesTable, OrderLineRow>(table),
+                  $$OrderLinesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                orderId = false,
+                menuItemId = false,
+                orderLineOptionsRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (orderLineOptionsRefs) db.orderLineOptions,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (orderId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.orderId,
+                            referencedTable: $$OrderLinesTableReferences
+                                ._orderIdTable(db),
+                            referencedColumn: $$OrderLinesTableReferences
+                                ._orderIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+                        if (menuItemId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.menuItemId,
+                            referencedTable: $$OrderLinesTableReferences
+                                ._menuItemIdTable(db),
+                            referencedColumn: $$OrderLinesTableReferences
+                                ._menuItemIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (orderLineOptionsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          OrderLineRow,
+                          $OrderLinesTable,
+                          OrderLineOptionRow,
+                          $OrderLineOptionsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$OrderLinesTableReferences
+                              ._orderLineOptionsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$OrderLinesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).orderLineOptionsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'line_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$OrderLinesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $OrderLinesTable,
+      OrderLineRow,
+      $$OrderLinesTableFilterComposer,
+      $$OrderLinesTableOrderingComposer,
+      $$OrderLinesTableAnnotationComposer,
+      $$OrderLinesTableCreateCompanionBuilder,
+      $$OrderLinesTableUpdateCompanionBuilder,
+      (OrderLineRow, $$OrderLinesTableReferences),
+      OrderLineRow,
+      PrefetchHooks Function({
+        bool orderId,
+        bool menuItemId,
+        bool orderLineOptionsRefs,
+      })
+    >;
+typedef $$OrderLineOptionsTableCreateCompanionBuilder =
+    OrderLineOptionsCompanion Function({
+      required String id,
+      required String lineId,
+      required String groupId,
+      required String groupName,
+      required String kind,
+      required String choiceId,
+      required String name,
+      required int priceDeltaPaise,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$OrderLineOptionsTableUpdateCompanionBuilder =
+    OrderLineOptionsCompanion Function({
+      Value<String> id,
+      Value<String> lineId,
+      Value<String> groupId,
+      Value<String> groupName,
+      Value<String> kind,
+      Value<String> choiceId,
+      Value<String> name,
+      Value<int> priceDeltaPaise,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+final class $$OrderLineOptionsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $OrderLineOptionsTable,
+          OrderLineOptionRow
+        > {
+  $$OrderLineOptionsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $OrderLinesTable _lineIdTable(_$AppDatabase db) =>
+      db.orderLines.createAlias('order_line_options__line_id__order_lines__id');
+
+  $$OrderLinesTableProcessedTableManager get lineId {
+    final $_column = $_itemColumn<String>('line_id')!;
+
+    final manager = $$OrderLinesTableTableManager(
+      $_db,
+      $_db.orderLines,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_lineIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$OrderLineOptionsTableFilterComposer
+    extends Composer<_$AppDatabase, $OrderLineOptionsTable> {
+  $$OrderLineOptionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get groupId => $composableBuilder(
+    column: $table.groupId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get groupName => $composableBuilder(
+    column: $table.groupName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get choiceId => $composableBuilder(
+    column: $table.choiceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get priceDeltaPaise => $composableBuilder(
+    column: $table.priceDeltaPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$OrderLinesTableFilterComposer get lineId {
+    final $$OrderLinesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lineId,
+      referencedTable: $db.orderLines,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrderLinesTableFilterComposer(
+            $db: $db,
+            $table: $db.orderLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$OrderLineOptionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $OrderLineOptionsTable> {
+  $$OrderLineOptionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get groupId => $composableBuilder(
+    column: $table.groupId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get groupName => $composableBuilder(
+    column: $table.groupName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get choiceId => $composableBuilder(
+    column: $table.choiceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get priceDeltaPaise => $composableBuilder(
+    column: $table.priceDeltaPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$OrderLinesTableOrderingComposer get lineId {
+    final $$OrderLinesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lineId,
+      referencedTable: $db.orderLines,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrderLinesTableOrderingComposer(
+            $db: $db,
+            $table: $db.orderLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$OrderLineOptionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $OrderLineOptionsTable> {
+  $$OrderLineOptionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get groupId =>
+      $composableBuilder(column: $table.groupId, builder: (column) => column);
+
+  GeneratedColumn<String> get groupName =>
+      $composableBuilder(column: $table.groupName, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get choiceId =>
+      $composableBuilder(column: $table.choiceId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get priceDeltaPaise => $composableBuilder(
+    column: $table.priceDeltaPaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  $$OrderLinesTableAnnotationComposer get lineId {
+    final $$OrderLinesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lineId,
+      referencedTable: $db.orderLines,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrderLinesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.orderLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$OrderLineOptionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $OrderLineOptionsTable,
+          OrderLineOptionRow,
+          $$OrderLineOptionsTableFilterComposer,
+          $$OrderLineOptionsTableOrderingComposer,
+          $$OrderLineOptionsTableAnnotationComposer,
+          $$OrderLineOptionsTableCreateCompanionBuilder,
+          $$OrderLineOptionsTableUpdateCompanionBuilder,
+          (OrderLineOptionRow, $$OrderLineOptionsTableReferences),
+          OrderLineOptionRow,
+          PrefetchHooks Function({bool lineId})
+        > {
+  $$OrderLineOptionsTableTableManager(
+    _$AppDatabase db,
+    $OrderLineOptionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$OrderLineOptionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$OrderLineOptionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$OrderLineOptionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> lineId = const Value.absent(),
+                Value<String> groupId = const Value.absent(),
+                Value<String> groupName = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<String> choiceId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> priceDeltaPaise = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => OrderLineOptionsCompanion(
+                id: id,
+                lineId: lineId,
+                groupId: groupId,
+                groupName: groupName,
+                kind: kind,
+                choiceId: choiceId,
+                name: name,
+                priceDeltaPaise: priceDeltaPaise,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String lineId,
+                required String groupId,
+                required String groupName,
+                required String kind,
+                required String choiceId,
+                required String name,
+                required int priceDeltaPaise,
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => OrderLineOptionsCompanion.insert(
+                id: id,
+                lineId: lineId,
+                groupId: groupId,
+                groupName: groupName,
+                kind: kind,
+                choiceId: choiceId,
+                name: name,
+                priceDeltaPaise: priceDeltaPaise,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$OrderLineOptionsTable, OrderLineOptionRow>(
+                    table,
+                  ),
+                  $$OrderLineOptionsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({lineId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (lineId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.lineId,
+                        referencedTable: $$OrderLineOptionsTableReferences
+                            ._lineIdTable(db),
+                        referencedColumn: $$OrderLineOptionsTableReferences
+                            ._lineIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$OrderLineOptionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $OrderLineOptionsTable,
+      OrderLineOptionRow,
+      $$OrderLineOptionsTableFilterComposer,
+      $$OrderLineOptionsTableOrderingComposer,
+      $$OrderLineOptionsTableAnnotationComposer,
+      $$OrderLineOptionsTableCreateCompanionBuilder,
+      $$OrderLineOptionsTableUpdateCompanionBuilder,
+      (OrderLineOptionRow, $$OrderLineOptionsTableReferences),
+      OrderLineOptionRow,
+      PrefetchHooks Function({bool lineId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -13009,4 +19527,14 @@ class $AppDatabaseManager {
       $$OptionChoicesTableTableManager(_db, _db.optionChoices);
   $$ItemOptionGroupsTableTableManager get itemOptionGroups =>
       $$ItemOptionGroupsTableTableManager(_db, _db.itemOptionGroups);
+  $$DiningAreasTableTableManager get diningAreas =>
+      $$DiningAreasTableTableManager(_db, _db.diningAreas);
+  $$RestaurantTablesTableTableManager get restaurantTables =>
+      $$RestaurantTablesTableTableManager(_db, _db.restaurantTables);
+  $$OrdersTableTableManager get orders =>
+      $$OrdersTableTableManager(_db, _db.orders);
+  $$OrderLinesTableTableManager get orderLines =>
+      $$OrderLinesTableTableManager(_db, _db.orderLines);
+  $$OrderLineOptionsTableTableManager get orderLineOptions =>
+      $$OrderLineOptionsTableTableManager(_db, _db.orderLineOptions);
 }

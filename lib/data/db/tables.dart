@@ -303,3 +303,154 @@ class ItemOptionGroups extends Table {
   @override
   Set<Column> get primaryKey => {itemId, groupId};
 }
+
+// ---------------------------------------------------------------------------
+// Schema v3: dining areas, tables, orders
+// ---------------------------------------------------------------------------
+
+@DataClassName('DiningAreaRow')
+class DiningAreas extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  IntColumn get createdAt => integer()();
+  IntColumn get updatedAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DataClassName('RestaurantTableRow')
+@TableIndex(name: 'idx_restaurant_tables_area', columns: {#areaId})
+class RestaurantTables extends Table {
+  TextColumn get id => text()();
+  TextColumn get areaId =>
+      text().references(DiningAreas, #id, onDelete: KeyAction.restrict)();
+  TextColumn get label => text()();
+  IntColumn get seats => integer().nullable()();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  IntColumn get createdAt => integer()();
+  IntColumn get updatedAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// A customer order. Orders are never deleted: cancelled orders keep their
+/// lines and reason.
+@DataClassName('OrderRow')
+@TableIndex(name: 'idx_orders_status', columns: {#status})
+@TableIndex(name: 'idx_orders_business_date', columns: {#businessDate})
+@TableIndex(name: 'idx_orders_table', columns: {#tableId})
+@TableIndex(
+  name: 'idx_orders_day_number',
+  columns: {#businessDate, #orderNo},
+  unique: true,
+)
+class Orders extends Table {
+  TextColumn get id => text()();
+
+  /// Human number, sequential per business day (1, 2, 3, …).
+  IntColumn get orderNo => integer()();
+
+  /// Local business date `yyyy-MM-dd` (see the business-day start setting).
+  TextColumn get businessDate => text()();
+
+  /// `OrderType.name`: dineIn | takeaway | delivery.
+  TextColumn get orderType => text()();
+  TextColumn get tableId => text().nullable().references(
+    RestaurantTables,
+    #id,
+    onDelete: KeyAction.restrict,
+  )();
+  TextColumn get customerName => text().withDefault(const Constant(''))();
+  TextColumn get customerPhone => text().withDefault(const Constant(''))();
+  IntColumn get guests => integer().nullable()();
+  TextColumn get staffId => text().nullable()();
+  TextColumn get staffName => text().withDefault(const Constant(''))();
+
+  /// `OrderStatus.name`.
+  TextColumn get status => text()();
+  TextColumn get notes => text().withDefault(const Constant(''))();
+
+  /// `DiscountKind.name`: none | percent | amount.
+  TextColumn get discountKind => text().withDefault(const Constant('none'))();
+
+  /// Basis points for percent, paise for amount.
+  IntColumn get discountValue => integer().withDefault(const Constant(0))();
+  TextColumn get discountReason => text().withDefault(const Constant(''))();
+  TextColumn get cancelReason => text().withDefault(const Constant(''))();
+
+  /// Set by the device that created the order; a repeated create with the
+  /// same id returns the existing order instead of making a duplicate.
+  TextColumn get clientRequestId => text().unique()();
+  IntColumn get createdAt => integer()();
+  IntColumn get updatedAt => integer()();
+  IntColumn get closedAt => integer().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// One item on an order. Name, price, options and tax are copied from the
+/// menu when the line is added, so menu edits never change past orders.
+@DataClassName('OrderLineRow')
+@TableIndex(name: 'idx_order_lines_order', columns: {#orderId})
+class OrderLines extends Table {
+  TextColumn get id => text()();
+  TextColumn get orderId =>
+      text().references(Orders, #id, onDelete: KeyAction.restrict)();
+
+  /// Reference only; the snapshot columns below are what is billed.
+  TextColumn get menuItemId => text().nullable().references(
+    MenuItems,
+    #id,
+    onDelete: KeyAction.restrict,
+  )();
+  TextColumn get itemName => text()();
+  TextColumn get variantText => text().withDefault(const Constant(''))();
+  IntColumn get basePricePaise => integer()();
+
+  /// Base price plus all chosen options, for one unit.
+  IntColumn get unitPricePaise => integer()();
+  TextColumn get taxProfileId => text().nullable()();
+  IntColumn get taxRateBp => integer().withDefault(const Constant(0))();
+  BoolColumn get taxInclusive => boolean().withDefault(const Constant(false))();
+  TextColumn get taxSplitMode => text().withDefault(const Constant('none'))();
+  TextColumn get stationId => text().nullable()();
+  IntColumn get qty => integer()();
+
+  /// Units already sent to the kitchen (KOT module). Quantity can never go
+  /// below this; sent units must be voided instead.
+  IntColumn get sentQty => integer().withDefault(const Constant(0))();
+  IntColumn get voidedQty => integer().withDefault(const Constant(0))();
+  TextColumn get notes => text().withDefault(const Constant(''))();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  IntColumn get createdAt => integer()();
+  IntColumn get updatedAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DataClassName('OrderLineOptionRow')
+@TableIndex(name: 'idx_order_line_options_line', columns: {#lineId})
+class OrderLineOptions extends Table {
+  TextColumn get id => text()();
+  TextColumn get lineId =>
+      text().references(OrderLines, #id, onDelete: KeyAction.cascade)();
+  TextColumn get groupId => text()();
+  TextColumn get groupName => text()();
+
+  /// `OptionGroupKind.name`.
+  TextColumn get kind => text()();
+  TextColumn get choiceId => text()();
+  TextColumn get name => text()();
+  IntColumn get priceDeltaPaise => integer()();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
