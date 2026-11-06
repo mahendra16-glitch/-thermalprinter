@@ -232,7 +232,7 @@ Baseline results (2026-11-06):
 - [x] Phase 5 — Billing & tax (see §14)
 - [x] Phase 6 — Payments (see §15)
 - [x] Phase 7 — Shifts & expenses (see §16)
-- [ ] Phase 8 — Reports
+- [x] Phase 8 — Reports (see §17)
 - [ ] Phase 9 — Staff & permissions
 - [ ] Phase 10 — Inventory (optional)
 - [ ] Phase 11 — Hardening & release
@@ -768,3 +768,70 @@ No device or printer was connected.
 - **No reopening** a closed shift; corrections go in the next shift with a note.
 - **Cash refunds** are taken from whichever shift is open when the reversal is recorded, even if the sale was in an earlier shift.
 - **Expenses** have no attachments (bill photos) or supplier records; inventory purchases come in Phase 10.
+
+---
+
+## 17. Phase 8 completion report (2026-11-07)
+
+### Commit
+- `Phase 8` — report repository, printed summary, CSV export, Reports tab, tests and this report. **No schema change** (still v7): every report is read from tables that already exist.
+
+### Two kinds of totals, never mixed
+- **Sales** = finalized bills whose business date is in the chosen range. Voided bills are left out of sales and listed under Voids.
+- **Money collected** = payment-ledger entries whose money moved in the range (payments minus reversals). This can include payments for bills of earlier dates; the report shows "for bills of these dates" and "for bills of other dates" separately.
+- For the bills of the range: **billed = paid so far + still to collect**, from the ledger.
+- UPI and card stay "staff-confirmed", as recorded; the report does not call them bank-verified.
+
+### What is reported (`ReportRepository.build`, `SalesReport`)
+- **Sales:** bills, items sold, gross item sales, discounts, service charge, net sales before tax (`billed − round off − all tax`), tax added, tax included in prices, round off, total billed, average bill.
+- **Collections:** per method (Cash, UPI, Card, each "other" name): payment count and amount, reversal count and amount, net; cash taken with no shift open; full ledger list.
+- **Bills of the range:** bill register with paid, balance and Paid / Part paid / Unpaid / Voided; bills paid in parts; part-paid and unpaid counts.
+- **Items and categories:** quantity, gross, discount share and net, from bill lines (category = the menu item's current category, "Other" if the item is gone).
+- **Staff, order type, table:** bills and amount per group (staff is the name typed on the order until Phase 9).
+- **Tax summary:** per base (items / service charge), rate, inclusive or exclusive and split: taxable value, CGST, SGST, IGST, other, total.
+- **Voids:** voided bills with reason, cancelled orders with the value of their items (merged orders listed apart, not as losses), items voided after KOT with reason, reversed payments with reason, discounts with reason.
+- **Expenses:** by category, by where the money came from, full list including cancelled ones (shown struck out, not counted).
+- **Dues:** every bill still owing money, any date, as of when the report was made.
+- **Shifts:** shifts opened in the range with expected, counted and short/over; tap to reprint the shift report.
+
+### Ledger check (reconciliation)
+Run on every report for the bills of the range; a clean report shows "Checked against the payment ledger". Each problem names the bill or order:
+- item lines do not add up to the bill's item total, or line discounts to the discount;
+- tax lines do not add up to the bill's tax;
+- items − discount + service charge + tax added + round off ≠ bill total;
+- paid more than the bill; a voided bill with money still on it;
+- order marked Paid but money still owed, or fully paid but not marked Paid, or an open/cancelled order with a finalized bill;
+- a payment on a different order than its bill; a reversal with no matching payment, or a different amount or method.
+The printed summary ends with "Checked against the ledger: OK" or the number of problems.
+
+### Printing and export
+- **Print summary** (`SALES_REPORT` job, `ReceiptLayouts.salesReport`): daily or range report with sales, collections, bills of the range, tax, voids, categories, order types, expenses, dues; item-wise lines optional. Goes through the normal print queue; the app says "added to the print queue", not "printed".
+- **Export CSV**: eight files (summary, bills, items, payments, tax, voids, expenses, dues) shared via the share sheet. UTF-8 with BOM; amounts as plain rupees (`1234.50`); text typed by staff that starts with `= + - @` gets a leading apostrophe so spreadsheets don't run it as a formula. Each print and export is written to the audit log.
+
+### Screens
+- New **Reports** tab (Tables, Orders, Shift, Reports, Menu, Settings).
+- Date chips: Today, Yesterday, Last 7 days, This month, custom dates (business dates).
+- Tabs: Summary, Items (items / categories), Payments, Bills (tap opens the bill), Tax, Voids, Expenses, Dues, Shifts.
+- If sales or payments change while a report is open, a banner offers Refresh (the report is not rebuilt in the background on every change).
+
+### Tests and commands
+| Command | Result |
+|---|---|
+| `dart format lib test` | clean |
+| `flutter analyze` | 13 infos (unchanged); no warnings or errors |
+| `flutter test` | **225/225 passed**. New: report repository (9: empty day; a busy day with split, part, refunded, card and pre-shift cash payments, a voided and re-made bill, a cancelled order, an item void, a discount and expenses — sales totals, collections, billed = paid + due, items, categories, tax, groups, voids, expenses; payment for an earlier bill; tampered rows found by the ledger check; print job; CSV values and formula guard); sales report layout; Reports screen widget test. |
+| `flutter build apk --debug` | builds |
+
+### Manual tests still required
+No device or printer was connected.
+1. After a real service day, compare the Summary against the bills and the cash drawer by hand: total billed, cash/UPI/card collected, dues.
+2. Print the daily report at 58mm and 80mm, with and without item-wise sales.
+3. Export CSV, open the files in Excel or Google Sheets: check ₹ and Hindi names show correctly and amounts are numbers.
+4. Run the report for "This month" on a device with a few weeks of data and check it opens in reasonable time.
+
+### Known limitations
+- **Category** is the menu item's current category, so moving an item to another category changes old reports. Bill lines don't store the category.
+- **Staff-wise** uses the typed staff name until staff accounts arrive in Phase 9.
+- **No charts or hourly sales**; lists and totals only.
+- **Large ranges** are built in one go on the device; very long ranges (a year of data) have not been timed.
+- **Tax summary** is what the app calculated and printed. It is not a GST return; check with an accountant before filing.

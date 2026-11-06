@@ -69,7 +69,7 @@ Future<List<LedgerEntry>> loadLedger(AppDatabase db, String billId) async {
               (p) => OrderingTerm.asc(p.rowId),
             ]))
           .get();
-  return rows.map(_entry).toList();
+  return rows.map(ledgerEntryFromRow).toList();
 }
 
 /// Payment lines as printed on a bill.
@@ -83,7 +83,7 @@ List<BillPaymentLine> printedPaymentLines(List<LedgerEntry> entries) => [
     ),
 ];
 
-LedgerEntry _entry(PaymentRow r) => LedgerEntry(
+LedgerEntry ledgerEntryFromRow(PaymentRow r) => LedgerEntry(
   id: r.id,
   billId: r.billId,
   orderId: r.orderId,
@@ -145,7 +145,7 @@ class PaymentRepository {
     final r = await (_db.select(
       _db.payments,
     )..where((p) => p.id.equals(id))).getSingleOrNull();
-    return r == null ? null : _entry(r);
+    return r == null ? null : ledgerEntryFromRow(r);
   }
 
   /// Ledger entries whose money moved on [businessDate], oldest first.
@@ -155,7 +155,7 @@ class PaymentRepository {
               ..where((p) => p.businessDate.equals(businessDate))
               ..orderBy([(p) => OrderingTerm.asc(p.createdAt)]))
             .get();
-    return rows.map(_entry).toList();
+    return rows.map(ledgerEntryFromRow).toList();
   }
 
   /// Billed and due orders that still owe money, oldest first.

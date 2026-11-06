@@ -105,6 +105,26 @@ class ShiftRepository {
     return rows.map(_expense).toList();
   }
 
+  /// Expenses (including cancelled ones) for business dates [from]…[to].
+  Future<List<Expense>> expensesBetween(String from, String to) async {
+    final rows =
+        await (_db.select(_db.expenses)
+              ..where((e) => e.businessDate.isBetweenValues(from, to))
+              ..orderBy([(e) => OrderingTerm.asc(e.createdAt)]))
+            .get();
+    return rows.map(_expense).toList();
+  }
+
+  /// Shifts opened on business dates [from]…[to], oldest first.
+  Future<List<CashShift>> shiftsBetween(String from, String to) async {
+    final rows =
+        await (_db.select(_db.cashShifts)
+              ..where((s) => s.businessDate.isBetweenValues(from, to))
+              ..orderBy([(s) => OrderingTerm.asc(s.openedAt)]))
+            .get();
+    return rows.map(_shift).toList();
+  }
+
   /// Categories used before, then the defaults, without duplicates.
   Future<List<String>> expenseCategories() async {
     final rows = await (_db.selectOnly(

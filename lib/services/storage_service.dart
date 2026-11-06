@@ -12,6 +12,7 @@ import '../data/repositories/order_repository.dart';
 import '../data/repositories/payment_repository.dart';
 import '../data/repositories/print_job_repository.dart';
 import '../data/repositories/printer_repository.dart';
+import '../data/repositories/report_repository.dart';
 import '../data/repositories/settings_repository.dart';
 import '../data/repositories/shift_repository.dart';
 import '../data/repositories/table_repository.dart';
@@ -62,6 +63,13 @@ class StorageService {
     orders,
     bills,
     businessProfile,
+    printJobs,
+  );
+  late final ReportRepository reports = ReportRepository(
+    db,
+    audit,
+    businessProfile,
+    shifts,
     printJobs,
   );
 

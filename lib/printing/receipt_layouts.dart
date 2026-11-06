@@ -26,6 +26,8 @@ class ReceiptLayouts {
         return paymentReceipt(o.bill!, duplicate: o.isReprint);
       case 'SHIFT_REPORT' when o.report != null:
         return shiftReport(o.report!);
+      case 'SALES_REPORT' when o.report != null:
+        return salesReport(o.report!);
       default:
         return bill(o);
     }
@@ -444,6 +446,53 @@ class ReceiptLayouts {
       d.feed(2);
       d.text('Signature: ____________________');
     }
+    return d;
+  }
+
+  /// Sales / daily report: titled sections of label-amount rows, built by
+  /// `ReportRepository.printData`.
+  static ReceiptDocument salesReport(Map<String, dynamic> r) {
+    final d = ReceiptDocument();
+    final fmt = DateFormat('dd-MM-yy hh:mm a');
+    d.text(
+      r['business'] as String? ?? '',
+      align: ReceiptAlign.center,
+      size: ReceiptTextSize.tall,
+      bold: true,
+    );
+    d.text(
+      r['title'] as String? ?? 'REPORT',
+      align: ReceiptAlign.center,
+      bold: true,
+    );
+    d.text('Business date: ${r['period'] ?? ''}', align: ReceiptAlign.center);
+    final at = DateTime.tryParse(r['generatedAt'] as String? ?? '');
+    d.text('Printed ${fmt.format(at ?? DateTime.now())}');
+    for (final sec in ((r['sections'] as List?) ?? const []).cast<Map>()) {
+      d.divider();
+      d.text(sec['title'] as String? ?? '', bold: true);
+      for (final row in ((sec['rows'] as List?) ?? const []).cast<Map>()) {
+        final v = row['v'];
+        final value = v is num
+            ? Money(v.toInt()).format(symbol: false)
+            : (row['s'] as String? ?? '');
+        d.columns(
+          [row['l'] as String? ?? '', value],
+          flex: const [3, 1],
+          bold: row['b'] == true,
+        );
+      }
+    }
+    d.divider('=');
+    final issues = (r['issues'] as num?)?.toInt() ?? 0;
+    d.text(
+      issues == 0
+          ? 'Checked against the ledger: OK'
+          : 'CHECK: $issues problem(s) found - see app',
+      bold: issues != 0,
+    );
+    d.text('Sales = bills of these dates.');
+    d.text('Collected = money received on these dates.');
     return d;
   }
 

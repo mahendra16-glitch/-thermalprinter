@@ -362,6 +362,46 @@ void main() {
       expect(t2, isNot(contains('bank-verified')));
     });
 
+    test('sales report prints sections and the ledger check', () async {
+      final t = await printBill(
+        PosOrder(
+          orderId: 'REPORT',
+          type: 'SALES_REPORT',
+          items: const [],
+          report: {
+            'business': 'Spice Route',
+            'title': 'DAILY REPORT',
+            'period': '2026-11-07',
+            'generatedAt': DateTime(2026, 11, 7, 23).toIso8601String(),
+            'issues': 0,
+            'sections': const [
+              {
+                'title': 'SALES',
+                'rows': [
+                  {'l': 'Bills', 's': '3'},
+                  {'l': 'Total billed', 'v': 103750, 'b': true},
+                ],
+              },
+              {
+                'title': 'MONEY COLLECTED',
+                'rows': [
+                  {'l': 'Cash (2)', 'v': 40000},
+                  {'l': 'Cash refunds (1)', 'v': -10000},
+                ],
+              },
+            ],
+          },
+        ),
+        device58,
+      );
+      expect(t, contains('DAILY REPORT'));
+      expect(t, contains('Business date: 2026-11-07'));
+      expect(t, contains('SALES'));
+      expect(t, contains('1,037.50'));
+      expect(t, contains('-100.00'));
+      expect(t, contains('Checked against the ledger: OK'));
+    });
+
     test('shift closing report shows drawer and other collections', () async {
       final t = await printBill(
         PosOrder(
