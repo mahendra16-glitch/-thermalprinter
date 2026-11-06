@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../features/menu/menu_screen.dart';
 import '../features/orders/orders_screen.dart';
+import '../features/shifts/shift_screen.dart';
 import '../features/tables/tables_screen.dart';
 import '../services/storage_service.dart';
 import 'settings_screen.dart';
@@ -34,6 +35,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       Icons.table_restaurant,
     ),
     _Destination('Orders', Icons.receipt_long_outlined, Icons.receipt_long),
+    _Destination('Shift', Icons.point_of_sale_outlined, Icons.point_of_sale),
     _Destination('Menu', Icons.restaurant_menu_outlined, Icons.restaurant_menu),
     _Destination('Settings', Icons.settings_outlined, Icons.settings),
   ];
@@ -41,6 +43,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   final List<Widget> _screens = const [
     TablesScreen(),
     OrdersScreen(),
+    ShiftScreen(),
     MenuScreen(),
     SettingsScreen(),
   ];

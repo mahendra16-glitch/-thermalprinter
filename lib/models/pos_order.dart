@@ -74,6 +74,9 @@ class PosOrder {
   /// billing module. When set, it is printed instead of the fields above.
   final Map<String, dynamic>? bill;
 
+  /// Report data for type "SHIFT_REPORT" jobs.
+  final Map<String, dynamic>? report;
+
   PosOrder({
     required this.orderId,
     String? billNo,
@@ -104,6 +107,7 @@ class PosOrder {
     this.isReprint = false,
     this.reason,
     this.bill,
+    this.report,
   }) : billNo = billNo ?? orderId,
        timestamp = timestamp ?? DateTime.now();
 
@@ -136,6 +140,7 @@ class PosOrder {
     'isReprint': isReprint,
     'reason': reason,
     if (bill != null) 'bill': bill,
+    if (report != null) 'report': report,
   };
 
   /// Same order marked as a reprint.
@@ -187,6 +192,7 @@ class PosOrder {
       isReprint: json['isReprint'] as bool? ?? false,
       reason: json['reason'] as String?,
       bill: (json['bill'] as Map?)?.cast<String, dynamic>(),
+      report: (json['report'] as Map?)?.cast<String, dynamic>(),
     );
   }
 }

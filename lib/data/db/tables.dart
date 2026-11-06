@@ -706,10 +706,108 @@ class Payments extends Table {
   TextColumn get reason => text().withDefault(const Constant(''))();
   TextColumn get staffName => text().withDefault(const Constant(''))();
 
+  /// v7: the cash shift open when the money moved (null if none was open).
+  TextColumn get shiftId => text().nullable()();
+
   /// Business date the money moved (for shift and day totals).
   TextColumn get businessDate => text()();
   TextColumn get clientRequestId => text().unique()();
   IntColumn get createdAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+// ---------------------------------------------------------------------------
+// Schema v7: cash shifts, cash movements, expenses
+// ---------------------------------------------------------------------------
+// Only one shift is open at a time. Expected cash is always calculated from
+// entries linked to the shift; UPI and card never count as drawer cash.
+
+@DataClassName('CashShiftRow')
+@TableIndex(name: 'idx_cash_shifts_status', columns: {#status})
+class CashShifts extends Table {
+  TextColumn get id => text()();
+
+  /// `ShiftStatus.name`: open | closed.
+  TextColumn get status => text()();
+  TextColumn get businessDate => text()();
+  IntColumn get openingCashPaise => integer()();
+  TextColumn get openedBy => text()();
+  TextColumn get openNote => text().withDefault(const Constant(''))();
+  IntColumn get openedAt => integer()();
+
+  // Set when closed.
+  IntColumn get closedAt => integer().nullable()();
+  TextColumn get closedBy => text().withDefault(const Constant(''))();
+  IntColumn get countedCashPaise => integer().nullable()();
+  IntColumn get expectedCashPaise => integer().nullable()();
+
+  /// counted − expected: positive = over, negative = short.
+  IntColumn get variancePaise => integer().nullable()();
+  TextColumn get varianceReason => text().withDefault(const Constant(''))();
+
+  /// Count by note/coin, e.g. {"50000": 3, "10000": 2} (paise -> count).
+  TextColumn get denominationsJson => text().nullable()();
+
+  /// `ShiftSummary` JSON at closing time.
+  TextColumn get summaryJson => text().nullable()();
+  TextColumn get closeNote => text().withDefault(const Constant(''))();
+  TextColumn get clientRequestId => text().unique()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Cash put into (addition) or taken out of (withdrawal) the drawer, other
+/// than sales, refunds and expenses.
+@DataClassName('CashMovementRow')
+@TableIndex(name: 'idx_cash_movements_shift', columns: {#shiftId})
+class CashMovements extends Table {
+  TextColumn get id => text()();
+  TextColumn get shiftId =>
+      text().references(CashShifts, #id, onDelete: KeyAction.restrict)();
+
+  /// `CashMovementKind.name`: addition | withdrawal.
+  TextColumn get kind => text()();
+  IntColumn get amountPaise => integer()();
+  TextColumn get reason => text()();
+  TextColumn get staffName => text().withDefault(const Constant(''))();
+  IntColumn get createdAt => integer()();
+
+  /// Set when cancelled (with a reason) before the shift closed.
+  IntColumn get voidedAt => integer().nullable()();
+  TextColumn get voidReason => text().withDefault(const Constant(''))();
+  TextColumn get clientRequestId => text().unique()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DataClassName('ExpenseRow')
+@TableIndex(name: 'idx_expenses_business_date', columns: {#businessDate})
+@TableIndex(name: 'idx_expenses_shift', columns: {#shiftId})
+class Expenses extends Table {
+  TextColumn get id => text()();
+
+  /// Required for cash expenses (paid from the drawer).
+  TextColumn get shiftId => text().nullable().references(
+    CashShifts,
+    #id,
+    onDelete: KeyAction.restrict,
+  )();
+  TextColumn get category => text()();
+  IntColumn get amountPaise => integer()();
+
+  /// `ExpenseSource.name`: cash | upi | card | bank | other.
+  TextColumn get paidFrom => text()();
+  TextColumn get note => text().withDefault(const Constant(''))();
+  TextColumn get staffName => text().withDefault(const Constant(''))();
+  TextColumn get businessDate => text()();
+  IntColumn get createdAt => integer()();
+  IntColumn get voidedAt => integer().nullable()();
+  TextColumn get voidReason => text().withDefault(const Constant(''))();
+  TextColumn get clientRequestId => text().unique()();
 
   @override
   Set<Column> get primaryKey => {id};

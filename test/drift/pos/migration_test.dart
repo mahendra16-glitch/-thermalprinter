@@ -34,7 +34,7 @@ void main() {
     }
   });
 
-  test('v1 -> v6 keeps existing printers, jobs and settings', () async {
+  test('v1 -> v7 keeps existing printers, jobs and settings', () async {
     final schema = await verifier.schemaAt(1);
     final raw = schema.rawDatabase;
     raw.execute(
@@ -58,7 +58,7 @@ void main() {
     );
 
     final db = AppDatabase(schema.newConnection());
-    await verifier.migrateAndValidate(db, 6);
+    await verifier.migrateAndValidate(db, 7);
 
     final printers = await db.select(db.printerProfiles).get();
     expect(printers.single.id, 'PRINTER-1');
@@ -70,11 +70,12 @@ void main() {
     final setting = await db.select(db.appSettings).getSingle();
     expect(setting.value, 'PRINTER-1');
     final log = await db.select(db.migrationLog).get();
-    expect(log.map((r) => r.version), [1, 2, 3, 4, 5, 6]);
+    expect(log.map((r) => r.version), [1, 2, 3, 4, 5, 6, 7]);
     expect(await db.select(db.menuItems).get(), isEmpty);
     expect(await db.select(db.orders).get(), isEmpty);
     expect(await db.select(db.bills).get(), isEmpty);
     expect(await db.select(db.payments).get(), isEmpty);
+    expect(await db.select(db.cashShifts).get(), isEmpty);
     await db.close();
   });
 }

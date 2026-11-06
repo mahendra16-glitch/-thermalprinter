@@ -279,6 +279,7 @@ class PaymentRepository {
               confirmation: Value(
                 r.method.needsStaffConfirmation ? staffConfirmed : '',
               ),
+              shiftId: Value(await _openShiftId()),
               businessDate: await _orders.currentBusinessDate(),
               clientRequestId: r.clientRequestId,
               createdAt: now,
@@ -370,6 +371,7 @@ class PaymentRepository {
               reference: Value(p.reference),
               reversesPaymentId: Value(paymentId),
               reason: Value(reason.trim()),
+              shiftId: Value(await _openShiftId()),
               businessDate: await _orders.currentBusinessDate(),
               clientRequestId: clientRequestId,
               createdAt: now,
@@ -533,6 +535,14 @@ class PaymentRepository {
   }
 
   // ---------------------------------------------------------------- helpers
+
+  /// The cash shift open now, if any. Payments are never blocked by it.
+  Future<String?> _openShiftId() async =>
+      (await (_db.select(_db.cashShifts)
+                ..where((s) => s.status.equals('open'))
+                ..limit(1))
+              .getSingleOrNull())
+          ?.id;
 
   Future<void> _setOrderStatus(
     String orderId,

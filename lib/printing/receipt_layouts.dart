@@ -4,6 +4,7 @@ import '../core/util/money.dart';
 import '../domain/billing/bill_calculator.dart';
 import '../domain/billing/bill_models.dart';
 import '../domain/menu/menu_models.dart';
+import '../domain/shifts/shift_models.dart';
 import '../models/pos_order.dart';
 import '../models/printer_device.dart';
 import 'receipt_document.dart';
@@ -23,6 +24,8 @@ class ReceiptLayouts {
         return taxBill(Bill.fromJson(o.bill!), duplicate: o.isReprint);
       case 'PAYMENT_RECEIPT' when o.bill != null:
         return paymentReceipt(o.bill!, duplicate: o.isReprint);
+      case 'SHIFT_REPORT' when o.report != null:
+        return shiftReport(o.report!);
       default:
         return bill(o);
     }
@@ -308,6 +311,138 @@ class ReceiptLayouts {
     if (b.header.footer.isNotEmpty) {
       d.feed();
       d.text(b.header.footer, align: ReceiptAlign.center);
+    }
+    return d;
+  }
+
+  /// Shift report: drawer cash (expected vs counted), other collections
+  /// kept apart from cash, cash movements and expenses.
+  static ReceiptDocument shiftReport(Map<String, dynamic> r) {
+    final d = ReceiptDocument();
+    String amt(Money m) => m.format(symbol: false);
+    void row(String label, Money m, {bool bold = false}) =>
+        d.columns([label, amt(m)], flex: const [3, 1], bold: bold);
+    DateTime? at(String k) => DateTime.tryParse(r[k] as String? ?? '');
+    final fmt = DateFormat('dd-MM-yy hh:mm a');
+    final open = r['open'] == true;
+    final s = ShiftSummary.fromJson(
+      (r['summary'] as Map?)?.cast<String, dynamic>() ?? const {},
+    );
+
+    d.text(
+      r['business'] as String? ?? '',
+      align: ReceiptAlign.center,
+      size: ReceiptTextSize.tall,
+      bold: true,
+    );
+    d.text(
+      open ? 'SHIFT REPORT (OPEN)' : 'SHIFT CLOSING REPORT',
+      align: ReceiptAlign.center,
+      bold: true,
+    );
+    if (open) {
+      d.text('Running totals - shift not closed', align: ReceiptAlign.center);
+    }
+    d.divider();
+    d.text('Business date: ${r['businessDate'] ?? ''}');
+    final opened = at('openedAt');
+    if (opened != null) {
+      d.text('Opened ${fmt.format(opened)} by ${r['openedBy'] ?? ''}');
+    }
+    final closed = at('closedAt');
+    if (closed != null) {
+      d.text('Closed ${fmt.format(closed)} by ${r['closedBy'] ?? ''}');
+    }
+    d.text('Printed ${fmt.format(DateTime.now())}');
+    d.divider();
+
+    d.text('CASH DRAWER', bold: true);
+    row('Opening cash', s.openingCash);
+    row('+ Cash sales', s.cashSales);
+    if (!s.cashRefunds.isZero) row('- Cash refunds', s.cashRefunds);
+    if (!s.cashAdded.isZero) row('+ Cash added', s.cashAdded);
+    if (!s.cashTakenOut.isZero) row('- Cash taken out', s.cashTakenOut);
+    if (!s.cashExpenses.isZero) row('- Cash expenses', s.cashExpenses);
+    d.divider('=');
+    row('Expected cash', s.expectedCash, bold: true);
+    if (r['counted'] != null) {
+      final counted = Money((r['counted'] as num).toInt());
+      final variance = Money((r['variance'] as num?)?.toInt() ?? 0);
+      row('Counted cash', counted, bold: true);
+      d.columns(
+        [
+          variance.isZero
+              ? 'Difference'
+              : variance.isNegative
+              ? 'SHORT'
+              : 'OVER',
+          '${variance.isNegative || variance.isZero ? '' : '+'}'
+              '${amt(variance)}',
+        ],
+        flex: const [3, 1],
+        bold: true,
+      );
+      final reason = r['varianceReason'] as String? ?? '';
+      if (reason.isNotEmpty) d.text('Reason: $reason');
+    }
+    d.divider();
+
+    d.text('OTHER COLLECTIONS', bold: true);
+    d.text('(not in the cash drawer)');
+    if (s.nonCash.isEmpty) d.text('None');
+    for (final e in s.nonCash.entries) {
+      row(e.key, e.value);
+    }
+    row('Net collected (all)', s.netCollected, bold: true);
+    d.text('Bills paid: ${s.billCount}  Payments: ${s.paymentCount}');
+    if (!s.otherExpenses.isZero) {
+      row('Expenses not from drawer', s.otherExpenses);
+    }
+
+    final movements = (r['movements'] as List?) ?? const [];
+    if (movements.isNotEmpty) {
+      d.divider();
+      d.text('CASH ADDED / TAKEN OUT', bold: true);
+      for (final m in movements.cast<Map>()) {
+        row(
+          '${m['label']}: ${m['reason']}',
+          Money((m['amount'] as num).toInt()),
+        );
+      }
+    }
+    final expenses = (r['expenses'] as List?) ?? const [];
+    if (expenses.isNotEmpty) {
+      d.divider();
+      d.text('EXPENSES', bold: true);
+      for (final e in expenses.cast<Map>()) {
+        final note = e['note'] as String? ?? '';
+        row(
+          '${e['category']} (${e['paidFrom']})${note.isEmpty ? '' : ' - $note'}',
+          Money((e['amount'] as num).toInt()),
+        );
+      }
+    }
+    final denoms = (r['denominations'] as Map?) ?? const {};
+    if (denoms.isNotEmpty) {
+      d.divider();
+      d.text('CASH COUNT', bold: true);
+      for (final e in denoms.entries) {
+        final value = int.parse(e.key as String);
+        final count = (e.value as num).toInt();
+        row(
+          '${Money(value).format(symbol: false)} x $count',
+          Money(value * count),
+        );
+      }
+    }
+    final note = r['closeNote'] as String? ?? '';
+    if (note.isNotEmpty) {
+      d.divider();
+      d.text('Note: $note');
+    }
+    if (!open) {
+      d.feed(2);
+      d.text('Signature: ____________________');
     }
     return d;
   }

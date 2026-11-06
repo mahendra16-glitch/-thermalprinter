@@ -13,6 +13,7 @@ import '../data/repositories/payment_repository.dart';
 import '../data/repositories/print_job_repository.dart';
 import '../data/repositories/printer_repository.dart';
 import '../data/repositories/settings_repository.dart';
+import '../data/repositories/shift_repository.dart';
 import '../data/repositories/table_repository.dart';
 import '../models/print_history_item.dart';
 import '../models/print_mode.dart';
@@ -44,6 +45,13 @@ class StorageService {
     db,
     audit,
     settings,
+    orders,
+    businessProfile,
+    printJobs,
+  );
+  late final ShiftRepository shifts = ShiftRepository(
+    db,
+    audit,
     orders,
     businessProfile,
     printJobs,

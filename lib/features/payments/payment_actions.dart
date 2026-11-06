@@ -25,6 +25,7 @@ Future<bool> collectPayment(BuildContext context, String billId) async {
   if (bill == null) return false;
   final summary = await storage.payments.summaryFor(billId);
   final upi = await storage.payments.upiLinkFor(billId);
+  final shiftOpen = await storage.shifts.currentShift() != null;
   if (!context.mounted) return false;
   if (summary.balance.paise <= 0) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -34,7 +35,12 @@ Future<bool> collectPayment(BuildContext context, String billId) async {
   }
   final ok = await Navigator.of(context).push<bool>(
     MaterialPageRoute(
-      builder: (_) => PaymentScreen(bill: bill, summary: summary, upiLink: upi),
+      builder: (_) => PaymentScreen(
+        bill: bill,
+        summary: summary,
+        upiLink: upi,
+        shiftOpen: shiftOpen,
+      ),
     ),
   );
   return ok ?? false;
@@ -45,11 +51,15 @@ class PaymentScreen extends StatefulWidget {
   final BillPaymentSummary summary;
   final String? upiLink;
 
+  /// Without an open shift, cash is recorded but not in any drawer count.
+  final bool shiftOpen;
+
   const PaymentScreen({
     super.key,
     required this.bill,
     required this.summary,
     this.upiLink,
+    this.shiftOpen = true,
   });
 
   @override
@@ -282,6 +292,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ],
           ),
           if (_method == PaymentMethod.cash) ...[
+            if (!widget.shiftOpen)
+              const Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: Text(
+                  'No shift is open: this cash is recorded but will not be '
+                  'in a drawer count. Open a shift in the Shift tab.',
+                  style: TextStyle(color: Color(0xFFB45309)),
+                ),
+              ),
             const SizedBox(height: 8),
             TextField(
               controller: _tendered,

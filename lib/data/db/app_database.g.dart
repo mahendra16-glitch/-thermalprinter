@@ -16207,6 +16207,17 @@ class $PaymentsTable extends Payments
     requiredDuringInsert: false,
     defaultValue: const Constant(''),
   );
+  static const VerificationMeta _shiftIdMeta = const VerificationMeta(
+    'shiftId',
+  );
+  @override
+  late final GeneratedColumn<String> shiftId = GeneratedColumn<String>(
+    'shift_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _businessDateMeta = const VerificationMeta(
     'businessDate',
   );
@@ -16257,6 +16268,7 @@ class $PaymentsTable extends Payments
     reversesPaymentId,
     reason,
     staffName,
+    shiftId,
     businessDate,
     clientRequestId,
     createdAt,
@@ -16381,6 +16393,12 @@ class $PaymentsTable extends Payments
         staffName.isAcceptableOrUnknown(data['staff_name']!, _staffNameMeta),
       );
     }
+    if (data.containsKey('shift_id')) {
+      context.handle(
+        _shiftIdMeta,
+        shiftId.isAcceptableOrUnknown(data['shift_id']!, _shiftIdMeta),
+      );
+    }
     if (data.containsKey('business_date')) {
       context.handle(
         _businessDateMeta,
@@ -16476,6 +16494,10 @@ class $PaymentsTable extends Payments
         DriftSqlType.string,
         data['${effectivePrefix}staff_name'],
       )!,
+      shiftId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}shift_id'],
+      ),
       businessDate: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}business_date'],
@@ -16530,6 +16552,9 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
   final String reason;
   final String staffName;
 
+  /// v7: the cash shift open when the money moved (null if none was open).
+  final String? shiftId;
+
   /// Business date the money moved (for shift and day totals).
   final String businessDate;
   final String clientRequestId;
@@ -16549,6 +16574,7 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
     this.reversesPaymentId,
     required this.reason,
     required this.staffName,
+    this.shiftId,
     required this.businessDate,
     required this.clientRequestId,
     required this.createdAt,
@@ -16576,6 +16602,9 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
     }
     map['reason'] = Variable<String>(reason);
     map['staff_name'] = Variable<String>(staffName);
+    if (!nullToAbsent || shiftId != null) {
+      map['shift_id'] = Variable<String>(shiftId);
+    }
     map['business_date'] = Variable<String>(businessDate);
     map['client_request_id'] = Variable<String>(clientRequestId);
     map['created_at'] = Variable<int>(createdAt);
@@ -16604,6 +16633,9 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
           : Value(reversesPaymentId),
       reason: Value(reason),
       staffName: Value(staffName),
+      shiftId: shiftId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(shiftId),
       businessDate: Value(businessDate),
       clientRequestId: Value(clientRequestId),
       createdAt: Value(createdAt),
@@ -16632,6 +16664,7 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
       ),
       reason: serializer.fromJson<String>(json['reason']),
       staffName: serializer.fromJson<String>(json['staffName']),
+      shiftId: serializer.fromJson<String?>(json['shiftId']),
       businessDate: serializer.fromJson<String>(json['businessDate']),
       clientRequestId: serializer.fromJson<String>(json['clientRequestId']),
       createdAt: serializer.fromJson<int>(json['createdAt']),
@@ -16655,6 +16688,7 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
       'reversesPaymentId': serializer.toJson<String?>(reversesPaymentId),
       'reason': serializer.toJson<String>(reason),
       'staffName': serializer.toJson<String>(staffName),
+      'shiftId': serializer.toJson<String?>(shiftId),
       'businessDate': serializer.toJson<String>(businessDate),
       'clientRequestId': serializer.toJson<String>(clientRequestId),
       'createdAt': serializer.toJson<int>(createdAt),
@@ -16676,6 +16710,7 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
     Value<String?> reversesPaymentId = const Value.absent(),
     String? reason,
     String? staffName,
+    Value<String?> shiftId = const Value.absent(),
     String? businessDate,
     String? clientRequestId,
     int? createdAt,
@@ -16698,6 +16733,7 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
         : this.reversesPaymentId,
     reason: reason ?? this.reason,
     staffName: staffName ?? this.staffName,
+    shiftId: shiftId.present ? shiftId.value : this.shiftId,
     businessDate: businessDate ?? this.businessDate,
     clientRequestId: clientRequestId ?? this.clientRequestId,
     createdAt: createdAt ?? this.createdAt,
@@ -16730,6 +16766,7 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
           : this.reversesPaymentId,
       reason: data.reason.present ? data.reason.value : this.reason,
       staffName: data.staffName.present ? data.staffName.value : this.staffName,
+      shiftId: data.shiftId.present ? data.shiftId.value : this.shiftId,
       businessDate: data.businessDate.present
           ? data.businessDate.value
           : this.businessDate,
@@ -16757,6 +16794,7 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
           ..write('reversesPaymentId: $reversesPaymentId, ')
           ..write('reason: $reason, ')
           ..write('staffName: $staffName, ')
+          ..write('shiftId: $shiftId, ')
           ..write('businessDate: $businessDate, ')
           ..write('clientRequestId: $clientRequestId, ')
           ..write('createdAt: $createdAt')
@@ -16780,6 +16818,7 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
     reversesPaymentId,
     reason,
     staffName,
+    shiftId,
     businessDate,
     clientRequestId,
     createdAt,
@@ -16802,6 +16841,7 @@ class PaymentRow extends DataClass implements Insertable<PaymentRow> {
           other.reversesPaymentId == this.reversesPaymentId &&
           other.reason == this.reason &&
           other.staffName == this.staffName &&
+          other.shiftId == this.shiftId &&
           other.businessDate == this.businessDate &&
           other.clientRequestId == this.clientRequestId &&
           other.createdAt == this.createdAt);
@@ -16822,6 +16862,7 @@ class PaymentsCompanion extends UpdateCompanion<PaymentRow> {
   final Value<String?> reversesPaymentId;
   final Value<String> reason;
   final Value<String> staffName;
+  final Value<String?> shiftId;
   final Value<String> businessDate;
   final Value<String> clientRequestId;
   final Value<int> createdAt;
@@ -16841,6 +16882,7 @@ class PaymentsCompanion extends UpdateCompanion<PaymentRow> {
     this.reversesPaymentId = const Value.absent(),
     this.reason = const Value.absent(),
     this.staffName = const Value.absent(),
+    this.shiftId = const Value.absent(),
     this.businessDate = const Value.absent(),
     this.clientRequestId = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -16861,6 +16903,7 @@ class PaymentsCompanion extends UpdateCompanion<PaymentRow> {
     this.reversesPaymentId = const Value.absent(),
     this.reason = const Value.absent(),
     this.staffName = const Value.absent(),
+    this.shiftId = const Value.absent(),
     required String businessDate,
     required String clientRequestId,
     required int createdAt,
@@ -16889,6 +16932,7 @@ class PaymentsCompanion extends UpdateCompanion<PaymentRow> {
     Expression<String>? reversesPaymentId,
     Expression<String>? reason,
     Expression<String>? staffName,
+    Expression<String>? shiftId,
     Expression<String>? businessDate,
     Expression<String>? clientRequestId,
     Expression<int>? createdAt,
@@ -16909,6 +16953,7 @@ class PaymentsCompanion extends UpdateCompanion<PaymentRow> {
       if (reversesPaymentId != null) 'reverses_payment_id': reversesPaymentId,
       if (reason != null) 'reason': reason,
       if (staffName != null) 'staff_name': staffName,
+      if (shiftId != null) 'shift_id': shiftId,
       if (businessDate != null) 'business_date': businessDate,
       if (clientRequestId != null) 'client_request_id': clientRequestId,
       if (createdAt != null) 'created_at': createdAt,
@@ -16931,6 +16976,7 @@ class PaymentsCompanion extends UpdateCompanion<PaymentRow> {
     Value<String?>? reversesPaymentId,
     Value<String>? reason,
     Value<String>? staffName,
+    Value<String?>? shiftId,
     Value<String>? businessDate,
     Value<String>? clientRequestId,
     Value<int>? createdAt,
@@ -16951,6 +16997,7 @@ class PaymentsCompanion extends UpdateCompanion<PaymentRow> {
       reversesPaymentId: reversesPaymentId ?? this.reversesPaymentId,
       reason: reason ?? this.reason,
       staffName: staffName ?? this.staffName,
+      shiftId: shiftId ?? this.shiftId,
       businessDate: businessDate ?? this.businessDate,
       clientRequestId: clientRequestId ?? this.clientRequestId,
       createdAt: createdAt ?? this.createdAt,
@@ -17003,6 +17050,9 @@ class PaymentsCompanion extends UpdateCompanion<PaymentRow> {
     if (staffName.present) {
       map['staff_name'] = Variable<String>(staffName.value);
     }
+    if (shiftId.present) {
+      map['shift_id'] = Variable<String>(shiftId.value);
+    }
     if (businessDate.present) {
       map['business_date'] = Variable<String>(businessDate.value);
     }
@@ -17035,9 +17085,2359 @@ class PaymentsCompanion extends UpdateCompanion<PaymentRow> {
           ..write('reversesPaymentId: $reversesPaymentId, ')
           ..write('reason: $reason, ')
           ..write('staffName: $staffName, ')
+          ..write('shiftId: $shiftId, ')
           ..write('businessDate: $businessDate, ')
           ..write('clientRequestId: $clientRequestId, ')
           ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CashShiftsTable extends CashShifts
+    with TableInfo<$CashShiftsTable, CashShiftRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CashShiftsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _businessDateMeta = const VerificationMeta(
+    'businessDate',
+  );
+  @override
+  late final GeneratedColumn<String> businessDate = GeneratedColumn<String>(
+    'business_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _openingCashPaiseMeta = const VerificationMeta(
+    'openingCashPaise',
+  );
+  @override
+  late final GeneratedColumn<int> openingCashPaise = GeneratedColumn<int>(
+    'opening_cash_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _openedByMeta = const VerificationMeta(
+    'openedBy',
+  );
+  @override
+  late final GeneratedColumn<String> openedBy = GeneratedColumn<String>(
+    'opened_by',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _openNoteMeta = const VerificationMeta(
+    'openNote',
+  );
+  @override
+  late final GeneratedColumn<String> openNote = GeneratedColumn<String>(
+    'open_note',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _openedAtMeta = const VerificationMeta(
+    'openedAt',
+  );
+  @override
+  late final GeneratedColumn<int> openedAt = GeneratedColumn<int>(
+    'opened_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _closedAtMeta = const VerificationMeta(
+    'closedAt',
+  );
+  @override
+  late final GeneratedColumn<int> closedAt = GeneratedColumn<int>(
+    'closed_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _closedByMeta = const VerificationMeta(
+    'closedBy',
+  );
+  @override
+  late final GeneratedColumn<String> closedBy = GeneratedColumn<String>(
+    'closed_by',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _countedCashPaiseMeta = const VerificationMeta(
+    'countedCashPaise',
+  );
+  @override
+  late final GeneratedColumn<int> countedCashPaise = GeneratedColumn<int>(
+    'counted_cash_paise',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _expectedCashPaiseMeta = const VerificationMeta(
+    'expectedCashPaise',
+  );
+  @override
+  late final GeneratedColumn<int> expectedCashPaise = GeneratedColumn<int>(
+    'expected_cash_paise',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _variancePaiseMeta = const VerificationMeta(
+    'variancePaise',
+  );
+  @override
+  late final GeneratedColumn<int> variancePaise = GeneratedColumn<int>(
+    'variance_paise',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _varianceReasonMeta = const VerificationMeta(
+    'varianceReason',
+  );
+  @override
+  late final GeneratedColumn<String> varianceReason = GeneratedColumn<String>(
+    'variance_reason',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _denominationsJsonMeta = const VerificationMeta(
+    'denominationsJson',
+  );
+  @override
+  late final GeneratedColumn<String> denominationsJson =
+      GeneratedColumn<String>(
+        'denominations_json',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _summaryJsonMeta = const VerificationMeta(
+    'summaryJson',
+  );
+  @override
+  late final GeneratedColumn<String> summaryJson = GeneratedColumn<String>(
+    'summary_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _closeNoteMeta = const VerificationMeta(
+    'closeNote',
+  );
+  @override
+  late final GeneratedColumn<String> closeNote = GeneratedColumn<String>(
+    'close_note',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _clientRequestIdMeta = const VerificationMeta(
+    'clientRequestId',
+  );
+  @override
+  late final GeneratedColumn<String> clientRequestId = GeneratedColumn<String>(
+    'client_request_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    status,
+    businessDate,
+    openingCashPaise,
+    openedBy,
+    openNote,
+    openedAt,
+    closedAt,
+    closedBy,
+    countedCashPaise,
+    expectedCashPaise,
+    variancePaise,
+    varianceReason,
+    denominationsJson,
+    summaryJson,
+    closeNote,
+    clientRequestId,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cash_shifts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CashShiftRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('business_date')) {
+      context.handle(
+        _businessDateMeta,
+        businessDate.isAcceptableOrUnknown(
+          data['business_date']!,
+          _businessDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_businessDateMeta);
+    }
+    if (data.containsKey('opening_cash_paise')) {
+      context.handle(
+        _openingCashPaiseMeta,
+        openingCashPaise.isAcceptableOrUnknown(
+          data['opening_cash_paise']!,
+          _openingCashPaiseMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_openingCashPaiseMeta);
+    }
+    if (data.containsKey('opened_by')) {
+      context.handle(
+        _openedByMeta,
+        openedBy.isAcceptableOrUnknown(data['opened_by']!, _openedByMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_openedByMeta);
+    }
+    if (data.containsKey('open_note')) {
+      context.handle(
+        _openNoteMeta,
+        openNote.isAcceptableOrUnknown(data['open_note']!, _openNoteMeta),
+      );
+    }
+    if (data.containsKey('opened_at')) {
+      context.handle(
+        _openedAtMeta,
+        openedAt.isAcceptableOrUnknown(data['opened_at']!, _openedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_openedAtMeta);
+    }
+    if (data.containsKey('closed_at')) {
+      context.handle(
+        _closedAtMeta,
+        closedAt.isAcceptableOrUnknown(data['closed_at']!, _closedAtMeta),
+      );
+    }
+    if (data.containsKey('closed_by')) {
+      context.handle(
+        _closedByMeta,
+        closedBy.isAcceptableOrUnknown(data['closed_by']!, _closedByMeta),
+      );
+    }
+    if (data.containsKey('counted_cash_paise')) {
+      context.handle(
+        _countedCashPaiseMeta,
+        countedCashPaise.isAcceptableOrUnknown(
+          data['counted_cash_paise']!,
+          _countedCashPaiseMeta,
+        ),
+      );
+    }
+    if (data.containsKey('expected_cash_paise')) {
+      context.handle(
+        _expectedCashPaiseMeta,
+        expectedCashPaise.isAcceptableOrUnknown(
+          data['expected_cash_paise']!,
+          _expectedCashPaiseMeta,
+        ),
+      );
+    }
+    if (data.containsKey('variance_paise')) {
+      context.handle(
+        _variancePaiseMeta,
+        variancePaise.isAcceptableOrUnknown(
+          data['variance_paise']!,
+          _variancePaiseMeta,
+        ),
+      );
+    }
+    if (data.containsKey('variance_reason')) {
+      context.handle(
+        _varianceReasonMeta,
+        varianceReason.isAcceptableOrUnknown(
+          data['variance_reason']!,
+          _varianceReasonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('denominations_json')) {
+      context.handle(
+        _denominationsJsonMeta,
+        denominationsJson.isAcceptableOrUnknown(
+          data['denominations_json']!,
+          _denominationsJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('summary_json')) {
+      context.handle(
+        _summaryJsonMeta,
+        summaryJson.isAcceptableOrUnknown(
+          data['summary_json']!,
+          _summaryJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('close_note')) {
+      context.handle(
+        _closeNoteMeta,
+        closeNote.isAcceptableOrUnknown(data['close_note']!, _closeNoteMeta),
+      );
+    }
+    if (data.containsKey('client_request_id')) {
+      context.handle(
+        _clientRequestIdMeta,
+        clientRequestId.isAcceptableOrUnknown(
+          data['client_request_id']!,
+          _clientRequestIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_clientRequestIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CashShiftRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CashShiftRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      businessDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}business_date'],
+      )!,
+      openingCashPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}opening_cash_paise'],
+      )!,
+      openedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}opened_by'],
+      )!,
+      openNote: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}open_note'],
+      )!,
+      openedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}opened_at'],
+      )!,
+      closedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}closed_at'],
+      ),
+      closedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}closed_by'],
+      )!,
+      countedCashPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}counted_cash_paise'],
+      ),
+      expectedCashPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}expected_cash_paise'],
+      ),
+      variancePaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}variance_paise'],
+      ),
+      varianceReason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}variance_reason'],
+      )!,
+      denominationsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}denominations_json'],
+      ),
+      summaryJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}summary_json'],
+      ),
+      closeNote: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}close_note'],
+      )!,
+      clientRequestId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}client_request_id'],
+      )!,
+    );
+  }
+
+  @override
+  $CashShiftsTable createAlias(String alias) {
+    return $CashShiftsTable(attachedDatabase, alias);
+  }
+}
+
+class CashShiftRow extends DataClass implements Insertable<CashShiftRow> {
+  final String id;
+
+  /// `ShiftStatus.name`: open | closed.
+  final String status;
+  final String businessDate;
+  final int openingCashPaise;
+  final String openedBy;
+  final String openNote;
+  final int openedAt;
+  final int? closedAt;
+  final String closedBy;
+  final int? countedCashPaise;
+  final int? expectedCashPaise;
+
+  /// counted − expected: positive = over, negative = short.
+  final int? variancePaise;
+  final String varianceReason;
+
+  /// Count by note/coin, e.g. {"50000": 3, "10000": 2} (paise -> count).
+  final String? denominationsJson;
+
+  /// `ShiftSummary` JSON at closing time.
+  final String? summaryJson;
+  final String closeNote;
+  final String clientRequestId;
+  const CashShiftRow({
+    required this.id,
+    required this.status,
+    required this.businessDate,
+    required this.openingCashPaise,
+    required this.openedBy,
+    required this.openNote,
+    required this.openedAt,
+    this.closedAt,
+    required this.closedBy,
+    this.countedCashPaise,
+    this.expectedCashPaise,
+    this.variancePaise,
+    required this.varianceReason,
+    this.denominationsJson,
+    this.summaryJson,
+    required this.closeNote,
+    required this.clientRequestId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['status'] = Variable<String>(status);
+    map['business_date'] = Variable<String>(businessDate);
+    map['opening_cash_paise'] = Variable<int>(openingCashPaise);
+    map['opened_by'] = Variable<String>(openedBy);
+    map['open_note'] = Variable<String>(openNote);
+    map['opened_at'] = Variable<int>(openedAt);
+    if (!nullToAbsent || closedAt != null) {
+      map['closed_at'] = Variable<int>(closedAt);
+    }
+    map['closed_by'] = Variable<String>(closedBy);
+    if (!nullToAbsent || countedCashPaise != null) {
+      map['counted_cash_paise'] = Variable<int>(countedCashPaise);
+    }
+    if (!nullToAbsent || expectedCashPaise != null) {
+      map['expected_cash_paise'] = Variable<int>(expectedCashPaise);
+    }
+    if (!nullToAbsent || variancePaise != null) {
+      map['variance_paise'] = Variable<int>(variancePaise);
+    }
+    map['variance_reason'] = Variable<String>(varianceReason);
+    if (!nullToAbsent || denominationsJson != null) {
+      map['denominations_json'] = Variable<String>(denominationsJson);
+    }
+    if (!nullToAbsent || summaryJson != null) {
+      map['summary_json'] = Variable<String>(summaryJson);
+    }
+    map['close_note'] = Variable<String>(closeNote);
+    map['client_request_id'] = Variable<String>(clientRequestId);
+    return map;
+  }
+
+  CashShiftsCompanion toCompanion(bool nullToAbsent) {
+    return CashShiftsCompanion(
+      id: Value(id),
+      status: Value(status),
+      businessDate: Value(businessDate),
+      openingCashPaise: Value(openingCashPaise),
+      openedBy: Value(openedBy),
+      openNote: Value(openNote),
+      openedAt: Value(openedAt),
+      closedAt: closedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(closedAt),
+      closedBy: Value(closedBy),
+      countedCashPaise: countedCashPaise == null && nullToAbsent
+          ? const Value.absent()
+          : Value(countedCashPaise),
+      expectedCashPaise: expectedCashPaise == null && nullToAbsent
+          ? const Value.absent()
+          : Value(expectedCashPaise),
+      variancePaise: variancePaise == null && nullToAbsent
+          ? const Value.absent()
+          : Value(variancePaise),
+      varianceReason: Value(varianceReason),
+      denominationsJson: denominationsJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(denominationsJson),
+      summaryJson: summaryJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(summaryJson),
+      closeNote: Value(closeNote),
+      clientRequestId: Value(clientRequestId),
+    );
+  }
+
+  factory CashShiftRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CashShiftRow(
+      id: serializer.fromJson<String>(json['id']),
+      status: serializer.fromJson<String>(json['status']),
+      businessDate: serializer.fromJson<String>(json['businessDate']),
+      openingCashPaise: serializer.fromJson<int>(json['openingCashPaise']),
+      openedBy: serializer.fromJson<String>(json['openedBy']),
+      openNote: serializer.fromJson<String>(json['openNote']),
+      openedAt: serializer.fromJson<int>(json['openedAt']),
+      closedAt: serializer.fromJson<int?>(json['closedAt']),
+      closedBy: serializer.fromJson<String>(json['closedBy']),
+      countedCashPaise: serializer.fromJson<int?>(json['countedCashPaise']),
+      expectedCashPaise: serializer.fromJson<int?>(json['expectedCashPaise']),
+      variancePaise: serializer.fromJson<int?>(json['variancePaise']),
+      varianceReason: serializer.fromJson<String>(json['varianceReason']),
+      denominationsJson: serializer.fromJson<String?>(
+        json['denominationsJson'],
+      ),
+      summaryJson: serializer.fromJson<String?>(json['summaryJson']),
+      closeNote: serializer.fromJson<String>(json['closeNote']),
+      clientRequestId: serializer.fromJson<String>(json['clientRequestId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'status': serializer.toJson<String>(status),
+      'businessDate': serializer.toJson<String>(businessDate),
+      'openingCashPaise': serializer.toJson<int>(openingCashPaise),
+      'openedBy': serializer.toJson<String>(openedBy),
+      'openNote': serializer.toJson<String>(openNote),
+      'openedAt': serializer.toJson<int>(openedAt),
+      'closedAt': serializer.toJson<int?>(closedAt),
+      'closedBy': serializer.toJson<String>(closedBy),
+      'countedCashPaise': serializer.toJson<int?>(countedCashPaise),
+      'expectedCashPaise': serializer.toJson<int?>(expectedCashPaise),
+      'variancePaise': serializer.toJson<int?>(variancePaise),
+      'varianceReason': serializer.toJson<String>(varianceReason),
+      'denominationsJson': serializer.toJson<String?>(denominationsJson),
+      'summaryJson': serializer.toJson<String?>(summaryJson),
+      'closeNote': serializer.toJson<String>(closeNote),
+      'clientRequestId': serializer.toJson<String>(clientRequestId),
+    };
+  }
+
+  CashShiftRow copyWith({
+    String? id,
+    String? status,
+    String? businessDate,
+    int? openingCashPaise,
+    String? openedBy,
+    String? openNote,
+    int? openedAt,
+    Value<int?> closedAt = const Value.absent(),
+    String? closedBy,
+    Value<int?> countedCashPaise = const Value.absent(),
+    Value<int?> expectedCashPaise = const Value.absent(),
+    Value<int?> variancePaise = const Value.absent(),
+    String? varianceReason,
+    Value<String?> denominationsJson = const Value.absent(),
+    Value<String?> summaryJson = const Value.absent(),
+    String? closeNote,
+    String? clientRequestId,
+  }) => CashShiftRow(
+    id: id ?? this.id,
+    status: status ?? this.status,
+    businessDate: businessDate ?? this.businessDate,
+    openingCashPaise: openingCashPaise ?? this.openingCashPaise,
+    openedBy: openedBy ?? this.openedBy,
+    openNote: openNote ?? this.openNote,
+    openedAt: openedAt ?? this.openedAt,
+    closedAt: closedAt.present ? closedAt.value : this.closedAt,
+    closedBy: closedBy ?? this.closedBy,
+    countedCashPaise: countedCashPaise.present
+        ? countedCashPaise.value
+        : this.countedCashPaise,
+    expectedCashPaise: expectedCashPaise.present
+        ? expectedCashPaise.value
+        : this.expectedCashPaise,
+    variancePaise: variancePaise.present
+        ? variancePaise.value
+        : this.variancePaise,
+    varianceReason: varianceReason ?? this.varianceReason,
+    denominationsJson: denominationsJson.present
+        ? denominationsJson.value
+        : this.denominationsJson,
+    summaryJson: summaryJson.present ? summaryJson.value : this.summaryJson,
+    closeNote: closeNote ?? this.closeNote,
+    clientRequestId: clientRequestId ?? this.clientRequestId,
+  );
+  CashShiftRow copyWithCompanion(CashShiftsCompanion data) {
+    return CashShiftRow(
+      id: data.id.present ? data.id.value : this.id,
+      status: data.status.present ? data.status.value : this.status,
+      businessDate: data.businessDate.present
+          ? data.businessDate.value
+          : this.businessDate,
+      openingCashPaise: data.openingCashPaise.present
+          ? data.openingCashPaise.value
+          : this.openingCashPaise,
+      openedBy: data.openedBy.present ? data.openedBy.value : this.openedBy,
+      openNote: data.openNote.present ? data.openNote.value : this.openNote,
+      openedAt: data.openedAt.present ? data.openedAt.value : this.openedAt,
+      closedAt: data.closedAt.present ? data.closedAt.value : this.closedAt,
+      closedBy: data.closedBy.present ? data.closedBy.value : this.closedBy,
+      countedCashPaise: data.countedCashPaise.present
+          ? data.countedCashPaise.value
+          : this.countedCashPaise,
+      expectedCashPaise: data.expectedCashPaise.present
+          ? data.expectedCashPaise.value
+          : this.expectedCashPaise,
+      variancePaise: data.variancePaise.present
+          ? data.variancePaise.value
+          : this.variancePaise,
+      varianceReason: data.varianceReason.present
+          ? data.varianceReason.value
+          : this.varianceReason,
+      denominationsJson: data.denominationsJson.present
+          ? data.denominationsJson.value
+          : this.denominationsJson,
+      summaryJson: data.summaryJson.present
+          ? data.summaryJson.value
+          : this.summaryJson,
+      closeNote: data.closeNote.present ? data.closeNote.value : this.closeNote,
+      clientRequestId: data.clientRequestId.present
+          ? data.clientRequestId.value
+          : this.clientRequestId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CashShiftRow(')
+          ..write('id: $id, ')
+          ..write('status: $status, ')
+          ..write('businessDate: $businessDate, ')
+          ..write('openingCashPaise: $openingCashPaise, ')
+          ..write('openedBy: $openedBy, ')
+          ..write('openNote: $openNote, ')
+          ..write('openedAt: $openedAt, ')
+          ..write('closedAt: $closedAt, ')
+          ..write('closedBy: $closedBy, ')
+          ..write('countedCashPaise: $countedCashPaise, ')
+          ..write('expectedCashPaise: $expectedCashPaise, ')
+          ..write('variancePaise: $variancePaise, ')
+          ..write('varianceReason: $varianceReason, ')
+          ..write('denominationsJson: $denominationsJson, ')
+          ..write('summaryJson: $summaryJson, ')
+          ..write('closeNote: $closeNote, ')
+          ..write('clientRequestId: $clientRequestId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    status,
+    businessDate,
+    openingCashPaise,
+    openedBy,
+    openNote,
+    openedAt,
+    closedAt,
+    closedBy,
+    countedCashPaise,
+    expectedCashPaise,
+    variancePaise,
+    varianceReason,
+    denominationsJson,
+    summaryJson,
+    closeNote,
+    clientRequestId,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CashShiftRow &&
+          other.id == this.id &&
+          other.status == this.status &&
+          other.businessDate == this.businessDate &&
+          other.openingCashPaise == this.openingCashPaise &&
+          other.openedBy == this.openedBy &&
+          other.openNote == this.openNote &&
+          other.openedAt == this.openedAt &&
+          other.closedAt == this.closedAt &&
+          other.closedBy == this.closedBy &&
+          other.countedCashPaise == this.countedCashPaise &&
+          other.expectedCashPaise == this.expectedCashPaise &&
+          other.variancePaise == this.variancePaise &&
+          other.varianceReason == this.varianceReason &&
+          other.denominationsJson == this.denominationsJson &&
+          other.summaryJson == this.summaryJson &&
+          other.closeNote == this.closeNote &&
+          other.clientRequestId == this.clientRequestId);
+}
+
+class CashShiftsCompanion extends UpdateCompanion<CashShiftRow> {
+  final Value<String> id;
+  final Value<String> status;
+  final Value<String> businessDate;
+  final Value<int> openingCashPaise;
+  final Value<String> openedBy;
+  final Value<String> openNote;
+  final Value<int> openedAt;
+  final Value<int?> closedAt;
+  final Value<String> closedBy;
+  final Value<int?> countedCashPaise;
+  final Value<int?> expectedCashPaise;
+  final Value<int?> variancePaise;
+  final Value<String> varianceReason;
+  final Value<String?> denominationsJson;
+  final Value<String?> summaryJson;
+  final Value<String> closeNote;
+  final Value<String> clientRequestId;
+  final Value<int> rowid;
+  const CashShiftsCompanion({
+    this.id = const Value.absent(),
+    this.status = const Value.absent(),
+    this.businessDate = const Value.absent(),
+    this.openingCashPaise = const Value.absent(),
+    this.openedBy = const Value.absent(),
+    this.openNote = const Value.absent(),
+    this.openedAt = const Value.absent(),
+    this.closedAt = const Value.absent(),
+    this.closedBy = const Value.absent(),
+    this.countedCashPaise = const Value.absent(),
+    this.expectedCashPaise = const Value.absent(),
+    this.variancePaise = const Value.absent(),
+    this.varianceReason = const Value.absent(),
+    this.denominationsJson = const Value.absent(),
+    this.summaryJson = const Value.absent(),
+    this.closeNote = const Value.absent(),
+    this.clientRequestId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CashShiftsCompanion.insert({
+    required String id,
+    required String status,
+    required String businessDate,
+    required int openingCashPaise,
+    required String openedBy,
+    this.openNote = const Value.absent(),
+    required int openedAt,
+    this.closedAt = const Value.absent(),
+    this.closedBy = const Value.absent(),
+    this.countedCashPaise = const Value.absent(),
+    this.expectedCashPaise = const Value.absent(),
+    this.variancePaise = const Value.absent(),
+    this.varianceReason = const Value.absent(),
+    this.denominationsJson = const Value.absent(),
+    this.summaryJson = const Value.absent(),
+    this.closeNote = const Value.absent(),
+    required String clientRequestId,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       status = Value(status),
+       businessDate = Value(businessDate),
+       openingCashPaise = Value(openingCashPaise),
+       openedBy = Value(openedBy),
+       openedAt = Value(openedAt),
+       clientRequestId = Value(clientRequestId);
+  static Insertable<CashShiftRow> custom({
+    Expression<String>? id,
+    Expression<String>? status,
+    Expression<String>? businessDate,
+    Expression<int>? openingCashPaise,
+    Expression<String>? openedBy,
+    Expression<String>? openNote,
+    Expression<int>? openedAt,
+    Expression<int>? closedAt,
+    Expression<String>? closedBy,
+    Expression<int>? countedCashPaise,
+    Expression<int>? expectedCashPaise,
+    Expression<int>? variancePaise,
+    Expression<String>? varianceReason,
+    Expression<String>? denominationsJson,
+    Expression<String>? summaryJson,
+    Expression<String>? closeNote,
+    Expression<String>? clientRequestId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (status != null) 'status': status,
+      if (businessDate != null) 'business_date': businessDate,
+      if (openingCashPaise != null) 'opening_cash_paise': openingCashPaise,
+      if (openedBy != null) 'opened_by': openedBy,
+      if (openNote != null) 'open_note': openNote,
+      if (openedAt != null) 'opened_at': openedAt,
+      if (closedAt != null) 'closed_at': closedAt,
+      if (closedBy != null) 'closed_by': closedBy,
+      if (countedCashPaise != null) 'counted_cash_paise': countedCashPaise,
+      if (expectedCashPaise != null) 'expected_cash_paise': expectedCashPaise,
+      if (variancePaise != null) 'variance_paise': variancePaise,
+      if (varianceReason != null) 'variance_reason': varianceReason,
+      if (denominationsJson != null) 'denominations_json': denominationsJson,
+      if (summaryJson != null) 'summary_json': summaryJson,
+      if (closeNote != null) 'close_note': closeNote,
+      if (clientRequestId != null) 'client_request_id': clientRequestId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CashShiftsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? status,
+    Value<String>? businessDate,
+    Value<int>? openingCashPaise,
+    Value<String>? openedBy,
+    Value<String>? openNote,
+    Value<int>? openedAt,
+    Value<int?>? closedAt,
+    Value<String>? closedBy,
+    Value<int?>? countedCashPaise,
+    Value<int?>? expectedCashPaise,
+    Value<int?>? variancePaise,
+    Value<String>? varianceReason,
+    Value<String?>? denominationsJson,
+    Value<String?>? summaryJson,
+    Value<String>? closeNote,
+    Value<String>? clientRequestId,
+    Value<int>? rowid,
+  }) {
+    return CashShiftsCompanion(
+      id: id ?? this.id,
+      status: status ?? this.status,
+      businessDate: businessDate ?? this.businessDate,
+      openingCashPaise: openingCashPaise ?? this.openingCashPaise,
+      openedBy: openedBy ?? this.openedBy,
+      openNote: openNote ?? this.openNote,
+      openedAt: openedAt ?? this.openedAt,
+      closedAt: closedAt ?? this.closedAt,
+      closedBy: closedBy ?? this.closedBy,
+      countedCashPaise: countedCashPaise ?? this.countedCashPaise,
+      expectedCashPaise: expectedCashPaise ?? this.expectedCashPaise,
+      variancePaise: variancePaise ?? this.variancePaise,
+      varianceReason: varianceReason ?? this.varianceReason,
+      denominationsJson: denominationsJson ?? this.denominationsJson,
+      summaryJson: summaryJson ?? this.summaryJson,
+      closeNote: closeNote ?? this.closeNote,
+      clientRequestId: clientRequestId ?? this.clientRequestId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (businessDate.present) {
+      map['business_date'] = Variable<String>(businessDate.value);
+    }
+    if (openingCashPaise.present) {
+      map['opening_cash_paise'] = Variable<int>(openingCashPaise.value);
+    }
+    if (openedBy.present) {
+      map['opened_by'] = Variable<String>(openedBy.value);
+    }
+    if (openNote.present) {
+      map['open_note'] = Variable<String>(openNote.value);
+    }
+    if (openedAt.present) {
+      map['opened_at'] = Variable<int>(openedAt.value);
+    }
+    if (closedAt.present) {
+      map['closed_at'] = Variable<int>(closedAt.value);
+    }
+    if (closedBy.present) {
+      map['closed_by'] = Variable<String>(closedBy.value);
+    }
+    if (countedCashPaise.present) {
+      map['counted_cash_paise'] = Variable<int>(countedCashPaise.value);
+    }
+    if (expectedCashPaise.present) {
+      map['expected_cash_paise'] = Variable<int>(expectedCashPaise.value);
+    }
+    if (variancePaise.present) {
+      map['variance_paise'] = Variable<int>(variancePaise.value);
+    }
+    if (varianceReason.present) {
+      map['variance_reason'] = Variable<String>(varianceReason.value);
+    }
+    if (denominationsJson.present) {
+      map['denominations_json'] = Variable<String>(denominationsJson.value);
+    }
+    if (summaryJson.present) {
+      map['summary_json'] = Variable<String>(summaryJson.value);
+    }
+    if (closeNote.present) {
+      map['close_note'] = Variable<String>(closeNote.value);
+    }
+    if (clientRequestId.present) {
+      map['client_request_id'] = Variable<String>(clientRequestId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CashShiftsCompanion(')
+          ..write('id: $id, ')
+          ..write('status: $status, ')
+          ..write('businessDate: $businessDate, ')
+          ..write('openingCashPaise: $openingCashPaise, ')
+          ..write('openedBy: $openedBy, ')
+          ..write('openNote: $openNote, ')
+          ..write('openedAt: $openedAt, ')
+          ..write('closedAt: $closedAt, ')
+          ..write('closedBy: $closedBy, ')
+          ..write('countedCashPaise: $countedCashPaise, ')
+          ..write('expectedCashPaise: $expectedCashPaise, ')
+          ..write('variancePaise: $variancePaise, ')
+          ..write('varianceReason: $varianceReason, ')
+          ..write('denominationsJson: $denominationsJson, ')
+          ..write('summaryJson: $summaryJson, ')
+          ..write('closeNote: $closeNote, ')
+          ..write('clientRequestId: $clientRequestId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CashMovementsTable extends CashMovements
+    with TableInfo<$CashMovementsTable, CashMovementRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CashMovementsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _shiftIdMeta = const VerificationMeta(
+    'shiftId',
+  );
+  @override
+  late final GeneratedColumn<String> shiftId = GeneratedColumn<String>(
+    'shift_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES cash_shifts (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _amountPaiseMeta = const VerificationMeta(
+    'amountPaise',
+  );
+  @override
+  late final GeneratedColumn<int> amountPaise = GeneratedColumn<int>(
+    'amount_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _reasonMeta = const VerificationMeta('reason');
+  @override
+  late final GeneratedColumn<String> reason = GeneratedColumn<String>(
+    'reason',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _staffNameMeta = const VerificationMeta(
+    'staffName',
+  );
+  @override
+  late final GeneratedColumn<String> staffName = GeneratedColumn<String>(
+    'staff_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _voidedAtMeta = const VerificationMeta(
+    'voidedAt',
+  );
+  @override
+  late final GeneratedColumn<int> voidedAt = GeneratedColumn<int>(
+    'voided_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _voidReasonMeta = const VerificationMeta(
+    'voidReason',
+  );
+  @override
+  late final GeneratedColumn<String> voidReason = GeneratedColumn<String>(
+    'void_reason',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _clientRequestIdMeta = const VerificationMeta(
+    'clientRequestId',
+  );
+  @override
+  late final GeneratedColumn<String> clientRequestId = GeneratedColumn<String>(
+    'client_request_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    shiftId,
+    kind,
+    amountPaise,
+    reason,
+    staffName,
+    createdAt,
+    voidedAt,
+    voidReason,
+    clientRequestId,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cash_movements';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CashMovementRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('shift_id')) {
+      context.handle(
+        _shiftIdMeta,
+        shiftId.isAcceptableOrUnknown(data['shift_id']!, _shiftIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_shiftIdMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('amount_paise')) {
+      context.handle(
+        _amountPaiseMeta,
+        amountPaise.isAcceptableOrUnknown(
+          data['amount_paise']!,
+          _amountPaiseMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_amountPaiseMeta);
+    }
+    if (data.containsKey('reason')) {
+      context.handle(
+        _reasonMeta,
+        reason.isAcceptableOrUnknown(data['reason']!, _reasonMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_reasonMeta);
+    }
+    if (data.containsKey('staff_name')) {
+      context.handle(
+        _staffNameMeta,
+        staffName.isAcceptableOrUnknown(data['staff_name']!, _staffNameMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('voided_at')) {
+      context.handle(
+        _voidedAtMeta,
+        voidedAt.isAcceptableOrUnknown(data['voided_at']!, _voidedAtMeta),
+      );
+    }
+    if (data.containsKey('void_reason')) {
+      context.handle(
+        _voidReasonMeta,
+        voidReason.isAcceptableOrUnknown(data['void_reason']!, _voidReasonMeta),
+      );
+    }
+    if (data.containsKey('client_request_id')) {
+      context.handle(
+        _clientRequestIdMeta,
+        clientRequestId.isAcceptableOrUnknown(
+          data['client_request_id']!,
+          _clientRequestIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_clientRequestIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CashMovementRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CashMovementRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      shiftId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}shift_id'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      amountPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}amount_paise'],
+      )!,
+      reason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reason'],
+      )!,
+      staffName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}staff_name'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      voidedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}voided_at'],
+      ),
+      voidReason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}void_reason'],
+      )!,
+      clientRequestId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}client_request_id'],
+      )!,
+    );
+  }
+
+  @override
+  $CashMovementsTable createAlias(String alias) {
+    return $CashMovementsTable(attachedDatabase, alias);
+  }
+}
+
+class CashMovementRow extends DataClass implements Insertable<CashMovementRow> {
+  final String id;
+  final String shiftId;
+
+  /// `CashMovementKind.name`: addition | withdrawal.
+  final String kind;
+  final int amountPaise;
+  final String reason;
+  final String staffName;
+  final int createdAt;
+
+  /// Set when cancelled (with a reason) before the shift closed.
+  final int? voidedAt;
+  final String voidReason;
+  final String clientRequestId;
+  const CashMovementRow({
+    required this.id,
+    required this.shiftId,
+    required this.kind,
+    required this.amountPaise,
+    required this.reason,
+    required this.staffName,
+    required this.createdAt,
+    this.voidedAt,
+    required this.voidReason,
+    required this.clientRequestId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['shift_id'] = Variable<String>(shiftId);
+    map['kind'] = Variable<String>(kind);
+    map['amount_paise'] = Variable<int>(amountPaise);
+    map['reason'] = Variable<String>(reason);
+    map['staff_name'] = Variable<String>(staffName);
+    map['created_at'] = Variable<int>(createdAt);
+    if (!nullToAbsent || voidedAt != null) {
+      map['voided_at'] = Variable<int>(voidedAt);
+    }
+    map['void_reason'] = Variable<String>(voidReason);
+    map['client_request_id'] = Variable<String>(clientRequestId);
+    return map;
+  }
+
+  CashMovementsCompanion toCompanion(bool nullToAbsent) {
+    return CashMovementsCompanion(
+      id: Value(id),
+      shiftId: Value(shiftId),
+      kind: Value(kind),
+      amountPaise: Value(amountPaise),
+      reason: Value(reason),
+      staffName: Value(staffName),
+      createdAt: Value(createdAt),
+      voidedAt: voidedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(voidedAt),
+      voidReason: Value(voidReason),
+      clientRequestId: Value(clientRequestId),
+    );
+  }
+
+  factory CashMovementRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CashMovementRow(
+      id: serializer.fromJson<String>(json['id']),
+      shiftId: serializer.fromJson<String>(json['shiftId']),
+      kind: serializer.fromJson<String>(json['kind']),
+      amountPaise: serializer.fromJson<int>(json['amountPaise']),
+      reason: serializer.fromJson<String>(json['reason']),
+      staffName: serializer.fromJson<String>(json['staffName']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      voidedAt: serializer.fromJson<int?>(json['voidedAt']),
+      voidReason: serializer.fromJson<String>(json['voidReason']),
+      clientRequestId: serializer.fromJson<String>(json['clientRequestId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'shiftId': serializer.toJson<String>(shiftId),
+      'kind': serializer.toJson<String>(kind),
+      'amountPaise': serializer.toJson<int>(amountPaise),
+      'reason': serializer.toJson<String>(reason),
+      'staffName': serializer.toJson<String>(staffName),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'voidedAt': serializer.toJson<int?>(voidedAt),
+      'voidReason': serializer.toJson<String>(voidReason),
+      'clientRequestId': serializer.toJson<String>(clientRequestId),
+    };
+  }
+
+  CashMovementRow copyWith({
+    String? id,
+    String? shiftId,
+    String? kind,
+    int? amountPaise,
+    String? reason,
+    String? staffName,
+    int? createdAt,
+    Value<int?> voidedAt = const Value.absent(),
+    String? voidReason,
+    String? clientRequestId,
+  }) => CashMovementRow(
+    id: id ?? this.id,
+    shiftId: shiftId ?? this.shiftId,
+    kind: kind ?? this.kind,
+    amountPaise: amountPaise ?? this.amountPaise,
+    reason: reason ?? this.reason,
+    staffName: staffName ?? this.staffName,
+    createdAt: createdAt ?? this.createdAt,
+    voidedAt: voidedAt.present ? voidedAt.value : this.voidedAt,
+    voidReason: voidReason ?? this.voidReason,
+    clientRequestId: clientRequestId ?? this.clientRequestId,
+  );
+  CashMovementRow copyWithCompanion(CashMovementsCompanion data) {
+    return CashMovementRow(
+      id: data.id.present ? data.id.value : this.id,
+      shiftId: data.shiftId.present ? data.shiftId.value : this.shiftId,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      amountPaise: data.amountPaise.present
+          ? data.amountPaise.value
+          : this.amountPaise,
+      reason: data.reason.present ? data.reason.value : this.reason,
+      staffName: data.staffName.present ? data.staffName.value : this.staffName,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      voidedAt: data.voidedAt.present ? data.voidedAt.value : this.voidedAt,
+      voidReason: data.voidReason.present
+          ? data.voidReason.value
+          : this.voidReason,
+      clientRequestId: data.clientRequestId.present
+          ? data.clientRequestId.value
+          : this.clientRequestId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CashMovementRow(')
+          ..write('id: $id, ')
+          ..write('shiftId: $shiftId, ')
+          ..write('kind: $kind, ')
+          ..write('amountPaise: $amountPaise, ')
+          ..write('reason: $reason, ')
+          ..write('staffName: $staffName, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('voidedAt: $voidedAt, ')
+          ..write('voidReason: $voidReason, ')
+          ..write('clientRequestId: $clientRequestId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    shiftId,
+    kind,
+    amountPaise,
+    reason,
+    staffName,
+    createdAt,
+    voidedAt,
+    voidReason,
+    clientRequestId,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CashMovementRow &&
+          other.id == this.id &&
+          other.shiftId == this.shiftId &&
+          other.kind == this.kind &&
+          other.amountPaise == this.amountPaise &&
+          other.reason == this.reason &&
+          other.staffName == this.staffName &&
+          other.createdAt == this.createdAt &&
+          other.voidedAt == this.voidedAt &&
+          other.voidReason == this.voidReason &&
+          other.clientRequestId == this.clientRequestId);
+}
+
+class CashMovementsCompanion extends UpdateCompanion<CashMovementRow> {
+  final Value<String> id;
+  final Value<String> shiftId;
+  final Value<String> kind;
+  final Value<int> amountPaise;
+  final Value<String> reason;
+  final Value<String> staffName;
+  final Value<int> createdAt;
+  final Value<int?> voidedAt;
+  final Value<String> voidReason;
+  final Value<String> clientRequestId;
+  final Value<int> rowid;
+  const CashMovementsCompanion({
+    this.id = const Value.absent(),
+    this.shiftId = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.amountPaise = const Value.absent(),
+    this.reason = const Value.absent(),
+    this.staffName = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.voidedAt = const Value.absent(),
+    this.voidReason = const Value.absent(),
+    this.clientRequestId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CashMovementsCompanion.insert({
+    required String id,
+    required String shiftId,
+    required String kind,
+    required int amountPaise,
+    required String reason,
+    this.staffName = const Value.absent(),
+    required int createdAt,
+    this.voidedAt = const Value.absent(),
+    this.voidReason = const Value.absent(),
+    required String clientRequestId,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       shiftId = Value(shiftId),
+       kind = Value(kind),
+       amountPaise = Value(amountPaise),
+       reason = Value(reason),
+       createdAt = Value(createdAt),
+       clientRequestId = Value(clientRequestId);
+  static Insertable<CashMovementRow> custom({
+    Expression<String>? id,
+    Expression<String>? shiftId,
+    Expression<String>? kind,
+    Expression<int>? amountPaise,
+    Expression<String>? reason,
+    Expression<String>? staffName,
+    Expression<int>? createdAt,
+    Expression<int>? voidedAt,
+    Expression<String>? voidReason,
+    Expression<String>? clientRequestId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (shiftId != null) 'shift_id': shiftId,
+      if (kind != null) 'kind': kind,
+      if (amountPaise != null) 'amount_paise': amountPaise,
+      if (reason != null) 'reason': reason,
+      if (staffName != null) 'staff_name': staffName,
+      if (createdAt != null) 'created_at': createdAt,
+      if (voidedAt != null) 'voided_at': voidedAt,
+      if (voidReason != null) 'void_reason': voidReason,
+      if (clientRequestId != null) 'client_request_id': clientRequestId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CashMovementsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? shiftId,
+    Value<String>? kind,
+    Value<int>? amountPaise,
+    Value<String>? reason,
+    Value<String>? staffName,
+    Value<int>? createdAt,
+    Value<int?>? voidedAt,
+    Value<String>? voidReason,
+    Value<String>? clientRequestId,
+    Value<int>? rowid,
+  }) {
+    return CashMovementsCompanion(
+      id: id ?? this.id,
+      shiftId: shiftId ?? this.shiftId,
+      kind: kind ?? this.kind,
+      amountPaise: amountPaise ?? this.amountPaise,
+      reason: reason ?? this.reason,
+      staffName: staffName ?? this.staffName,
+      createdAt: createdAt ?? this.createdAt,
+      voidedAt: voidedAt ?? this.voidedAt,
+      voidReason: voidReason ?? this.voidReason,
+      clientRequestId: clientRequestId ?? this.clientRequestId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (shiftId.present) {
+      map['shift_id'] = Variable<String>(shiftId.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (amountPaise.present) {
+      map['amount_paise'] = Variable<int>(amountPaise.value);
+    }
+    if (reason.present) {
+      map['reason'] = Variable<String>(reason.value);
+    }
+    if (staffName.present) {
+      map['staff_name'] = Variable<String>(staffName.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (voidedAt.present) {
+      map['voided_at'] = Variable<int>(voidedAt.value);
+    }
+    if (voidReason.present) {
+      map['void_reason'] = Variable<String>(voidReason.value);
+    }
+    if (clientRequestId.present) {
+      map['client_request_id'] = Variable<String>(clientRequestId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CashMovementsCompanion(')
+          ..write('id: $id, ')
+          ..write('shiftId: $shiftId, ')
+          ..write('kind: $kind, ')
+          ..write('amountPaise: $amountPaise, ')
+          ..write('reason: $reason, ')
+          ..write('staffName: $staffName, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('voidedAt: $voidedAt, ')
+          ..write('voidReason: $voidReason, ')
+          ..write('clientRequestId: $clientRequestId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ExpensesTable extends Expenses
+    with TableInfo<$ExpensesTable, ExpenseRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ExpensesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _shiftIdMeta = const VerificationMeta(
+    'shiftId',
+  );
+  @override
+  late final GeneratedColumn<String> shiftId = GeneratedColumn<String>(
+    'shift_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES cash_shifts (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _amountPaiseMeta = const VerificationMeta(
+    'amountPaise',
+  );
+  @override
+  late final GeneratedColumn<int> amountPaise = GeneratedColumn<int>(
+    'amount_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _paidFromMeta = const VerificationMeta(
+    'paidFrom',
+  );
+  @override
+  late final GeneratedColumn<String> paidFrom = GeneratedColumn<String>(
+    'paid_from',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _staffNameMeta = const VerificationMeta(
+    'staffName',
+  );
+  @override
+  late final GeneratedColumn<String> staffName = GeneratedColumn<String>(
+    'staff_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _businessDateMeta = const VerificationMeta(
+    'businessDate',
+  );
+  @override
+  late final GeneratedColumn<String> businessDate = GeneratedColumn<String>(
+    'business_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _voidedAtMeta = const VerificationMeta(
+    'voidedAt',
+  );
+  @override
+  late final GeneratedColumn<int> voidedAt = GeneratedColumn<int>(
+    'voided_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _voidReasonMeta = const VerificationMeta(
+    'voidReason',
+  );
+  @override
+  late final GeneratedColumn<String> voidReason = GeneratedColumn<String>(
+    'void_reason',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _clientRequestIdMeta = const VerificationMeta(
+    'clientRequestId',
+  );
+  @override
+  late final GeneratedColumn<String> clientRequestId = GeneratedColumn<String>(
+    'client_request_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    shiftId,
+    category,
+    amountPaise,
+    paidFrom,
+    note,
+    staffName,
+    businessDate,
+    createdAt,
+    voidedAt,
+    voidReason,
+    clientRequestId,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'expenses';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ExpenseRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('shift_id')) {
+      context.handle(
+        _shiftIdMeta,
+        shiftId.isAcceptableOrUnknown(data['shift_id']!, _shiftIdMeta),
+      );
+    }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryMeta);
+    }
+    if (data.containsKey('amount_paise')) {
+      context.handle(
+        _amountPaiseMeta,
+        amountPaise.isAcceptableOrUnknown(
+          data['amount_paise']!,
+          _amountPaiseMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_amountPaiseMeta);
+    }
+    if (data.containsKey('paid_from')) {
+      context.handle(
+        _paidFromMeta,
+        paidFrom.isAcceptableOrUnknown(data['paid_from']!, _paidFromMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_paidFromMeta);
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('staff_name')) {
+      context.handle(
+        _staffNameMeta,
+        staffName.isAcceptableOrUnknown(data['staff_name']!, _staffNameMeta),
+      );
+    }
+    if (data.containsKey('business_date')) {
+      context.handle(
+        _businessDateMeta,
+        businessDate.isAcceptableOrUnknown(
+          data['business_date']!,
+          _businessDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_businessDateMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('voided_at')) {
+      context.handle(
+        _voidedAtMeta,
+        voidedAt.isAcceptableOrUnknown(data['voided_at']!, _voidedAtMeta),
+      );
+    }
+    if (data.containsKey('void_reason')) {
+      context.handle(
+        _voidReasonMeta,
+        voidReason.isAcceptableOrUnknown(data['void_reason']!, _voidReasonMeta),
+      );
+    }
+    if (data.containsKey('client_request_id')) {
+      context.handle(
+        _clientRequestIdMeta,
+        clientRequestId.isAcceptableOrUnknown(
+          data['client_request_id']!,
+          _clientRequestIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_clientRequestIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ExpenseRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ExpenseRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      shiftId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}shift_id'],
+      ),
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      )!,
+      amountPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}amount_paise'],
+      )!,
+      paidFrom: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}paid_from'],
+      )!,
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      )!,
+      staffName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}staff_name'],
+      )!,
+      businessDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}business_date'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      voidedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}voided_at'],
+      ),
+      voidReason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}void_reason'],
+      )!,
+      clientRequestId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}client_request_id'],
+      )!,
+    );
+  }
+
+  @override
+  $ExpensesTable createAlias(String alias) {
+    return $ExpensesTable(attachedDatabase, alias);
+  }
+}
+
+class ExpenseRow extends DataClass implements Insertable<ExpenseRow> {
+  final String id;
+
+  /// Required for cash expenses (paid from the drawer).
+  final String? shiftId;
+  final String category;
+  final int amountPaise;
+
+  /// `ExpenseSource.name`: cash | upi | card | bank | other.
+  final String paidFrom;
+  final String note;
+  final String staffName;
+  final String businessDate;
+  final int createdAt;
+  final int? voidedAt;
+  final String voidReason;
+  final String clientRequestId;
+  const ExpenseRow({
+    required this.id,
+    this.shiftId,
+    required this.category,
+    required this.amountPaise,
+    required this.paidFrom,
+    required this.note,
+    required this.staffName,
+    required this.businessDate,
+    required this.createdAt,
+    this.voidedAt,
+    required this.voidReason,
+    required this.clientRequestId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    if (!nullToAbsent || shiftId != null) {
+      map['shift_id'] = Variable<String>(shiftId);
+    }
+    map['category'] = Variable<String>(category);
+    map['amount_paise'] = Variable<int>(amountPaise);
+    map['paid_from'] = Variable<String>(paidFrom);
+    map['note'] = Variable<String>(note);
+    map['staff_name'] = Variable<String>(staffName);
+    map['business_date'] = Variable<String>(businessDate);
+    map['created_at'] = Variable<int>(createdAt);
+    if (!nullToAbsent || voidedAt != null) {
+      map['voided_at'] = Variable<int>(voidedAt);
+    }
+    map['void_reason'] = Variable<String>(voidReason);
+    map['client_request_id'] = Variable<String>(clientRequestId);
+    return map;
+  }
+
+  ExpensesCompanion toCompanion(bool nullToAbsent) {
+    return ExpensesCompanion(
+      id: Value(id),
+      shiftId: shiftId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(shiftId),
+      category: Value(category),
+      amountPaise: Value(amountPaise),
+      paidFrom: Value(paidFrom),
+      note: Value(note),
+      staffName: Value(staffName),
+      businessDate: Value(businessDate),
+      createdAt: Value(createdAt),
+      voidedAt: voidedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(voidedAt),
+      voidReason: Value(voidReason),
+      clientRequestId: Value(clientRequestId),
+    );
+  }
+
+  factory ExpenseRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ExpenseRow(
+      id: serializer.fromJson<String>(json['id']),
+      shiftId: serializer.fromJson<String?>(json['shiftId']),
+      category: serializer.fromJson<String>(json['category']),
+      amountPaise: serializer.fromJson<int>(json['amountPaise']),
+      paidFrom: serializer.fromJson<String>(json['paidFrom']),
+      note: serializer.fromJson<String>(json['note']),
+      staffName: serializer.fromJson<String>(json['staffName']),
+      businessDate: serializer.fromJson<String>(json['businessDate']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      voidedAt: serializer.fromJson<int?>(json['voidedAt']),
+      voidReason: serializer.fromJson<String>(json['voidReason']),
+      clientRequestId: serializer.fromJson<String>(json['clientRequestId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'shiftId': serializer.toJson<String?>(shiftId),
+      'category': serializer.toJson<String>(category),
+      'amountPaise': serializer.toJson<int>(amountPaise),
+      'paidFrom': serializer.toJson<String>(paidFrom),
+      'note': serializer.toJson<String>(note),
+      'staffName': serializer.toJson<String>(staffName),
+      'businessDate': serializer.toJson<String>(businessDate),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'voidedAt': serializer.toJson<int?>(voidedAt),
+      'voidReason': serializer.toJson<String>(voidReason),
+      'clientRequestId': serializer.toJson<String>(clientRequestId),
+    };
+  }
+
+  ExpenseRow copyWith({
+    String? id,
+    Value<String?> shiftId = const Value.absent(),
+    String? category,
+    int? amountPaise,
+    String? paidFrom,
+    String? note,
+    String? staffName,
+    String? businessDate,
+    int? createdAt,
+    Value<int?> voidedAt = const Value.absent(),
+    String? voidReason,
+    String? clientRequestId,
+  }) => ExpenseRow(
+    id: id ?? this.id,
+    shiftId: shiftId.present ? shiftId.value : this.shiftId,
+    category: category ?? this.category,
+    amountPaise: amountPaise ?? this.amountPaise,
+    paidFrom: paidFrom ?? this.paidFrom,
+    note: note ?? this.note,
+    staffName: staffName ?? this.staffName,
+    businessDate: businessDate ?? this.businessDate,
+    createdAt: createdAt ?? this.createdAt,
+    voidedAt: voidedAt.present ? voidedAt.value : this.voidedAt,
+    voidReason: voidReason ?? this.voidReason,
+    clientRequestId: clientRequestId ?? this.clientRequestId,
+  );
+  ExpenseRow copyWithCompanion(ExpensesCompanion data) {
+    return ExpenseRow(
+      id: data.id.present ? data.id.value : this.id,
+      shiftId: data.shiftId.present ? data.shiftId.value : this.shiftId,
+      category: data.category.present ? data.category.value : this.category,
+      amountPaise: data.amountPaise.present
+          ? data.amountPaise.value
+          : this.amountPaise,
+      paidFrom: data.paidFrom.present ? data.paidFrom.value : this.paidFrom,
+      note: data.note.present ? data.note.value : this.note,
+      staffName: data.staffName.present ? data.staffName.value : this.staffName,
+      businessDate: data.businessDate.present
+          ? data.businessDate.value
+          : this.businessDate,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      voidedAt: data.voidedAt.present ? data.voidedAt.value : this.voidedAt,
+      voidReason: data.voidReason.present
+          ? data.voidReason.value
+          : this.voidReason,
+      clientRequestId: data.clientRequestId.present
+          ? data.clientRequestId.value
+          : this.clientRequestId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExpenseRow(')
+          ..write('id: $id, ')
+          ..write('shiftId: $shiftId, ')
+          ..write('category: $category, ')
+          ..write('amountPaise: $amountPaise, ')
+          ..write('paidFrom: $paidFrom, ')
+          ..write('note: $note, ')
+          ..write('staffName: $staffName, ')
+          ..write('businessDate: $businessDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('voidedAt: $voidedAt, ')
+          ..write('voidReason: $voidReason, ')
+          ..write('clientRequestId: $clientRequestId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    shiftId,
+    category,
+    amountPaise,
+    paidFrom,
+    note,
+    staffName,
+    businessDate,
+    createdAt,
+    voidedAt,
+    voidReason,
+    clientRequestId,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ExpenseRow &&
+          other.id == this.id &&
+          other.shiftId == this.shiftId &&
+          other.category == this.category &&
+          other.amountPaise == this.amountPaise &&
+          other.paidFrom == this.paidFrom &&
+          other.note == this.note &&
+          other.staffName == this.staffName &&
+          other.businessDate == this.businessDate &&
+          other.createdAt == this.createdAt &&
+          other.voidedAt == this.voidedAt &&
+          other.voidReason == this.voidReason &&
+          other.clientRequestId == this.clientRequestId);
+}
+
+class ExpensesCompanion extends UpdateCompanion<ExpenseRow> {
+  final Value<String> id;
+  final Value<String?> shiftId;
+  final Value<String> category;
+  final Value<int> amountPaise;
+  final Value<String> paidFrom;
+  final Value<String> note;
+  final Value<String> staffName;
+  final Value<String> businessDate;
+  final Value<int> createdAt;
+  final Value<int?> voidedAt;
+  final Value<String> voidReason;
+  final Value<String> clientRequestId;
+  final Value<int> rowid;
+  const ExpensesCompanion({
+    this.id = const Value.absent(),
+    this.shiftId = const Value.absent(),
+    this.category = const Value.absent(),
+    this.amountPaise = const Value.absent(),
+    this.paidFrom = const Value.absent(),
+    this.note = const Value.absent(),
+    this.staffName = const Value.absent(),
+    this.businessDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.voidedAt = const Value.absent(),
+    this.voidReason = const Value.absent(),
+    this.clientRequestId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ExpensesCompanion.insert({
+    required String id,
+    this.shiftId = const Value.absent(),
+    required String category,
+    required int amountPaise,
+    required String paidFrom,
+    this.note = const Value.absent(),
+    this.staffName = const Value.absent(),
+    required String businessDate,
+    required int createdAt,
+    this.voidedAt = const Value.absent(),
+    this.voidReason = const Value.absent(),
+    required String clientRequestId,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       category = Value(category),
+       amountPaise = Value(amountPaise),
+       paidFrom = Value(paidFrom),
+       businessDate = Value(businessDate),
+       createdAt = Value(createdAt),
+       clientRequestId = Value(clientRequestId);
+  static Insertable<ExpenseRow> custom({
+    Expression<String>? id,
+    Expression<String>? shiftId,
+    Expression<String>? category,
+    Expression<int>? amountPaise,
+    Expression<String>? paidFrom,
+    Expression<String>? note,
+    Expression<String>? staffName,
+    Expression<String>? businessDate,
+    Expression<int>? createdAt,
+    Expression<int>? voidedAt,
+    Expression<String>? voidReason,
+    Expression<String>? clientRequestId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (shiftId != null) 'shift_id': shiftId,
+      if (category != null) 'category': category,
+      if (amountPaise != null) 'amount_paise': amountPaise,
+      if (paidFrom != null) 'paid_from': paidFrom,
+      if (note != null) 'note': note,
+      if (staffName != null) 'staff_name': staffName,
+      if (businessDate != null) 'business_date': businessDate,
+      if (createdAt != null) 'created_at': createdAt,
+      if (voidedAt != null) 'voided_at': voidedAt,
+      if (voidReason != null) 'void_reason': voidReason,
+      if (clientRequestId != null) 'client_request_id': clientRequestId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ExpensesCompanion copyWith({
+    Value<String>? id,
+    Value<String?>? shiftId,
+    Value<String>? category,
+    Value<int>? amountPaise,
+    Value<String>? paidFrom,
+    Value<String>? note,
+    Value<String>? staffName,
+    Value<String>? businessDate,
+    Value<int>? createdAt,
+    Value<int?>? voidedAt,
+    Value<String>? voidReason,
+    Value<String>? clientRequestId,
+    Value<int>? rowid,
+  }) {
+    return ExpensesCompanion(
+      id: id ?? this.id,
+      shiftId: shiftId ?? this.shiftId,
+      category: category ?? this.category,
+      amountPaise: amountPaise ?? this.amountPaise,
+      paidFrom: paidFrom ?? this.paidFrom,
+      note: note ?? this.note,
+      staffName: staffName ?? this.staffName,
+      businessDate: businessDate ?? this.businessDate,
+      createdAt: createdAt ?? this.createdAt,
+      voidedAt: voidedAt ?? this.voidedAt,
+      voidReason: voidReason ?? this.voidReason,
+      clientRequestId: clientRequestId ?? this.clientRequestId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (shiftId.present) {
+      map['shift_id'] = Variable<String>(shiftId.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (amountPaise.present) {
+      map['amount_paise'] = Variable<int>(amountPaise.value);
+    }
+    if (paidFrom.present) {
+      map['paid_from'] = Variable<String>(paidFrom.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (staffName.present) {
+      map['staff_name'] = Variable<String>(staffName.value);
+    }
+    if (businessDate.present) {
+      map['business_date'] = Variable<String>(businessDate.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (voidedAt.present) {
+      map['voided_at'] = Variable<int>(voidedAt.value);
+    }
+    if (voidReason.present) {
+      map['void_reason'] = Variable<String>(voidReason.value);
+    }
+    if (clientRequestId.present) {
+      map['client_request_id'] = Variable<String>(clientRequestId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExpensesCompanion(')
+          ..write('id: $id, ')
+          ..write('shiftId: $shiftId, ')
+          ..write('category: $category, ')
+          ..write('amountPaise: $amountPaise, ')
+          ..write('paidFrom: $paidFrom, ')
+          ..write('note: $note, ')
+          ..write('staffName: $staffName, ')
+          ..write('businessDate: $businessDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('voidedAt: $voidedAt, ')
+          ..write('voidReason: $voidReason, ')
+          ..write('clientRequestId: $clientRequestId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -17088,6 +19488,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $BillLinesTable billLines = $BillLinesTable(this);
   late final $BillTaxesTable billTaxes = $BillTaxesTable(this);
   late final $PaymentsTable payments = $PaymentsTable(this);
+  late final $CashShiftsTable cashShifts = $CashShiftsTable(this);
+  late final $CashMovementsTable cashMovements = $CashMovementsTable(this);
+  late final $ExpensesTable expenses = $ExpensesTable(this);
   late final Index idxPrintJobsStatus = Index(
     'idx_print_jobs_status',
     'CREATE INDEX idx_print_jobs_status ON print_jobs (status)',
@@ -17188,6 +19591,22 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_payments_business_date',
     'CREATE INDEX idx_payments_business_date ON payments (business_date)',
   );
+  late final Index idxCashShiftsStatus = Index(
+    'idx_cash_shifts_status',
+    'CREATE INDEX idx_cash_shifts_status ON cash_shifts (status)',
+  );
+  late final Index idxCashMovementsShift = Index(
+    'idx_cash_movements_shift',
+    'CREATE INDEX idx_cash_movements_shift ON cash_movements (shift_id)',
+  );
+  late final Index idxExpensesBusinessDate = Index(
+    'idx_expenses_business_date',
+    'CREATE INDEX idx_expenses_business_date ON expenses (business_date)',
+  );
+  late final Index idxExpensesShift = Index(
+    'idx_expenses_shift',
+    'CREATE INDEX idx_expenses_shift ON expenses (shift_id)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -17219,6 +19638,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     billLines,
     billTaxes,
     payments,
+    cashShifts,
+    cashMovements,
+    expenses,
     idxPrintJobsStatus,
     idxPrintJobsSourceKey,
     idxPrintHistoryAt,
@@ -17244,6 +19666,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     idxPaymentsBill,
     idxPaymentsOrder,
     idxPaymentsBusinessDate,
+    idxCashShiftsStatus,
+    idxCashMovementsShift,
+    idxExpensesBusinessDate,
+    idxExpensesShift,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -29127,6 +31553,7 @@ typedef $$PaymentsTableCreateCompanionBuilder = PaymentsCompanion Function({
   Value<String?> reversesPaymentId,
   Value<String> reason,
   Value<String> staffName,
+  Value<String?> shiftId,
   required String businessDate,
   required String clientRequestId,
   required int createdAt,
@@ -29147,6 +31574,7 @@ typedef $$PaymentsTableUpdateCompanionBuilder = PaymentsCompanion Function({
   Value<String?> reversesPaymentId,
   Value<String> reason,
   Value<String> staffName,
+  Value<String?> shiftId,
   Value<String> businessDate,
   Value<String> clientRequestId,
   Value<int> createdAt,
@@ -29270,6 +31698,11 @@ class $$PaymentsTableFilterComposer
 
   ColumnFilters<String> get staffName => $composableBuilder(
     column: $table.staffName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get shiftId => $composableBuilder(
+    column: $table.shiftId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -29422,6 +31855,11 @@ class $$PaymentsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get shiftId => $composableBuilder(
+    column: $table.shiftId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get businessDate => $composableBuilder(
     column: $table.businessDate,
     builder: (column) => ColumnOrderings(column),
@@ -29559,6 +31997,9 @@ class $$PaymentsTableAnnotationComposer
   GeneratedColumn<String> get staffName =>
       $composableBuilder(column: $table.staffName, builder: (column) => column);
 
+  GeneratedColumn<String> get shiftId =>
+      $composableBuilder(column: $table.shiftId, builder: (column) => column);
+
   GeneratedColumn<String> get businessDate => $composableBuilder(
     column: $table.businessDate,
     builder: (column) => column,
@@ -29688,6 +32129,7 @@ class $$PaymentsTableTableManager
                 Value<String?> reversesPaymentId = const Value.absent(),
                 Value<String> reason = const Value.absent(),
                 Value<String> staffName = const Value.absent(),
+                Value<String?> shiftId = const Value.absent(),
                 Value<String> businessDate = const Value.absent(),
                 Value<String> clientRequestId = const Value.absent(),
                 Value<int> createdAt = const Value.absent(),
@@ -29707,6 +32149,7 @@ class $$PaymentsTableTableManager
                 reversesPaymentId: reversesPaymentId,
                 reason: reason,
                 staffName: staffName,
+                shiftId: shiftId,
                 businessDate: businessDate,
                 clientRequestId: clientRequestId,
                 createdAt: createdAt,
@@ -29728,6 +32171,7 @@ class $$PaymentsTableTableManager
                 Value<String?> reversesPaymentId = const Value.absent(),
                 Value<String> reason = const Value.absent(),
                 Value<String> staffName = const Value.absent(),
+                Value<String?> shiftId = const Value.absent(),
                 required String businessDate,
                 required String clientRequestId,
                 required int createdAt,
@@ -29747,6 +32191,7 @@ class $$PaymentsTableTableManager
                 reversesPaymentId: reversesPaymentId,
                 reason: reason,
                 staffName: staffName,
+                shiftId: shiftId,
                 businessDate: businessDate,
                 clientRequestId: clientRequestId,
                 createdAt: createdAt,
@@ -29844,6 +32289,1519 @@ typedef $$PaymentsTableProcessedTableManager =
         bool reversesPaymentId,
       })
     >;
+typedef $$CashShiftsTableCreateCompanionBuilder = CashShiftsCompanion Function({
+  required String id,
+  required String status,
+  required String businessDate,
+  required int openingCashPaise,
+  required String openedBy,
+  Value<String> openNote,
+  required int openedAt,
+  Value<int?> closedAt,
+  Value<String> closedBy,
+  Value<int?> countedCashPaise,
+  Value<int?> expectedCashPaise,
+  Value<int?> variancePaise,
+  Value<String> varianceReason,
+  Value<String?> denominationsJson,
+  Value<String?> summaryJson,
+  Value<String> closeNote,
+  required String clientRequestId,
+  Value<int> rowid,
+});
+typedef $$CashShiftsTableUpdateCompanionBuilder = CashShiftsCompanion Function({
+  Value<String> id,
+  Value<String> status,
+  Value<String> businessDate,
+  Value<int> openingCashPaise,
+  Value<String> openedBy,
+  Value<String> openNote,
+  Value<int> openedAt,
+  Value<int?> closedAt,
+  Value<String> closedBy,
+  Value<int?> countedCashPaise,
+  Value<int?> expectedCashPaise,
+  Value<int?> variancePaise,
+  Value<String> varianceReason,
+  Value<String?> denominationsJson,
+  Value<String?> summaryJson,
+  Value<String> closeNote,
+  Value<String> clientRequestId,
+  Value<int> rowid,
+});
+
+final class $$CashShiftsTableReferences
+    extends BaseReferences<_$AppDatabase, $CashShiftsTable, CashShiftRow> {
+  $$CashShiftsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$CashMovementsTable, List<CashMovementRow>>
+  _cashMovementsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.cashMovements,
+    aliasName: 'cash_shifts__id__cash_movements__shift_id',
+  );
+
+  $$CashMovementsTableProcessedTableManager get cashMovementsRefs {
+    final manager = $$CashMovementsTableTableManager(
+      $_db,
+      $_db.cashMovements,
+    ).filter((f) => f.shiftId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_cashMovementsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$ExpensesTable, List<ExpenseRow>>
+  _expensesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.expenses,
+    aliasName: 'cash_shifts__id__expenses__shift_id',
+  );
+
+  $$ExpensesTableProcessedTableManager get expensesRefs {
+    final manager = $$ExpensesTableTableManager(
+      $_db,
+      $_db.expenses,
+    ).filter((f) => f.shiftId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_expensesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$CashShiftsTableFilterComposer
+    extends Composer<_$AppDatabase, $CashShiftsTable> {
+  $$CashShiftsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get businessDate => $composableBuilder(
+    column: $table.businessDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get openingCashPaise => $composableBuilder(
+    column: $table.openingCashPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get openedBy => $composableBuilder(
+    column: $table.openedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get openNote => $composableBuilder(
+    column: $table.openNote,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get openedAt => $composableBuilder(
+    column: $table.openedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get closedAt => $composableBuilder(
+    column: $table.closedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get closedBy => $composableBuilder(
+    column: $table.closedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get countedCashPaise => $composableBuilder(
+    column: $table.countedCashPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get expectedCashPaise => $composableBuilder(
+    column: $table.expectedCashPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get variancePaise => $composableBuilder(
+    column: $table.variancePaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get varianceReason => $composableBuilder(
+    column: $table.varianceReason,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get denominationsJson => $composableBuilder(
+    column: $table.denominationsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get summaryJson => $composableBuilder(
+    column: $table.summaryJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get closeNote => $composableBuilder(
+    column: $table.closeNote,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clientRequestId => $composableBuilder(
+    column: $table.clientRequestId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> cashMovementsRefs(
+    Expression<bool> Function($$CashMovementsTableFilterComposer f) f,
+  ) {
+    final $$CashMovementsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.cashMovements,
+      getReferencedColumn: (t) => t.shiftId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CashMovementsTableFilterComposer(
+            $db: $db,
+            $table: $db.cashMovements,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> expensesRefs(
+    Expression<bool> Function($$ExpensesTableFilterComposer f) f,
+  ) {
+    final $$ExpensesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.expenses,
+      getReferencedColumn: (t) => t.shiftId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpensesTableFilterComposer(
+            $db: $db,
+            $table: $db.expenses,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$CashShiftsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CashShiftsTable> {
+  $$CashShiftsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get businessDate => $composableBuilder(
+    column: $table.businessDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get openingCashPaise => $composableBuilder(
+    column: $table.openingCashPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get openedBy => $composableBuilder(
+    column: $table.openedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get openNote => $composableBuilder(
+    column: $table.openNote,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get openedAt => $composableBuilder(
+    column: $table.openedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get closedAt => $composableBuilder(
+    column: $table.closedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get closedBy => $composableBuilder(
+    column: $table.closedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get countedCashPaise => $composableBuilder(
+    column: $table.countedCashPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get expectedCashPaise => $composableBuilder(
+    column: $table.expectedCashPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get variancePaise => $composableBuilder(
+    column: $table.variancePaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get varianceReason => $composableBuilder(
+    column: $table.varianceReason,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get denominationsJson => $composableBuilder(
+    column: $table.denominationsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get summaryJson => $composableBuilder(
+    column: $table.summaryJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get closeNote => $composableBuilder(
+    column: $table.closeNote,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clientRequestId => $composableBuilder(
+    column: $table.clientRequestId,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CashShiftsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CashShiftsTable> {
+  $$CashShiftsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get businessDate => $composableBuilder(
+    column: $table.businessDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get openingCashPaise => $composableBuilder(
+    column: $table.openingCashPaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get openedBy =>
+      $composableBuilder(column: $table.openedBy, builder: (column) => column);
+
+  GeneratedColumn<String> get openNote =>
+      $composableBuilder(column: $table.openNote, builder: (column) => column);
+
+  GeneratedColumn<int> get openedAt =>
+      $composableBuilder(column: $table.openedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get closedAt =>
+      $composableBuilder(column: $table.closedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get closedBy =>
+      $composableBuilder(column: $table.closedBy, builder: (column) => column);
+
+  GeneratedColumn<int> get countedCashPaise => $composableBuilder(
+    column: $table.countedCashPaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get expectedCashPaise => $composableBuilder(
+    column: $table.expectedCashPaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get variancePaise => $composableBuilder(
+    column: $table.variancePaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get varianceReason => $composableBuilder(
+    column: $table.varianceReason,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get denominationsJson => $composableBuilder(
+    column: $table.denominationsJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get summaryJson => $composableBuilder(
+    column: $table.summaryJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get closeNote =>
+      $composableBuilder(column: $table.closeNote, builder: (column) => column);
+
+  GeneratedColumn<String> get clientRequestId => $composableBuilder(
+    column: $table.clientRequestId,
+    builder: (column) => column,
+  );
+
+  Expression<T> cashMovementsRefs<T extends Object>(
+    Expression<T> Function($$CashMovementsTableAnnotationComposer a) f,
+  ) {
+    final $$CashMovementsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.cashMovements,
+      getReferencedColumn: (t) => t.shiftId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CashMovementsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.cashMovements,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> expensesRefs<T extends Object>(
+    Expression<T> Function($$ExpensesTableAnnotationComposer a) f,
+  ) {
+    final $$ExpensesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.expenses,
+      getReferencedColumn: (t) => t.shiftId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpensesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.expenses,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$CashShiftsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CashShiftsTable,
+          CashShiftRow,
+          $$CashShiftsTableFilterComposer,
+          $$CashShiftsTableOrderingComposer,
+          $$CashShiftsTableAnnotationComposer,
+          $$CashShiftsTableCreateCompanionBuilder,
+          $$CashShiftsTableUpdateCompanionBuilder,
+          (CashShiftRow, $$CashShiftsTableReferences),
+          CashShiftRow,
+          PrefetchHooks Function({bool cashMovementsRefs, bool expensesRefs})
+        > {
+  $$CashShiftsTableTableManager(_$AppDatabase db, $CashShiftsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CashShiftsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CashShiftsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CashShiftsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String> businessDate = const Value.absent(),
+                Value<int> openingCashPaise = const Value.absent(),
+                Value<String> openedBy = const Value.absent(),
+                Value<String> openNote = const Value.absent(),
+                Value<int> openedAt = const Value.absent(),
+                Value<int?> closedAt = const Value.absent(),
+                Value<String> closedBy = const Value.absent(),
+                Value<int?> countedCashPaise = const Value.absent(),
+                Value<int?> expectedCashPaise = const Value.absent(),
+                Value<int?> variancePaise = const Value.absent(),
+                Value<String> varianceReason = const Value.absent(),
+                Value<String?> denominationsJson = const Value.absent(),
+                Value<String?> summaryJson = const Value.absent(),
+                Value<String> closeNote = const Value.absent(),
+                Value<String> clientRequestId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CashShiftsCompanion(
+                id: id,
+                status: status,
+                businessDate: businessDate,
+                openingCashPaise: openingCashPaise,
+                openedBy: openedBy,
+                openNote: openNote,
+                openedAt: openedAt,
+                closedAt: closedAt,
+                closedBy: closedBy,
+                countedCashPaise: countedCashPaise,
+                expectedCashPaise: expectedCashPaise,
+                variancePaise: variancePaise,
+                varianceReason: varianceReason,
+                denominationsJson: denominationsJson,
+                summaryJson: summaryJson,
+                closeNote: closeNote,
+                clientRequestId: clientRequestId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String status,
+                required String businessDate,
+                required int openingCashPaise,
+                required String openedBy,
+                Value<String> openNote = const Value.absent(),
+                required int openedAt,
+                Value<int?> closedAt = const Value.absent(),
+                Value<String> closedBy = const Value.absent(),
+                Value<int?> countedCashPaise = const Value.absent(),
+                Value<int?> expectedCashPaise = const Value.absent(),
+                Value<int?> variancePaise = const Value.absent(),
+                Value<String> varianceReason = const Value.absent(),
+                Value<String?> denominationsJson = const Value.absent(),
+                Value<String?> summaryJson = const Value.absent(),
+                Value<String> closeNote = const Value.absent(),
+                required String clientRequestId,
+                Value<int> rowid = const Value.absent(),
+              }) => CashShiftsCompanion.insert(
+                id: id,
+                status: status,
+                businessDate: businessDate,
+                openingCashPaise: openingCashPaise,
+                openedBy: openedBy,
+                openNote: openNote,
+                openedAt: openedAt,
+                closedAt: closedAt,
+                closedBy: closedBy,
+                countedCashPaise: countedCashPaise,
+                expectedCashPaise: expectedCashPaise,
+                variancePaise: variancePaise,
+                varianceReason: varianceReason,
+                denominationsJson: denominationsJson,
+                summaryJson: summaryJson,
+                closeNote: closeNote,
+                clientRequestId: clientRequestId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CashShiftsTable, CashShiftRow>(table),
+                  $$CashShiftsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({cashMovementsRefs = false, expensesRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (cashMovementsRefs) db.cashMovements,
+                    if (expensesRefs) db.expenses,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (cashMovementsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          CashShiftRow,
+                          $CashShiftsTable,
+                          CashMovementRow,
+                          $CashMovementsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CashShiftsTableReferences
+                              ._cashMovementsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CashShiftsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).cashMovementsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'shift_id',
+                          typedResults: items,
+                        ),
+                      if (expensesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          CashShiftRow,
+                          $CashShiftsTable,
+                          ExpenseRow,
+                          $ExpensesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CashShiftsTableReferences
+                              ._expensesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CashShiftsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).expensesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'shift_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$CashShiftsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CashShiftsTable,
+      CashShiftRow,
+      $$CashShiftsTableFilterComposer,
+      $$CashShiftsTableOrderingComposer,
+      $$CashShiftsTableAnnotationComposer,
+      $$CashShiftsTableCreateCompanionBuilder,
+      $$CashShiftsTableUpdateCompanionBuilder,
+      (CashShiftRow, $$CashShiftsTableReferences),
+      CashShiftRow,
+      PrefetchHooks Function({bool cashMovementsRefs, bool expensesRefs})
+    >;
+typedef $$CashMovementsTableCreateCompanionBuilder =
+    CashMovementsCompanion Function({
+      required String id,
+      required String shiftId,
+      required String kind,
+      required int amountPaise,
+      required String reason,
+      Value<String> staffName,
+      required int createdAt,
+      Value<int?> voidedAt,
+      Value<String> voidReason,
+      required String clientRequestId,
+      Value<int> rowid,
+    });
+typedef $$CashMovementsTableUpdateCompanionBuilder =
+    CashMovementsCompanion Function({
+      Value<String> id,
+      Value<String> shiftId,
+      Value<String> kind,
+      Value<int> amountPaise,
+      Value<String> reason,
+      Value<String> staffName,
+      Value<int> createdAt,
+      Value<int?> voidedAt,
+      Value<String> voidReason,
+      Value<String> clientRequestId,
+      Value<int> rowid,
+    });
+
+final class $$CashMovementsTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $CashMovementsTable, CashMovementRow> {
+  $$CashMovementsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $CashShiftsTable _shiftIdTable(_$AppDatabase db) =>
+      db.cashShifts.createAlias('cash_movements__shift_id__cash_shifts__id');
+
+  $$CashShiftsTableProcessedTableManager get shiftId {
+    final $_column = $_itemColumn<String>('shift_id')!;
+
+    final manager = $$CashShiftsTableTableManager(
+      $_db,
+      $_db.cashShifts,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_shiftIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$CashMovementsTableFilterComposer
+    extends Composer<_$AppDatabase, $CashMovementsTable> {
+  $$CashMovementsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get amountPaise => $composableBuilder(
+    column: $table.amountPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get reason => $composableBuilder(
+    column: $table.reason,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get staffName => $composableBuilder(
+    column: $table.staffName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get voidedAt => $composableBuilder(
+    column: $table.voidedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get voidReason => $composableBuilder(
+    column: $table.voidReason,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clientRequestId => $composableBuilder(
+    column: $table.clientRequestId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$CashShiftsTableFilterComposer get shiftId {
+    final $$CashShiftsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.shiftId,
+      referencedTable: $db.cashShifts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CashShiftsTableFilterComposer(
+            $db: $db,
+            $table: $db.cashShifts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CashMovementsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CashMovementsTable> {
+  $$CashMovementsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get amountPaise => $composableBuilder(
+    column: $table.amountPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get reason => $composableBuilder(
+    column: $table.reason,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get staffName => $composableBuilder(
+    column: $table.staffName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get voidedAt => $composableBuilder(
+    column: $table.voidedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get voidReason => $composableBuilder(
+    column: $table.voidReason,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clientRequestId => $composableBuilder(
+    column: $table.clientRequestId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$CashShiftsTableOrderingComposer get shiftId {
+    final $$CashShiftsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.shiftId,
+      referencedTable: $db.cashShifts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CashShiftsTableOrderingComposer(
+            $db: $db,
+            $table: $db.cashShifts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CashMovementsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CashMovementsTable> {
+  $$CashMovementsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<int> get amountPaise => $composableBuilder(
+    column: $table.amountPaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get reason =>
+      $composableBuilder(column: $table.reason, builder: (column) => column);
+
+  GeneratedColumn<String> get staffName =>
+      $composableBuilder(column: $table.staffName, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get voidedAt =>
+      $composableBuilder(column: $table.voidedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get voidReason => $composableBuilder(
+    column: $table.voidReason,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get clientRequestId => $composableBuilder(
+    column: $table.clientRequestId,
+    builder: (column) => column,
+  );
+
+  $$CashShiftsTableAnnotationComposer get shiftId {
+    final $$CashShiftsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.shiftId,
+      referencedTable: $db.cashShifts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CashShiftsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.cashShifts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CashMovementsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CashMovementsTable,
+          CashMovementRow,
+          $$CashMovementsTableFilterComposer,
+          $$CashMovementsTableOrderingComposer,
+          $$CashMovementsTableAnnotationComposer,
+          $$CashMovementsTableCreateCompanionBuilder,
+          $$CashMovementsTableUpdateCompanionBuilder,
+          (CashMovementRow, $$CashMovementsTableReferences),
+          CashMovementRow,
+          PrefetchHooks Function({bool shiftId})
+        > {
+  $$CashMovementsTableTableManager(_$AppDatabase db, $CashMovementsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CashMovementsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CashMovementsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CashMovementsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> shiftId = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<int> amountPaise = const Value.absent(),
+                Value<String> reason = const Value.absent(),
+                Value<String> staffName = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int?> voidedAt = const Value.absent(),
+                Value<String> voidReason = const Value.absent(),
+                Value<String> clientRequestId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CashMovementsCompanion(
+                id: id,
+                shiftId: shiftId,
+                kind: kind,
+                amountPaise: amountPaise,
+                reason: reason,
+                staffName: staffName,
+                createdAt: createdAt,
+                voidedAt: voidedAt,
+                voidReason: voidReason,
+                clientRequestId: clientRequestId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String shiftId,
+                required String kind,
+                required int amountPaise,
+                required String reason,
+                Value<String> staffName = const Value.absent(),
+                required int createdAt,
+                Value<int?> voidedAt = const Value.absent(),
+                Value<String> voidReason = const Value.absent(),
+                required String clientRequestId,
+                Value<int> rowid = const Value.absent(),
+              }) => CashMovementsCompanion.insert(
+                id: id,
+                shiftId: shiftId,
+                kind: kind,
+                amountPaise: amountPaise,
+                reason: reason,
+                staffName: staffName,
+                createdAt: createdAt,
+                voidedAt: voidedAt,
+                voidReason: voidReason,
+                clientRequestId: clientRequestId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CashMovementsTable, CashMovementRow>(table),
+                  $$CashMovementsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({shiftId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (shiftId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.shiftId,
+                        referencedTable: $$CashMovementsTableReferences
+                            ._shiftIdTable(db),
+                        referencedColumn: $$CashMovementsTableReferences
+                            ._shiftIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$CashMovementsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CashMovementsTable,
+      CashMovementRow,
+      $$CashMovementsTableFilterComposer,
+      $$CashMovementsTableOrderingComposer,
+      $$CashMovementsTableAnnotationComposer,
+      $$CashMovementsTableCreateCompanionBuilder,
+      $$CashMovementsTableUpdateCompanionBuilder,
+      (CashMovementRow, $$CashMovementsTableReferences),
+      CashMovementRow,
+      PrefetchHooks Function({bool shiftId})
+    >;
+typedef $$ExpensesTableCreateCompanionBuilder = ExpensesCompanion Function({
+  required String id,
+  Value<String?> shiftId,
+  required String category,
+  required int amountPaise,
+  required String paidFrom,
+  Value<String> note,
+  Value<String> staffName,
+  required String businessDate,
+  required int createdAt,
+  Value<int?> voidedAt,
+  Value<String> voidReason,
+  required String clientRequestId,
+  Value<int> rowid,
+});
+typedef $$ExpensesTableUpdateCompanionBuilder = ExpensesCompanion Function({
+  Value<String> id,
+  Value<String?> shiftId,
+  Value<String> category,
+  Value<int> amountPaise,
+  Value<String> paidFrom,
+  Value<String> note,
+  Value<String> staffName,
+  Value<String> businessDate,
+  Value<int> createdAt,
+  Value<int?> voidedAt,
+  Value<String> voidReason,
+  Value<String> clientRequestId,
+  Value<int> rowid,
+});
+
+final class $$ExpensesTableReferences
+    extends BaseReferences<_$AppDatabase, $ExpensesTable, ExpenseRow> {
+  $$ExpensesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $CashShiftsTable _shiftIdTable(_$AppDatabase db) =>
+      db.cashShifts.createAlias('expenses__shift_id__cash_shifts__id');
+
+  $$CashShiftsTableProcessedTableManager? get shiftId {
+    final $_column = $_itemColumn<String>('shift_id');
+    if ($_column == null) return null;
+    final manager = $$CashShiftsTableTableManager(
+      $_db,
+      $_db.cashShifts,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_shiftIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ExpensesTableFilterComposer
+    extends Composer<_$AppDatabase, $ExpensesTable> {
+  $$ExpensesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get amountPaise => $composableBuilder(
+    column: $table.amountPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get paidFrom => $composableBuilder(
+    column: $table.paidFrom,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get staffName => $composableBuilder(
+    column: $table.staffName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get businessDate => $composableBuilder(
+    column: $table.businessDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get voidedAt => $composableBuilder(
+    column: $table.voidedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get voidReason => $composableBuilder(
+    column: $table.voidReason,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clientRequestId => $composableBuilder(
+    column: $table.clientRequestId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$CashShiftsTableFilterComposer get shiftId {
+    final $$CashShiftsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.shiftId,
+      referencedTable: $db.cashShifts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CashShiftsTableFilterComposer(
+            $db: $db,
+            $table: $db.cashShifts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ExpensesTableOrderingComposer
+    extends Composer<_$AppDatabase, $ExpensesTable> {
+  $$ExpensesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get amountPaise => $composableBuilder(
+    column: $table.amountPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get paidFrom => $composableBuilder(
+    column: $table.paidFrom,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get staffName => $composableBuilder(
+    column: $table.staffName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get businessDate => $composableBuilder(
+    column: $table.businessDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get voidedAt => $composableBuilder(
+    column: $table.voidedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get voidReason => $composableBuilder(
+    column: $table.voidReason,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clientRequestId => $composableBuilder(
+    column: $table.clientRequestId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$CashShiftsTableOrderingComposer get shiftId {
+    final $$CashShiftsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.shiftId,
+      referencedTable: $db.cashShifts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CashShiftsTableOrderingComposer(
+            $db: $db,
+            $table: $db.cashShifts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ExpensesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ExpensesTable> {
+  $$ExpensesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<int> get amountPaise => $composableBuilder(
+    column: $table.amountPaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get paidFrom =>
+      $composableBuilder(column: $table.paidFrom, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<String> get staffName =>
+      $composableBuilder(column: $table.staffName, builder: (column) => column);
+
+  GeneratedColumn<String> get businessDate => $composableBuilder(
+    column: $table.businessDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get voidedAt =>
+      $composableBuilder(column: $table.voidedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get voidReason => $composableBuilder(
+    column: $table.voidReason,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get clientRequestId => $composableBuilder(
+    column: $table.clientRequestId,
+    builder: (column) => column,
+  );
+
+  $$CashShiftsTableAnnotationComposer get shiftId {
+    final $$CashShiftsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.shiftId,
+      referencedTable: $db.cashShifts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CashShiftsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.cashShifts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ExpensesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ExpensesTable,
+          ExpenseRow,
+          $$ExpensesTableFilterComposer,
+          $$ExpensesTableOrderingComposer,
+          $$ExpensesTableAnnotationComposer,
+          $$ExpensesTableCreateCompanionBuilder,
+          $$ExpensesTableUpdateCompanionBuilder,
+          (ExpenseRow, $$ExpensesTableReferences),
+          ExpenseRow,
+          PrefetchHooks Function({bool shiftId})
+        > {
+  $$ExpensesTableTableManager(_$AppDatabase db, $ExpensesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ExpensesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ExpensesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ExpensesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String?> shiftId = const Value.absent(),
+                Value<String> category = const Value.absent(),
+                Value<int> amountPaise = const Value.absent(),
+                Value<String> paidFrom = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                Value<String> staffName = const Value.absent(),
+                Value<String> businessDate = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int?> voidedAt = const Value.absent(),
+                Value<String> voidReason = const Value.absent(),
+                Value<String> clientRequestId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ExpensesCompanion(
+                id: id,
+                shiftId: shiftId,
+                category: category,
+                amountPaise: amountPaise,
+                paidFrom: paidFrom,
+                note: note,
+                staffName: staffName,
+                businessDate: businessDate,
+                createdAt: createdAt,
+                voidedAt: voidedAt,
+                voidReason: voidReason,
+                clientRequestId: clientRequestId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                Value<String?> shiftId = const Value.absent(),
+                required String category,
+                required int amountPaise,
+                required String paidFrom,
+                Value<String> note = const Value.absent(),
+                Value<String> staffName = const Value.absent(),
+                required String businessDate,
+                required int createdAt,
+                Value<int?> voidedAt = const Value.absent(),
+                Value<String> voidReason = const Value.absent(),
+                required String clientRequestId,
+                Value<int> rowid = const Value.absent(),
+              }) => ExpensesCompanion.insert(
+                id: id,
+                shiftId: shiftId,
+                category: category,
+                amountPaise: amountPaise,
+                paidFrom: paidFrom,
+                note: note,
+                staffName: staffName,
+                businessDate: businessDate,
+                createdAt: createdAt,
+                voidedAt: voidedAt,
+                voidReason: voidReason,
+                clientRequestId: clientRequestId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ExpensesTable, ExpenseRow>(table),
+                  $$ExpensesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({shiftId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (shiftId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.shiftId,
+                        referencedTable: $$ExpensesTableReferences
+                            ._shiftIdTable(db),
+                        referencedColumn: $$ExpensesTableReferences
+                            ._shiftIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ExpensesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ExpensesTable,
+      ExpenseRow,
+      $$ExpensesTableFilterComposer,
+      $$ExpensesTableOrderingComposer,
+      $$ExpensesTableAnnotationComposer,
+      $$ExpensesTableCreateCompanionBuilder,
+      $$ExpensesTableUpdateCompanionBuilder,
+      (ExpenseRow, $$ExpensesTableReferences),
+      ExpenseRow,
+      PrefetchHooks Function({bool shiftId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -29900,4 +33858,10 @@ class $AppDatabaseManager {
       $$BillTaxesTableTableManager(_db, _db.billTaxes);
   $$PaymentsTableTableManager get payments =>
       $$PaymentsTableTableManager(_db, _db.payments);
+  $$CashShiftsTableTableManager get cashShifts =>
+      $$CashShiftsTableTableManager(_db, _db.cashShifts);
+  $$CashMovementsTableTableManager get cashMovements =>
+      $$CashMovementsTableTableManager(_db, _db.cashMovements);
+  $$ExpensesTableTableManager get expenses =>
+      $$ExpensesTableTableManager(_db, _db.expenses);
 }

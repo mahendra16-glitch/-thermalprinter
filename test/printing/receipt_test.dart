@@ -362,6 +362,69 @@ void main() {
       expect(t2, isNot(contains('bank-verified')));
     });
 
+    test('shift closing report shows drawer and other collections', () async {
+      final t = await printBill(
+        PosOrder(
+          orderId: 'SHIFT',
+          type: 'SHIFT_REPORT',
+          items: const [],
+          report: {
+            'business': 'Spice Route',
+            'open': false,
+            'businessDate': '2026-11-07',
+            'openedAt': DateTime(2026, 11, 7, 9).toIso8601String(),
+            'openedBy': 'Asha',
+            'closedAt': DateTime(2026, 11, 7, 23).toIso8601String(),
+            'closedBy': 'Ravi',
+            'summary': const {
+              'openingCash': 100000,
+              'cashSales': 60000,
+              'cashRefunds': 10000,
+              'cashAdded': 20000,
+              'cashTakenOut': 30000,
+              'cashExpenses': 15000,
+              'nonCash': {'UPI': 30000},
+              'paymentCount': 3,
+              'billCount': 1,
+            },
+            'counted': 124000,
+            'variance': -1000,
+            'varianceReason': 'Change error',
+            'movements': const [
+              {'label': 'Cash taken out', 'amount': -30000, 'reason': 'Bank'},
+            ],
+            'expenses': const [
+              {
+                'category': 'Gas',
+                'paidFrom': 'Cash (drawer)',
+                'amount': 15000,
+                'note': '',
+              },
+            ],
+            'denominations': const {'50000': 2},
+          },
+        ),
+        device58,
+      );
+      expect(t, contains('SHIFT CLOSING REPORT'));
+      expect(t, contains('Opened'));
+      expect(t, contains('by Asha'));
+      expect(t, contains('Expected cash'));
+      expect(t, contains('1,250.00'));
+      expect(t, contains('Counted cash'));
+      expect(t, contains('1,240.00'));
+      expect(t, contains('SHORT'));
+      expect(t, contains('-10.00'));
+      expect(t, contains('Reason: Change error'));
+      expect(t, contains('(not in the cash drawer)'));
+      expect(t, contains('UPI'));
+      expect(t, contains('Net collected'));
+      expect(t, contains('EXPENSES'));
+      expect(t, contains('CASH COUNT'));
+      expect(t, contains('500.00 x 2'));
+      expect(t, contains('Signature'));
+    });
+
     test('feed and cut follow the printer settings', () async {
       final noCut = device58.copyWith(autoCut: false, feedLines: 5);
       final bytes = await SmartPrintEngine.generateOrderBytes(

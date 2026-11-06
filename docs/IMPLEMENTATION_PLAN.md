@@ -231,7 +231,7 @@ Baseline results (2026-11-06):
 - [x] Phase 4 — KOT + printer fixes D1, D2, D6–D12, D14 (see §13)
 - [x] Phase 5 — Billing & tax (see §14)
 - [x] Phase 6 — Payments (see §15)
-- [ ] Phase 7 — Shifts & expenses
+- [x] Phase 7 — Shifts & expenses (see §16)
 - [ ] Phase 8 — Reports
 - [ ] Phase 9 — Staff & permissions
 - [ ] Phase 10 — Inventory (optional)
@@ -710,3 +710,61 @@ No device or printer was connected.
 - **No credit notes:** refunding a paid bill does not change the bill or its tax; voiding a bill still requires reversing payments first.
 - **Staff names** are empty until Phase 9 (staff and permissions); reversals are not yet restricted by permission.
 - **Cash drawer** (opening cash, expenses, counted cash, closing) comes in Phase 7; *Today* totals are per business day, not per shift.
+
+---
+
+## 16. Phase 7 completion report (2026-11-07)
+
+### Commit
+- `Phase 7` — schema v7, cash shifts, cash added/taken out, expenses, shift report, Shift tab, tests and this report.
+
+### Database migration v6 → v7
+- `cash_shifts`: status open/closed, business date, opening cash, opened by, open note and time; on close: closed by and time, counted cash, expected cash, variance (+ over / − short), variance reason, note-and-coin count (JSON), the shift summary at closing (JSON), unique client request id.
+- `cash_movements`: shift, kind `addition | withdrawal`, amount, reason, staff, time, cancel time and reason, unique request id.
+- `expenses`: shift (required for cash), category, amount, paid from `cash | upi | card | bank | other`, note, staff, business date, time, cancel time and reason, unique request id.
+- `payments.shift_id` (nullable): the shift open when the money moved.
+- `migration_test.dart` checks every path to v7 and v1 → v7 with data.
+
+### Rules (`ShiftRepository`, all transactional and audited)
+- One shift is open at a time. Opening needs the cash in the drawer and the staff name (free text until Phase 9).
+- **Expected cash = opening + cash sales − cash refunds (reversals) + cash added − cash taken out − cash expenses**, always calculated from the entries linked to the shift.
+- UPI, card and other collections are listed separately as "not in the drawer" and never change expected cash.
+- Cash payments and reversals are linked to the shift that is open when they are recorded. **Payments never need a shift**, so billing is never blocked; cash taken with no shift open is shown as a warning ("not in any drawer count") on the Shift tab and the payment screen.
+- Cash expenses and cash added/taken out need an open shift. Taking out more than the drawer should hold is refused. Non-cash expenses can be recorded any time.
+- Mistaken expenses and movements are **cancelled with a reason** (kept, struck through, excluded from totals), only while their shift is open.
+- **Close:** counted cash (by notes and coins ₹500 … ₹1, or a total). Any difference from expected needs a reason. The expected, counted, variance, count and full summary are stored; a closed shift never changes and the next shift can open.
+- Repeated taps with the same request id create nothing new.
+
+### Shift report (`ReceiptLayouts.shiftReport`)
+Business, closing report or running ("open") report, business date, opened/closed by and time; **cash drawer**: opening, sales, refunds, added, taken out, expenses, expected, counted, SHORT/OVER and reason; **other collections (not in the cash drawer)** by method, net collected, bills and payments; cash added/taken out with reasons; expenses with category, source and note; cash count; note; signature line. Printed on close (optional), any time while open, and again from Past shifts.
+
+### Screens
+- New **Shift** tab:
+  - No shift: Open shift (cash in drawer, your name, note); warning for cash recorded outside a shift today.
+  - Open shift: expected cash breakdown, other collections, **Add cash**, **Take out cash**, **Print running report**, **Close shift**; lists of cash movements and expenses with cancel.
+  - **+ Expense**: category chips (defaults plus ones used before) or free text, amount, paid from, note, your name.
+  - **Close shift**: count notes or enter a total, live Matches / Short / Over, reason when different, name, note, print toggle, confirmation.
+  - **Past shifts**: result of each closed shift; tap to reprint the report.
+- Payment screen: warns when taking cash with no shift open.
+
+### Tests and commands
+| Command | Result |
+|---|---|
+| `dart format lib test` | clean |
+| `flutter analyze` | 13 infos (unchanged); no warnings or errors |
+| `flutter test` | **214/214 passed**. New: shift repository (9: open rules, expected cash with every kind of entry, UPI kept out of the drawer, shift needed for cash entries, drawer limit, cancelled entries, close with variance and frozen shift, payments outside a shift, report data, categories, note count); shift report layout; open-and-close-short widget flow; migration v7. |
+| `flutter build apk --debug` | builds |
+
+### Manual tests still required
+No device or printer was connected.
+1. Open a shift, take cash and UPI payments, add an expense, take cash out, then close with a note-by-note count; check the expected cash by hand.
+2. Print the running report and the closing report at 58mm and 80mm.
+3. Take a cash payment with no shift open: check the warnings.
+4. Restart the app with a shift open: it should still be open with the same totals.
+
+### Known limitations
+- **Staff identity** is a typed name until Phase 9; anyone can open, close or cancel entries. Permissions come with staff accounts.
+- **One drawer:** one shift at a time for the device; no per-terminal or per-cashier drawers.
+- **No reopening** a closed shift; corrections go in the next shift with a note.
+- **Cash refunds** are taken from whichever shift is open when the reversal is recorded, even if the sale was in an earlier shift.
+- **Expenses** have no attachments (bill photos) or supplier records; inventory purchases come in Phase 10.
