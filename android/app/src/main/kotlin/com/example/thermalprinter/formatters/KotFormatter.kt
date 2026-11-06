@@ -24,7 +24,7 @@ class KotFormatter {
         val timeStr = timeFormat.format(Date(order.timestamp))
 
         // Large Header for Kitchen
-        val kotHeader = "KOT\n${template.kotTitle}"
+        val kotHeader = if (template.kotTitle.isEmpty()) "KOT" else "KOT\n${template.kotTitle}"
         val headerRaster = rasterEngine.renderTextToRasterBytes(
             text = kotHeader,
             textSizeSp = 28f,

@@ -1,15 +1,12 @@
 package com.example.thermalprinter
 
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.hardware.usb.UsbConstants
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbEndpoint
 import android.hardware.usb.UsbInterface
 import android.hardware.usb.UsbManager
-import android.os.Build
 import androidx.annotation.NonNull
 import com.example.thermalprinter.calibration.CalibrationWizard
 import com.example.thermalprinter.models.DarknessPreset
@@ -18,6 +15,8 @@ import com.example.thermalprinter.models.PosOrder
 import com.example.thermalprinter.models.PosOrderItem
 import com.example.thermalprinter.models.PrinterProfile
 import com.example.thermalprinter.models.PrinterRole
+import com.example.thermalprinter.models.ReceiptTemplate
+import com.example.thermalprinter.transports.UsbPrinterTransport
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -25,7 +24,6 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterActivity() {
     private val USB_CHANNEL = "com.example.thermalprinter/usb"
     private val ENGINE_CHANNEL = "com.example.thermalprinter/engine"
-    private val ACTION_USB_PERMISSION = "com.example.thermalprinter.USB_PERMISSION"
 
     private var activeConnection: UsbDeviceConnection? = null
     private var activeEndpoint: UsbEndpoint? = null
@@ -83,9 +81,10 @@ class MainActivity : FlutterActivity() {
                         }
 
                         if (!usbManager.hasPermission(targetDevice)) {
-                            val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
-                            val permissionIntent = PendingIntent.getBroadcast(this, 0, Intent(ACTION_USB_PERMISSION), flag)
-                            usbManager.requestPermission(targetDevice, permissionIntent)
+                            usbManager.requestPermission(
+                                targetDevice,
+                                UsbPrinterTransport.permissionIntent(this)
+                            )
                             result.error("PERMISSION_REQUIRED", "USB permission requested from system.", null)
                             return@setMethodCallHandler
                         }
@@ -143,11 +142,11 @@ class MainActivity : FlutterActivity() {
                     }
 
                     try {
-                        val transferred = conn.bulkTransfer(ep, bytes, bytes.size, 5000)
-                        if (transferred >= 0) {
+                        val error = UsbPrinterTransport.writeAll(conn, ep, bytes)
+                        if (error == null) {
                             result.success(true)
                         } else {
-                            result.error("TRANSFER_FAILED", "Failed writing bytes to USB printer.", null)
+                            result.error("TRANSFER_FAILED", error, null)
                         }
                     } catch (e: Exception) {
                         result.error("WRITE_ERROR", e.message, null)
@@ -195,11 +194,12 @@ class MainActivity : FlutterActivity() {
 
                     val profile = parseProfile(profileMap)
                     val order = parseOrder(orderMap)
+                    val template = parseTemplate(call.argument<Map<String, Any>>("template"))
 
                     Thread {
                         try {
                             val manager = PrinterManager(this)
-                            val success = manager.printOrder(order, profile)
+                            val success = manager.printOrder(order, profile, template)
                             runOnUiThread {
                                 if (success) {
                                     result.success(true)
@@ -241,17 +241,19 @@ class MainActivity : FlutterActivity() {
 
         return PrinterProfile(
             id = map["id"] as? String ?: "printer_1",
-            name = map["name"] as? String ?: "Kitchen Printer",
+            name = map["name"] as? String ?: "Printer",
             connectionType = connType,
             macAddress = map["macAddress"] as? String,
             vendorId = (map["vendorId"] as? Number)?.toInt(),
             productId = (map["productId"] as? Number)?.toInt(),
             deviceName = map["deviceName"] as? String,
-            ipAddress = map["ipAddress"] as? String ?: "192.168.1.12",
+            ipAddress = map["ipAddress"] as? String,
             port = (map["port"] as? Number)?.toInt() ?: 9100,
             paperWidth = paperWidth,
-            printableWidthDots = if (paperWidth == PaperWidth.MM58) 384 else 576,
-            charsPerLine = if (paperWidth == PaperWidth.MM58) 32 else 48,
+            printableWidthDots = (map["printableDots"] as? Number)?.toInt()
+                ?: if (paperWidth == PaperWidth.MM58) 384 else 576,
+            charsPerLine = (map["charsPerLine"] as? Number)?.toInt()
+                ?: if (paperWidth == PaperWidth.MM58) 32 else 48,
             role = PrinterRole.BILL,
             darknessPreset = darknessPreset,
             bitmapThreshold = (map["bitmapThreshold"] as? Number)?.toInt() ?: 150,
@@ -263,8 +265,21 @@ class MainActivity : FlutterActivity() {
         )
     }
 
+    /** Business details from the app's business profile. */
+    private fun parseTemplate(map: Map<String, Any>?): ReceiptTemplate? {
+        if (map == null) return null
+        return ReceiptTemplate(
+            restaurantName = map["name"] as? String ?: "",
+            address = map["address"] as? String ?: "",
+            phone = map["phone"] as? String ?: "",
+            gstin = (map["gstin"] as? String)?.ifBlank { null },
+            fssai = (map["fssai"] as? String)?.ifBlank { null },
+            footerMessage = map["billFooter"] as? String ?: ""
+        )
+    }
+
     private fun parseOrder(map: Map<String, Any>?): PosOrder {
-        if (map == null) return PosOrder(orderId = "1001", items = emptyList())
+        if (map == null) return PosOrder(orderId = "", items = emptyList())
 
         val itemsList = mutableListOf<PosOrderItem>()
         val rawItems = map["items"] as? List<Map<String, Any>> ?: emptyList()
@@ -275,28 +290,32 @@ class MainActivity : FlutterActivity() {
                     name = itemMap["name"] as? String ?: "Item",
                     qty = (itemMap["qty"] as? Number)?.toInt() ?: 1,
                     price = (itemMap["price"] as? Number)?.toDouble() ?: 0.0,
-                    notes = itemMap["notes"] as? String
+                    notes = itemMap["notes"] as? String,
+                    addOns = (itemMap["addOns"] as? List<*>)?.map { it.toString() } ?: emptyList()
                 )
             )
         }
 
+        // No sample defaults: a missing field is left empty and not printed.
         return PosOrder(
-            orderId = map["orderId"] as? String ?: "1024",
-            billNo = map["billNo"] as? String ?: map["orderId"] as? String ?: "1024",
+            orderId = map["orderId"] as? String ?: "",
+            billNo = map["billNo"] as? String ?: map["orderId"] as? String ?: "",
             type = map["type"] as? String ?: "BILL",
-            restaurantName = map["restaurantName"] as? String ?: "MYGENIE RESTAURANT",
-            customerName = map["customerName"] as? String ?: "Rahul Sharma",
-            customerPhone = map["customerPhone"] as? String ?: "9876543210",
-            tableNumber = map["tableNumber"] as? String ?: "T-05",
-            orderType = map["orderType"] as? String ?: "DINE-IN",
+            restaurantName = map["restaurantName"] as? String ?: "",
+            customerName = map["customerName"] as? String,
+            customerPhone = map["customerPhone"] as? String,
+            tableNumber = map["tableNumber"] as? String,
+            orderType = map["orderType"] as? String ?: "",
+            waiterName = map["waiterName"] as? String,
+            specialNotes = map["specialNotes"] as? String,
             items = itemsList,
             subtotal = (map["subtotal"] as? Number)?.toDouble() ?: 0.0,
             cgst = (map["cgst"] as? Number)?.toDouble() ?: 0.0,
             sgst = (map["sgst"] as? Number)?.toDouble() ?: 0.0,
             discount = (map["discount"] as? Number)?.toDouble() ?: 0.0,
             total = (map["total"] as? Number)?.toDouble() ?: 0.0,
-            paymentMethod = map["paymentMethod"] as? String ?: "UPI",
-            paymentStatus = map["paymentStatus"] as? String ?: "✓ PAID"
+            paymentMethod = map["paymentMethod"] as? String ?: "",
+            paymentStatus = map["paymentStatus"] as? String ?: ""
         )
     }
 }

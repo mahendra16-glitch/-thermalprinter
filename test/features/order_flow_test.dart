@@ -175,6 +175,45 @@ void main() {
     expect(find.text('Available'), findsOneWidget);
     expect(find.text('All (1/2 busy)'), findsOneWidget);
   });
+
+  testWidgets('send to kitchen creates a KOT and only new items', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 900);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await seed(tester);
+    late String orderId;
+    await tester.runAsync(() async {
+      orderId = await storage.orders.createOrder(
+        const NewOrderRequest(
+          clientRequestId: 'w4',
+          type: OrderType.dineIn,
+          tableId: 't1',
+        ),
+      );
+    });
+    await tester.pumpWidget(MaterialApp(home: OrderScreen(orderId: orderId)));
+    await settle(tester);
+    await tester.tap(find.text('Masala Tea'));
+    await settle(tester);
+    // Wide layout: the menu grid comes first, the order panel second.
+    await tester.tap(find.text('Masala Tea').first);
+    await settle(tester);
+    expect(find.text('Send to kitchen (2 new)'), findsOneWidget);
+    await tester.tap(find.text('Send to kitchen (2 new)'));
+    await settle(tester);
+    await settle(tester);
+    expect(find.textContaining('Send to kitchen'), findsNothing);
+    expect(find.textContaining('in kitchen'), findsOneWidget);
+
+    final tickets = (await tester.runAsync(
+      () => storage.kitchen.ticketsFor(orderId),
+    ))!;
+    expect(tickets.single.lines.single.qty, 2);
+    final jobs = (await tester.runAsync(() => storage.printJobs.getAllJobs()))!;
+    expect(jobs.single.printType, 'KOT');
+  });
 }
 
 ConfiguredItem _plain(MenuItem i) =>

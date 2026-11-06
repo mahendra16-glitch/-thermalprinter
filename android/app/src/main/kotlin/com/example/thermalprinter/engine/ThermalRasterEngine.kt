@@ -68,17 +68,6 @@ class ThermalRasterEngine(private val profile: PrinterProfile) {
         val widthInBytes = (width + 7) / 8
         val rasterData = ArrayList<Byte>()
 
-        // ESC/POS GS v 0 Header
-        // GS v 0 mode xL xH yL yH
-        rasterData.add(0x1D.toByte())
-        rasterData.add(0x76.toByte())
-        rasterData.add(0x30.toByte())
-        rasterData.add(0x00.toByte()) // Normal mode
-        rasterData.add((widthInBytes and 0xFF).toByte())
-        rasterData.add(((widthInBytes shr 8) and 0xFF).toByte())
-        rasterData.add((height and 0xFF).toByte())
-        rasterData.add(((height shr 8) and 0xFF).toByte())
-
         val pixels = IntArray(width * height)
         scaledBitmap.getPixels(pixels, 0, width, 0, 0, width, height)
 
@@ -89,8 +78,20 @@ class ThermalRasterEngine(private val profile: PrinterProfile) {
             DarknessPreset.NORMAL -> 1.0f
         }
 
-        // Process line by line
+        // Process line by line. Every BAND_HEIGHT rows start a new GS v 0
+        // command so small printer buffers are not overrun.
         for (y in 0 until height) {
+            if (y % BAND_HEIGHT == 0) {
+                val bandRows = minOf(BAND_HEIGHT, height - y)
+                rasterData.add(0x1D.toByte())
+                rasterData.add(0x76.toByte())
+                rasterData.add(0x30.toByte())
+                rasterData.add(0x00.toByte()) // Normal mode
+                rasterData.add((widthInBytes and 0xFF).toByte())
+                rasterData.add(((widthInBytes shr 8) and 0xFF).toByte())
+                rasterData.add((bandRows and 0xFF).toByte())
+                rasterData.add(((bandRows shr 8) and 0xFF).toByte())
+            }
             for (xByte in 0 until widthInBytes) {
                 var byteVal = 0
                 for (bit in 0 until 8) {
@@ -118,5 +119,10 @@ class ThermalRasterEngine(private val profile: PrinterProfile) {
         }
 
         return rasterData.toByteArray()
+    }
+
+    companion object {
+        /** Rows per GS v 0 command. */
+        const val BAND_HEIGHT = 128
     }
 }

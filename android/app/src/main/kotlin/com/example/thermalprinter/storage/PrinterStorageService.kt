@@ -65,17 +65,17 @@ class PrinterStorageService(context: Context) {
         return try {
             val obj = JSONObject(raw)
             ReceiptTemplate(
-                restaurantName = obj.optString("restaurantName", "MYGENIE RESTAURANT"),
-                billTitle = obj.optString("billTitle", "★ CUSTOMER BILL ★"),
-                kotTitle = obj.optString("kotTitle", "🔥 KITCHEN KOT 🔥"),
-                address = obj.optString("address", "123 Main Street, City Center"),
-                phone = obj.optString("phone", "+91 9876543210"),
-                gstin = obj.optString("gstin", "27AAAAA0000A1Z5"),
-                fssai = obj.optString("fssai", "10019022009876"),
-                headerMessage = obj.optString("headerMessage", "Welcome to MYGENIE Restaurant"),
-                footerMessage = obj.optString("footerMessage", "Thank You 😊\n★ Visit Again ★\nधन्यवाद 🙏"),
-                showLogo = obj.optBoolean("showLogo", true),
-                showQrCode = obj.optBoolean("showQrCode", true),
+                restaurantName = obj.optString("restaurantName", ""),
+                billTitle = obj.optString("billTitle", "BILL"),
+                kotTitle = obj.optString("kotTitle", ""),
+                address = obj.optString("address", ""),
+                phone = obj.optString("phone", ""),
+                gstin = obj.optString("gstin", "").ifBlank { null },
+                fssai = obj.optString("fssai", "").ifBlank { null },
+                headerMessage = obj.optString("headerMessage", ""),
+                footerMessage = obj.optString("footerMessage", ""),
+                showLogo = obj.optBoolean("showLogo", false),
+                showQrCode = obj.optBoolean("showQrCode", false),
                 showCustomerDetails = obj.optBoolean("showCustomerDetails", true),
                 showGstDetails = obj.optBoolean("showGstDetails", true)
             )
@@ -142,7 +142,7 @@ class PrinterStorageService(context: Context) {
             vendorId = if (obj.has("vendorId")) obj.getInt("vendorId") else null,
             productId = if (obj.has("productId")) obj.getInt("productId") else null,
             deviceName = obj.optString("deviceName", null),
-            ipAddress = obj.optString("ipAddress", "192.168.1.12"),
+            ipAddress = obj.optString("ipAddress", "").ifBlank { null },
             port = obj.optInt("port", 9100),
             paperWidth = com.example.thermalprinter.models.PaperWidth.valueOf(
                 obj.optString("paperWidth", "MM80")

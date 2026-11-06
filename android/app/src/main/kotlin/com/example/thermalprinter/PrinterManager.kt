@@ -6,6 +6,7 @@ import com.example.thermalprinter.formatters.KotFormatter
 import com.example.thermalprinter.models.ConnectionType
 import com.example.thermalprinter.models.PosOrder
 import com.example.thermalprinter.models.PrinterProfile
+import com.example.thermalprinter.models.ReceiptTemplate
 import com.example.thermalprinter.storage.PrinterStorageService
 import com.example.thermalprinter.transports.BluetoothPrinterTransport
 import com.example.thermalprinter.transports.PrinterTransport
@@ -25,8 +26,13 @@ class PrinterManager(private val context: Context) {
         }
     }
 
-    fun printOrder(order: PosOrder, profile: PrinterProfile): Boolean {
-        val template = storage.getReceiptTemplate()
+    /** [templateOverride] comes from the app's business profile. */
+    fun printOrder(
+        order: PosOrder,
+        profile: PrinterProfile,
+        templateOverride: ReceiptTemplate? = null
+    ): Boolean {
+        val template = templateOverride ?: storage.getReceiptTemplate()
         val bytes = if (order.type.equals("KOT", ignoreCase = true)) {
             kotFormatter.formatKot(order, profile, template)
         } else {

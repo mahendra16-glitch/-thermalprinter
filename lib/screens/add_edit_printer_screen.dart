@@ -4,6 +4,7 @@ import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import '../models/printer_device.dart';
 import '../services/storage_service.dart';
 import '../printers/printer_adapter.dart';
+import '../printers/bluetooth_permissions.dart';
 import '../printers/usb_printer_adapter.dart';
 import '../widgets/test_print_dialog.dart';
 
@@ -40,6 +41,13 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
   late String _ipAddress;
   late int _port;
 
+  // Advanced print settings (empty = default for the paper width).
+  final _dots = TextEditingController();
+  final _chars = TextEditingController();
+  final _threshold = TextEditingController();
+  final _feed = TextEditingController();
+  bool _autoCut = true;
+
   bool _isTesting = false;
   String? _testMessage;
   bool _testSuccess = false;
@@ -59,26 +67,56 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
     _productId = p?.productId;
     _usbDeviceName = p?.deviceName;
 
-    _ipAddress = p?.ipAddress ?? '192.168.1.12';
+    _ipAddress = p?.ipAddress ?? '';
+    _dots.text = p?.printableDots?.toString() ?? '';
+    _chars.text = p?.charsPerLine?.toString() ?? '';
+    _threshold.text = p?.rasterThreshold?.toString() ?? '';
+    _feed.text = p?.feedLines?.toString() ?? '';
+    _autoCut = p?.autoCut ?? true;
     _port = p?.port ?? 9100;
 
     _scanBluetoothDevices();
     _scanUsbDevices();
   }
 
+  String? _btProblem;
+
   Future<void> _scanBluetoothDevices() async {
-    setState(() => _isScanningBt = true);
+    setState(() {
+      _isScanningBt = true;
+      _btProblem = null;
+    });
     try {
+      final problem = await ensureBluetoothPermissions();
+      if (problem != null) {
+        if (mounted) {
+          setState(() {
+            _btProblem = problem;
+            _isScanningBt = false;
+          });
+        }
+        return;
+      }
       final bt = BlueThermalPrinter.instance;
       final devices = await bt.getBondedDevices();
       if (mounted) {
         setState(() {
           _bluetoothDevices = devices;
           _isScanningBt = false;
+          if (devices.isEmpty) {
+            _btProblem =
+                'No paired Bluetooth devices. Pair the printer in Android '
+                'Bluetooth settings first, then tap refresh.';
+          }
         });
       }
-    } catch (_) {
-      if (mounted) setState(() => _isScanningBt = false);
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isScanningBt = false;
+          _btProblem = 'Could not list Bluetooth devices: $e';
+        });
+      }
     }
   }
 
@@ -153,6 +191,11 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
       deviceName: _usbDeviceName,
       ipAddress: _ipAddress.trim(),
       port: _port,
+      printableDots: int.tryParse(_dots.text.trim()),
+      charsPerLine: int.tryParse(_chars.text.trim()),
+      rasterThreshold: int.tryParse(_threshold.text.trim()),
+      feedLines: int.tryParse(_feed.text.trim()),
+      autoCut: _autoCut,
     );
   }
 
@@ -167,6 +210,34 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
     if (mounted) {
       Navigator.of(context).pop(true);
     }
+  }
+
+  Widget _numberField(
+    TextEditingController c,
+    String label,
+    String help, {
+    required int min,
+    required int max,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: TextFormField(
+        controller: c,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          labelText: label,
+          helperText: help,
+          border: const OutlineInputBorder(),
+        ),
+        validator: (v) {
+          if ((v ?? '').trim().isEmpty) return null;
+          final n = int.tryParse(v!.trim());
+          return (n == null || n < min || n > max)
+              ? 'Enter $min to $max, or leave empty'
+              : null;
+        },
+      ),
+    );
   }
 
   @override
@@ -287,7 +358,14 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
                   children: [
                     Expanded(
                       child: DropdownButtonFormField<String>(
-                        value: _macAddress,
+                        // A saved MAC that is not currently paired must not be
+                        // passed as the value (the dropdown would throw).
+                        initialValue:
+                            _bluetoothDevices.any(
+                              (d) => d.address == _macAddress,
+                            )
+                            ? _macAddress
+                            : null,
                         decoration: const InputDecoration(
                           labelText: 'Paired Bluetooth Printer',
                           border: OutlineInputBorder(),
@@ -315,6 +393,14 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
                     ),
                   ],
                 ),
+                if (_btProblem != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Text(
+                      _btProblem!,
+                      style: const TextStyle(color: Color(0xFFB45309)),
+                    ),
+                  ),
                 const SizedBox(height: 8),
                 TextFormField(
                   initialValue: _macAddress,
@@ -381,7 +467,7 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
                   validator: (val) => val == null || val.trim().isEmpty
                       ? 'Enter IP address'
                       : null,
-                  onSaved: (val) => _ipAddress = val ?? '192.168.1.12',
+                  onSaved: (val) => _ipAddress = (val ?? '').trim(),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -397,6 +483,63 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
                   onSaved: (val) => _port = int.tryParse(val ?? '9100') ?? 9100,
                 ),
               ],
+
+              const SizedBox(height: 12),
+              ExpansionTile(
+                // Keep the fields built while collapsed so the form still
+                // validates them.
+                maintainState: true,
+                tilePadding: EdgeInsets.zero,
+                title: const Text(
+                  'Print settings (advanced)',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  'Width ${_paperWidth.dots} dots, ${_paperWidth.charsPerLine} '
+                  'characters unless changed here',
+                  style: const TextStyle(fontSize: 12),
+                ),
+                childrenPadding: const EdgeInsets.only(bottom: 8),
+                children: [
+                  _numberField(
+                    _dots,
+                    'Printable width (dots)',
+                    'Default ${_paperWidth.dots}. Some 80mm printers use 512.',
+                    min: 200,
+                    max: 832,
+                  ),
+                  _numberField(
+                    _chars,
+                    'Characters per line',
+                    'Default ${_paperWidth.charsPerLine}. Try 42 if lines wrap.',
+                    min: 16,
+                    max: 64,
+                  ),
+                  _numberField(
+                    _threshold,
+                    'Image darkness threshold',
+                    'Default 160. Higher = darker images and Hindi text.',
+                    min: 80,
+                    max: 220,
+                  ),
+                  _numberField(
+                    _feed,
+                    'Blank lines before cut',
+                    'Default 3.',
+                    min: 0,
+                    max: 10,
+                  ),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('Cut paper after each print'),
+                    subtitle: const Text(
+                      'Turn off for printers without a cutter.',
+                    ),
+                    value: _autoCut,
+                    onChanged: (v) => setState(() => _autoCut = v),
+                  ),
+                ],
+              ),
 
               const SizedBox(height: 20),
 

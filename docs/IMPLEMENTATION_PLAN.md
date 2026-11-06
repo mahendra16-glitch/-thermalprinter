@@ -228,7 +228,7 @@ Baseline results (2026-11-06):
 - [x] Phase 1 — git baseline; format-only commit; AGP build-blocker fix; Drift DB v1 + legacy import; repositories; business profile/settings; DB backup; fixes D3/D4/D5/D13; tests (see §10)
 - [x] Phase 2 — Menu (see §11)
 - [x] Phase 3 — Tables & orders (see §12)
-- [ ] Phase 4 — KOT + printer fixes D1, D2, D6–D12, D14
+- [x] Phase 4 — KOT + printer fixes D1, D2, D6–D12, D14 (see §13)
 - [ ] Phase 5 — Billing & tax
 - [ ] Phase 6 — Payments
 - [ ] Phase 7 — Shifts & expenses
@@ -484,3 +484,87 @@ Manual hardware tests are still required for every transport (BT, USB, LAN) at 5
 - **Staff and permissions (Phase 9):** discounts and cancellations require a reason but no permission check yet. `staff_id` / `staff_name` columns exist on orders and are empty until then.
 - **Delivery:** the order type exists in the data model, but there is no delivery button or address field.
 - **Reservations** are not implemented (optional in the brief).
+
+---
+
+## 13. Phase 4 completion report (2026-11-06)
+
+### Commits
+- `Phase 4a` — schema v4, kitchen ticket service, new print engine and layouts, queue fixes (with tests).
+- `Phase 4b` — native (Kotlin) and transport fixes, Bluetooth permissions, the KOT screens, routing and printer settings, and this report.
+
+### Database migration v3 → v4
+- `printer_profiles` gains nullable `printable_dots`, `chars_per_line`, `raster_threshold` and `feed_lines`, plus `auto_cut` (default on). Existing printers keep the defaults for their paper width.
+- New tables:
+  - `station_printers`: station → printers. `__default__` covers items without a station.
+  - `kitchen_tickets`: order, station (name copied), round number, kind send/void, reason, client request id.
+  - `kitchen_ticket_lines`: the printed text copied at send time.
+- `test/drift/pos/migration_test.dart` now checks v1 → v4 with data, including the new printer columns.
+
+### Kitchen tickets (`KitchenRepository`)
+- **Send to kitchen:**
+  - In one transaction it takes every unit not yet sent (`qty − sent_qty`), groups them by station, and writes one ticket per station for this round.
+  - It raises `sent_qty` and writes one print job per assigned printer.
+  - A repeated tap with the same request id returns the first result; a later tap with nothing new says "Nothing new to send".
+- **Adding after a KOT:** increasing a sent line's quantity or adding a new item prints only the extra units in the next round, never the whole order again.
+- **Void:**
+  - Only units already in the kitchen can be voided (`voided ≤ sent ≤ qty`). Unsent units are simply removed or reduced.
+  - It needs a reason. It prints a **VOID / CANCEL** ticket for that station and stops charging those units; the line stays on record.
+  - An order can be cancelled only once nothing is left in the kitchen.
+- **Reprint:** rebuilds the ticket from its stored copy and prints it with a **\*\*\* REPRINT \*\*\*** banner. It creates no new ticket, changes no quantities, and is audited.
+- **Routing:**
+  1. The station's own printers.
+  2. Otherwise the "Default kitchen" printers.
+  3. Otherwise one job routed by role: KOT or Kitchen printer, then the fallback printer, else a clear failure in the queue.
+  - Stations without a printer are named in the send confirmation.
+- **Failures:** a printer failure never rolls back the order or ticket. The job stays failed with its error, the ticket shows "Print failed" with Retry, and nothing is retried automatically. An interrupted job is still marked "may already have printed" on restart (Phase 1 rule).
+
+### Printer defects fixed
+| # | Fix |
+|---|---|
+| D1 | `SmartPrintEngine` now renders a `ReceiptDocument` from `ReceiptLayouts`: a real **KOT**; a **bill** that prints only the fields provided; and a **printer test page**, used only for "PRINTER_TEST" jobs and labelled as such. Real prints no longer include sample lines. |
+| D2 | All ESC/POS text goes through `toPrinterAscii`, which never throws. `₹` becomes `Rs.`, quotes and dashes are normalised, and unsupported glyphs become `?`. Compatibility mode rasters only lines that need it (Hindi, emoji, ₹); Full-image mode rasters the whole receipt. Raster lines use a monospace font sized to the printer's characters per line, so columns line up. |
+| D6 | History **Reprint** reprints the original job's stored content, marked REPRINT. If the job was cleared, it says so instead of printing a test page. |
+| D7 | Native `ReceiptTemplate`, `PosOrder` and `parseOrder` have no demo values (MYGENIE name, address, GSTIN `27AAAAA0000A1Z5`, FSSAI, "Rahul Sharma", "✓ PAID", "UPI", default IP). Dart sends the business profile as the template, and the native bill skips empty title, payment, status and footer. The Dart `PosOrder` defaults are empty too. |
+| D8 | Native prints receive the printer's real width, characters per line and threshold. |
+| D9 | USB writes go in 16 KB chunks, and each chunk must be fully accepted. A short or zero write is reported as a failure with the byte count. |
+| D10 | The USB permission `PendingIntent` is explicit (package set) and `FLAG_MUTABLE` on Android 12+, which the system needs to attach the result. The message tells staff to tap Allow and retry. |
+| D11 | Bluetooth asks for `BLUETOOTH_CONNECT` / `BLUETOOTH_SCAN` ("Nearby devices") at run time before listing or connecting, and shows a clear message if refused or blocked. The manifest limits the legacy Bluetooth and location permissions to Android 11 and older. The paired-device dropdown no longer crashes when a saved printer isn't currently paired. |
+| D12 | The Bluetooth adapter remembers which MAC the shared plugin connection belongs to, and disconnects first when a job is for a different printer. |
+| D14 | Raster output (Dart and Kotlin) is sent as 128-row `GS v 0` bands. |
+| also | Print jobs carry a **source key**, so only one active job exists per document. Jobs have a **Cancelled** state: removing a pending or failed job cancels it (kept until Clear). "KOT" and "Kitchen" printer roles both take kitchen tickets. |
+
+### Screens
+- **Order screen:**
+  - **Send to kitchen (*n* new)** button.
+  - Each line shows "*n* in kitchen, *m* new", "not sent" or "*n* voided"; fully voided lines are struck through.
+  - The line sheet has **Void sent**, with quantity, reason chips and free text.
+  - ⋮ → **Kitchen tickets** lists every round and void with its print status (Printed / Printing / Print failed with the error), plus **Retry print** and **Reprint**. It also notes that "Printed" means the printer accepted the data.
+  - The timeline shows sends, voids and reprints.
+- **Menu › Kitchen stations:** a "Default kitchen" row plus one per station, each with **Choose printers** (multi-select) and a summary of where it prints.
+- **Settings › Printers › Edit › Print settings (advanced):** printable width (dots), characters per line, image darkness threshold, blank lines before cut, and cut on/off. Empty means the paper-width default.
+
+### Tests and commands
+| Command | Result |
+|---|---|
+| `dart format --set-exit-if-changed lib test` | 0 files changed |
+| `flutter analyze` | 13 infos (one fewer than baseline); no warnings or errors |
+| `flutter test` | **134/134 passed**. New: kitchen service (7: routing, rounds, idempotency, void, reprint, no-printer fallback, failure with no rollback then retry); receipts (11: wrapping, columns, ASCII safety, KOT/void/reprint/bill content, feed and cut, raster in compatibility mode, banding); send-to-kitchen widget test. |
+| `flutter build apk --debug` | builds (Kotlin compiles) |
+
+### Manual hardware tests still required
+No Android device or printer was connected, so none of these have been run.
+1. **For each connection type** (Bluetooth, USB, LAN) at 58mm and 80mm: print a KOT, an add-on round, a void ticket and a reprint. Check size, alignment, wrapping, feed and cut.
+2. **Raster:** Compatibility and Full-image mode with Hindi item names, ₹ and emoji; adjust the darkness threshold.
+3. **USB:** first connection shows the permission dialog; Allow, then Retry prints. Send a long receipt over 16 KB.
+4. **Bluetooth on Android 12+:** the permission prompt appears; refusing shows the message. With two Bluetooth printers, a KOT and a bill go to the right devices.
+5. **Recovery:** unplug or turn off a printer during a KOT. The ticket shows Print failed and Retry prints it once. Closing the app mid-print marks the job "may already have printed".
+6. **Test screen (native engine):** the bill shows the business-profile details and no sample GSTIN or "PAID".
+
+### Known limitations
+- **Delivery isn't confirmed:** "Printed" means the transport accepted every byte. The printer's paper or status isn't read back.
+- **Old engine still offered:** the native Kotlin engine is still used only by the Test screen. Queued jobs use the Dart engine. Retiring one of them is for Phase 11, after hardware comparison.
+- **Plain ASCII in fast mode:** no printer code page is selected, so Fast mode prints plain ASCII.
+- **No KOT per printer type:** each station's printers all get the same layout.
+- **No ticket after a cleared job:** Reprint rebuilds from the ticket, so it still works. Only the status display loses history once jobs are cleared.
+- **USB permission:** after tapping Allow, the job must be retried (manually or with the next send); there is no broadcast receiver that resumes it automatically.

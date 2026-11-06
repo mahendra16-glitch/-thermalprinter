@@ -13,7 +13,7 @@ data class PrinterProfile(
     val vendorId: Int? = null,
     val productId: Int? = null,
     val deviceName: String? = null,
-    val ipAddress: String? = "192.168.1.12",
+    val ipAddress: String? = null,
     val port: Int = 9100,
     val paperWidth: PaperWidth = PaperWidth.MM80,
     val printableWidthDots: Int = if (paperWidth == PaperWidth.MM58) 384 else 576,

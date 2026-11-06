@@ -12,6 +12,7 @@ import '../../services/storage_service.dart';
 import '../common/time_format.dart';
 import '../menu/menu_widgets.dart';
 import 'item_options_sheet.dart';
+import 'kitchen_actions.dart';
 import 'order_actions.dart';
 
 /// Order taking: menu on one side, the running order on the other (tabs on
@@ -351,6 +352,7 @@ class _OrderScreenState extends State<OrderScreen>
   Widget _orderPanel(OrderDetail d) {
     final o = d.order;
     final totals = d.totals;
+    final unsent = d.lines.fold<int>(0, (n, l) => n + l.unsentQty);
     return Column(
       children: [
         if (!o.isEditable)
@@ -412,7 +414,7 @@ class _OrderScreenState extends State<OrderScreen>
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   itemCount: d.lines.length,
                   separatorBuilder: (_, _) => const Divider(height: 1),
-                  itemBuilder: (_, i) => _lineTile(d.lines[i], o.isEditable),
+                  itemBuilder: (_, i) => _lineTile(d.lines[i], o.isEditable, o),
                 ),
         ),
         const Divider(height: 1),
@@ -449,28 +451,48 @@ class _OrderScreenState extends State<OrderScreen>
             top: false,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
-              child: Row(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () => editDiscount(context, d),
-                      icon: const Icon(Icons.percent_rounded),
-                      label: const Text('Discount'),
+                  if (unsent > 0) ...[
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: FilledButton.icon(
+                        onPressed: _busy
+                            ? null
+                            : () => _guard(() => sendToKitchen(context, o.id)),
+                        icon: const Icon(Icons.soup_kitchen_rounded),
+                        label: Text('Send to kitchen ($unsent new)'),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: FilledButton.tonalIcon(
-                      onPressed: o.status == OrderStatus.open
-                          ? () => _guard(() async {
-                              await (await StorageService.getInstance()).orders
-                                  .hold(o.id);
-                              if (mounted) Navigator.of(context).pop();
-                            })
-                          : null,
-                      icon: const Icon(Icons.pause_circle_outline_rounded),
-                      label: const Text('Hold'),
-                    ),
+                    const SizedBox(height: 8),
+                  ],
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () => editDiscount(context, d),
+                          icon: const Icon(Icons.percent_rounded),
+                          label: const Text('Discount'),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: FilledButton.tonalIcon(
+                          onPressed: o.status == OrderStatus.open
+                              ? () => _guard(() async {
+                                  await (await StorageService.getInstance())
+                                      .orders
+                                      .hold(o.id);
+                                  if (mounted) Navigator.of(context).pop();
+                                })
+                              : null,
+                          icon: const Icon(Icons.pause_circle_outline_rounded),
+                          label: const Text('Hold'),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -498,7 +520,7 @@ class _OrderScreenState extends State<OrderScreen>
     );
   }
 
-  Widget _lineTile(OrderLine l, bool editable) {
+  Widget _lineTile(OrderLine l, bool editable, Order o) {
     final addons = l.addons;
     return InkWell(
       onTap: editable ? () => editLine(context, l) : null,
@@ -512,7 +534,12 @@ class _OrderScreenState extends State<OrderScreen>
                 children: [
                   Text(
                     l.displayName,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      decoration: l.billableQty == 0
+                          ? TextDecoration.lineThrough
+                          : null,
+                    ),
                   ),
                   if (addons.isNotEmpty)
                     Text(
@@ -546,8 +573,16 @@ class _OrderScreenState extends State<OrderScreen>
                       ),
                     ),
                   Text(
-                    '${l.unitPrice.format()} each'
-                    '${l.sentQty > 0 ? ' · ${l.sentQty} sent' : ''}',
+                    [
+                      '${l.unitPrice.format()} each',
+                      if (l.sentQty > 0 && l.unsentQty == 0)
+                        'in kitchen'
+                      else if (l.sentQty > 0)
+                        '${l.sentQty} in kitchen, ${l.unsentQty} new'
+                      else if (o.isEditable)
+                        'not sent',
+                      if (l.voidedQty > 0) '${l.voidedQty} voided',
+                    ].join(' · '),
                     style: const TextStyle(
                       fontSize: 12,
                       color: Color(0xFF64748B),

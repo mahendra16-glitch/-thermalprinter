@@ -51,15 +51,8 @@ class UsbPrinterTransport(
             }
 
             if (!usbManager.hasPermission(targetDevice)) {
-                val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
-                val intent = PendingIntent.getBroadcast(
-                    context,
-                    0,
-                    Intent("com.example.thermalprinter.USB_PERMISSION"),
-                    flags
-                )
-                usbManager.requestPermission(targetDevice, intent)
-                lastError = "USB permission requested from system."
+                usbManager.requestPermission(targetDevice, permissionIntent(context))
+                lastError = "USB permission requested. Tap Allow on the phone, then retry."
                 return false
             }
 
@@ -135,11 +128,11 @@ class UsbPrinterTransport(
         }
 
         return try {
-            val transferred = conn.bulkTransfer(ep, bytes, bytes.size, 5000)
-            if (transferred >= 0) {
+            val error = writeAll(conn, ep, bytes)
+            if (error == null) {
                 true
             } else {
-                lastError = "Failed writing bytes to USB printer."
+                lastError = error
                 false
             }
         } catch (e: Exception) {
@@ -150,4 +143,44 @@ class UsbPrinterTransport(
     }
 
     override fun getLastError(): String? = lastError
+
+    companion object {
+        const val ACTION_USB_PERMISSION = "com.example.thermalprinter.USB_PERMISSION"
+
+        /** Bytes per bulk transfer; many printers and hosts cap at 16 KB. */
+        private const val CHUNK_SIZE = 16 * 1024
+
+        /**
+         * The system adds the permission result to this intent, so on
+         * Android 12+ it must be mutable; an explicit package keeps it safe
+         * (Android 14 rejects mutable implicit intents).
+         */
+        fun permissionIntent(context: Context): PendingIntent {
+            val intent = Intent(ACTION_USB_PERMISSION).setPackage(context.packageName)
+            val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            } else {
+                PendingIntent.FLAG_UPDATE_CURRENT
+            }
+            return PendingIntent.getBroadcast(context, 0, intent, flags)
+        }
+
+        /**
+         * Writes every byte in chunks and checks each chunk was fully
+         * accepted. Returns null on success, or an error message. A short
+         * write is a failure: it would otherwise print a truncated ticket
+         * while reporting success.
+         */
+        fun writeAll(conn: UsbDeviceConnection, ep: UsbEndpoint, bytes: ByteArray): String? {
+            var offset = 0
+            while (offset < bytes.size) {
+                val len = minOf(CHUNK_SIZE, bytes.size - offset)
+                val sent = conn.bulkTransfer(ep, bytes, offset, len, 5000)
+                if (sent < 0) return "USB write failed after $offset of ${bytes.size} bytes."
+                if (sent == 0) return "USB printer accepted no data after $offset of ${bytes.size} bytes."
+                offset += sent
+            }
+            return null
+        }
+    }
 }

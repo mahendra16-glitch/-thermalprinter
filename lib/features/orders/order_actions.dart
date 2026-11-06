@@ -11,6 +11,7 @@ import '../../domain/orders/order_models.dart';
 import '../../services/storage_service.dart';
 import '../menu/menu_widgets.dart';
 import 'item_options_sheet.dart';
+import 'kitchen_actions.dart';
 import 'order_launcher.dart';
 
 Future<OrderRepository> _orders() async =>
@@ -92,6 +93,13 @@ Future<void> editLine(BuildContext context, OrderLine line) async {
             const SizedBox(height: 16),
             Row(
               children: [
+                if (line.voidableQty > 0)
+                  TextButton.icon(
+                    style: TextButton.styleFrom(foregroundColor: Colors.red),
+                    onPressed: () => Navigator.pop(ctx, 'void'),
+                    icon: const Icon(Icons.block_rounded),
+                    label: const Text('Void sent'),
+                  ),
                 if (!sent)
                   TextButton.icon(
                     style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -114,6 +122,10 @@ Future<void> editLine(BuildContext context, OrderLine line) async {
   if (result == null || !context.mounted) return;
   final repo = await _orders();
   if (!context.mounted) return;
+  if (result == 'void') {
+    await voidSentItems(context, line);
+    return;
+  }
   if (result == 'remove') {
     await runMenuAction(context, () => repo.removeLine(line.id));
   } else {
@@ -308,12 +320,24 @@ Future<void> editDiscount(BuildContext context, OrderDetail d) async {
   );
 }
 
-enum OrderMenuAction { details, moveTable, merge, split, cancel, timeline }
+enum OrderMenuAction {
+  details,
+  kitchen,
+  moveTable,
+  merge,
+  split,
+  cancel,
+  timeline,
+}
 
 List<PopupMenuEntry<OrderMenuAction>> orderMenuItems(OrderDetail d) => [
   const PopupMenuItem(
     value: OrderMenuAction.details,
     child: Text('Customer & notes'),
+  ),
+  const PopupMenuItem(
+    value: OrderMenuAction.kitchen,
+    child: Text('Kitchen tickets (KOT)'),
   ),
   if (d.order.type == OrderType.dineIn)
     const PopupMenuItem(
@@ -345,6 +369,8 @@ Future<void> runOrderMenuAction(
   switch (action) {
     case OrderMenuAction.details:
       await editOrderDetails(context, d.order);
+    case OrderMenuAction.kitchen:
+      await showKitchenTickets(context, d.order);
     case OrderMenuAction.moveTable:
       await _moveTable(context, d.order);
     case OrderMenuAction.merge:
@@ -719,6 +745,10 @@ String describeOrderEvent(OrderEvent e) {
     'order.split_out' => 'Moved ${d['lines']} line(s) to order #${d['intoNo']}',
     'order.split_in' =>
       'Created from order #${d['fromNo']} (${d['lines']} line(s))',
+    'order.kot_sent' =>
+      'Sent to kitchen (round ${d['round']}, ${(d['lines'] as List?)?.length ?? 0} item line(s))',
+    'order.items_voided' => 'Voided ${d['qty']} × ${d['name']}: ${d['reason']}',
+    'order.kot_reprinted' => 'KOT reprinted (round ${d['round']})',
     _ => e.action,
   };
 }

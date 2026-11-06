@@ -27,7 +27,9 @@ class BillFormatter {
 
         // Restaurant Header
         val nameToPrint = template.restaurantName.ifEmpty { order.restaurantName }
-        if (UnicodeRenderer.containsComplexUnicode(nameToPrint)) {
+        if (nameToPrint.isEmpty()) {
+            // nothing
+        } else if (UnicodeRenderer.containsComplexUnicode(nameToPrint)) {
             val raster = rasterEngine.renderTextToRasterBytes(
                 text = nameToPrint,
                 textSizeSp = 24f,
@@ -40,7 +42,9 @@ class BillFormatter {
         }
 
         // Bill Title
-        if (UnicodeRenderer.containsComplexUnicode(template.billTitle)) {
+        if (template.billTitle.isEmpty()) {
+            // nothing
+        } else if (UnicodeRenderer.containsComplexUnicode(template.billTitle)) {
             val raster = rasterEngine.renderTextToRasterBytes(
                 text = template.billTitle,
                 textSizeSp = 20f,
@@ -133,23 +137,29 @@ class BillFormatter {
         encoder.appendRawBytes(rasterTotal)
         encoder.divider()
 
-        // Payment Info
-        encoder.text("Payment: ${order.paymentMethod}")
-        val statusRaster = rasterEngine.renderTextToRasterBytes(
-            text = "Status: ${order.paymentStatus}",
-            textSizeSp = 20f,
-            isBold = true
-        )
-        encoder.appendRawBytes(statusRaster)
+        // Payment Info (only what was provided; never assumed)
+        if (order.paymentMethod.isNotEmpty()) {
+            encoder.text("Payment: ${order.paymentMethod}")
+        }
+        if (order.paymentStatus.isNotEmpty()) {
+            val statusRaster = rasterEngine.renderTextToRasterBytes(
+                text = "Status: ${order.paymentStatus}",
+                textSizeSp = 20f,
+                isBold = true
+            )
+            encoder.appendRawBytes(statusRaster)
+        }
         encoder.divider()
 
         // Footer Message
-        val footerRaster = rasterEngine.renderTextToRasterBytes(
-            text = template.footerMessage,
-            textSizeSp = 18f,
-            align = Layout.Alignment.ALIGN_CENTER
-        )
-        encoder.appendRawBytes(footerRaster)
+        if (template.footerMessage.isNotEmpty()) {
+            val footerRaster = rasterEngine.renderTextToRasterBytes(
+                text = template.footerMessage,
+                textSizeSp = 18f,
+                align = Layout.Alignment.ALIGN_CENTER
+            )
+            encoder.appendRawBytes(footerRaster)
+        }
 
         encoder.cut()
         return encoder.build()
