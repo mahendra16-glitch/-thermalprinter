@@ -9,11 +9,14 @@ void main() {
   setUp(() => db = openTestDatabase());
   tearDown(() => db.close());
 
-  test('v1 schema is created and logged', () async {
-    final log = await db.select(db.migrationLog).get();
-    expect(log.map((r) => r.version), [1]);
-    expect(db.schemaVersion, 1);
-  });
+  test(
+    'fresh install creates the latest schema and logs every version',
+    () async {
+      final log = await db.select(db.migrationLog).get();
+      expect(log.map((r) => r.version), [1, 2]);
+      expect(db.schemaVersion, 2);
+    },
+  );
 
   test('business profile row is seeded empty (no demo data)', () async {
     final rows = await db.select(db.businessProfiles).get();

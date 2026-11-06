@@ -137,3 +137,169 @@ class AuditLog extends Table {
   @override
   Set<Column> get primaryKey => {id};
 }
+
+// ---------------------------------------------------------------------------
+// Schema v2: menu
+// ---------------------------------------------------------------------------
+// Nothing in the menu is ever hard-deleted: rows are deactivated, so past
+// orders that point at them stay readable. Order lines (v3) will copy the
+// name, price and tax at the time of sale.
+
+/// A GST (or other) rate that can be attached to menu items.
+@DataClassName('TaxProfileRow')
+class TaxProfiles extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+
+  /// Rate in basis points: 5% = 500.
+  IntColumn get rateBp => integer()();
+
+  /// True when menu prices already include this tax.
+  BoolColumn get isInclusive => boolean().withDefault(const Constant(false))();
+
+  /// `TaxSplitMode.name`: none | cgstSgst | igst.
+  TextColumn get splitMode => text().withDefault(const Constant('none'))();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  IntColumn get createdAt => integer()();
+  IntColumn get updatedAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Where an item is prepared (Kitchen, Bar, …). Printer routing per station
+/// is added with the KOT module.
+@DataClassName('KitchenStationRow')
+class KitchenStations extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  IntColumn get createdAt => integer()();
+  IntColumn get updatedAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DataClassName('MenuCategoryRow')
+@TableIndex(name: 'idx_menu_categories_parent', columns: {#parentId})
+class MenuCategories extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+
+  /// Set for a subcategory. Only one level of nesting is allowed.
+  TextColumn get parentId => text().nullable().references(
+    MenuCategories,
+    #id,
+    onDelete: KeyAction.restrict,
+  )();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  IntColumn get createdAt => integer()();
+  IntColumn get updatedAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DataClassName('MenuItemRow')
+@TableIndex(name: 'idx_menu_items_category', columns: {#categoryId})
+@TableIndex(name: 'idx_menu_items_sku', columns: {#sku})
+class MenuItems extends Table {
+  TextColumn get id => text()();
+  TextColumn get categoryId =>
+      text().references(MenuCategories, #id, onDelete: KeyAction.restrict)();
+  TextColumn get name => text()();
+  TextColumn get description => text().withDefault(const Constant(''))();
+
+  /// Short code, unique among items when set (checked in the repository).
+  TextColumn get sku => text().nullable()();
+  IntColumn get basePricePaise => integer()();
+
+  /// Null means the item is not taxed.
+  TextColumn get taxProfileId => text().nullable().references(
+    TaxProfiles,
+    #id,
+    onDelete: KeyAction.restrict,
+  )();
+
+  /// `FoodType.name`: veg | nonVeg | egg | other.
+  TextColumn get foodType => text().withDefault(const Constant('veg'))();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  BoolColumn get availableDineIn =>
+      boolean().withDefault(const Constant(true))();
+  BoolColumn get availableTakeaway =>
+      boolean().withDefault(const Constant(true))();
+  TextColumn get stationId => text().nullable().references(
+    KitchenStations,
+    #id,
+    onDelete: KeyAction.restrict,
+  )();
+  BoolColumn get isFavorite => boolean().withDefault(const Constant(false))();
+  IntColumn get prepMinutes => integer().nullable()();
+  TextColumn get imagePath => text().nullable()();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  IntColumn get createdAt => integer()();
+  IntColumn get updatedAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// A reusable group of choices: a variant group (e.g. Size, pick exactly
+/// one) or an add-on group (e.g. Extra toppings, pick up to 3).
+@DataClassName('OptionGroupRow')
+class OptionGroups extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+
+  /// `OptionGroupKind.name`: variant | addon.
+  TextColumn get kind => text()();
+
+  /// 0 = optional. 1 or more = that many choices are required.
+  IntColumn get minSelect => integer().withDefault(const Constant(0))();
+
+  /// 1 = single-select. Must be >= max(1, minSelect).
+  IntColumn get maxSelect => integer().withDefault(const Constant(1))();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  IntColumn get createdAt => integer()();
+  IntColumn get updatedAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DataClassName('OptionChoiceRow')
+@TableIndex(name: 'idx_option_choices_group', columns: {#groupId})
+class OptionChoices extends Table {
+  TextColumn get id => text()();
+  TextColumn get groupId =>
+      text().references(OptionGroups, #id, onDelete: KeyAction.restrict)();
+  TextColumn get name => text()();
+
+  /// Added to the item's base price when chosen (may be 0).
+  IntColumn get priceDeltaPaise => integer().withDefault(const Constant(0))();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  IntColumn get createdAt => integer()();
+  IntColumn get updatedAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Which option groups an item offers, in display order.
+@DataClassName('ItemOptionGroupRow')
+class ItemOptionGroups extends Table {
+  TextColumn get itemId =>
+      text().references(MenuItems, #id, onDelete: KeyAction.cascade)();
+  TextColumn get groupId =>
+      text().references(OptionGroups, #id, onDelete: KeyAction.restrict)();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+
+  @override
+  Set<Column> get primaryKey => {itemId, groupId};
+}

@@ -3821,6 +3821,3830 @@ class AuditLogCompanion extends UpdateCompanion<AuditLogRow> {
   }
 }
 
+class $TaxProfilesTable extends TaxProfiles
+    with TableInfo<$TaxProfilesTable, TaxProfileRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TaxProfilesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _rateBpMeta = const VerificationMeta('rateBp');
+  @override
+  late final GeneratedColumn<int> rateBp = GeneratedColumn<int>(
+    'rate_bp',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isInclusiveMeta = const VerificationMeta(
+    'isInclusive',
+  );
+  @override
+  late final GeneratedColumn<bool> isInclusive = GeneratedColumn<bool>(
+    'is_inclusive',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_inclusive" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _splitModeMeta = const VerificationMeta(
+    'splitMode',
+  );
+  @override
+  late final GeneratedColumn<String> splitMode = GeneratedColumn<String>(
+    'split_mode',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('none'),
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    rateBp,
+    isInclusive,
+    splitMode,
+    isActive,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'tax_profiles';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TaxProfileRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('rate_bp')) {
+      context.handle(
+        _rateBpMeta,
+        rateBp.isAcceptableOrUnknown(data['rate_bp']!, _rateBpMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_rateBpMeta);
+    }
+    if (data.containsKey('is_inclusive')) {
+      context.handle(
+        _isInclusiveMeta,
+        isInclusive.isAcceptableOrUnknown(
+          data['is_inclusive']!,
+          _isInclusiveMeta,
+        ),
+      );
+    }
+    if (data.containsKey('split_mode')) {
+      context.handle(
+        _splitModeMeta,
+        splitMode.isAcceptableOrUnknown(data['split_mode']!, _splitModeMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TaxProfileRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TaxProfileRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      rateBp: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rate_bp'],
+      )!,
+      isInclusive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_inclusive'],
+      )!,
+      splitMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}split_mode'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $TaxProfilesTable createAlias(String alias) {
+    return $TaxProfilesTable(attachedDatabase, alias);
+  }
+}
+
+class TaxProfileRow extends DataClass implements Insertable<TaxProfileRow> {
+  final String id;
+  final String name;
+
+  /// Rate in basis points: 5% = 500.
+  final int rateBp;
+
+  /// True when menu prices already include this tax.
+  final bool isInclusive;
+
+  /// `TaxSplitMode.name`: none | cgstSgst | igst.
+  final String splitMode;
+  final bool isActive;
+  final int sortOrder;
+  final int createdAt;
+  final int updatedAt;
+  const TaxProfileRow({
+    required this.id,
+    required this.name,
+    required this.rateBp,
+    required this.isInclusive,
+    required this.splitMode,
+    required this.isActive,
+    required this.sortOrder,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['rate_bp'] = Variable<int>(rateBp);
+    map['is_inclusive'] = Variable<bool>(isInclusive);
+    map['split_mode'] = Variable<String>(splitMode);
+    map['is_active'] = Variable<bool>(isActive);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  TaxProfilesCompanion toCompanion(bool nullToAbsent) {
+    return TaxProfilesCompanion(
+      id: Value(id),
+      name: Value(name),
+      rateBp: Value(rateBp),
+      isInclusive: Value(isInclusive),
+      splitMode: Value(splitMode),
+      isActive: Value(isActive),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory TaxProfileRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TaxProfileRow(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      rateBp: serializer.fromJson<int>(json['rateBp']),
+      isInclusive: serializer.fromJson<bool>(json['isInclusive']),
+      splitMode: serializer.fromJson<String>(json['splitMode']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'rateBp': serializer.toJson<int>(rateBp),
+      'isInclusive': serializer.toJson<bool>(isInclusive),
+      'splitMode': serializer.toJson<String>(splitMode),
+      'isActive': serializer.toJson<bool>(isActive),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  TaxProfileRow copyWith({
+    String? id,
+    String? name,
+    int? rateBp,
+    bool? isInclusive,
+    String? splitMode,
+    bool? isActive,
+    int? sortOrder,
+    int? createdAt,
+    int? updatedAt,
+  }) => TaxProfileRow(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    rateBp: rateBp ?? this.rateBp,
+    isInclusive: isInclusive ?? this.isInclusive,
+    splitMode: splitMode ?? this.splitMode,
+    isActive: isActive ?? this.isActive,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  TaxProfileRow copyWithCompanion(TaxProfilesCompanion data) {
+    return TaxProfileRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      rateBp: data.rateBp.present ? data.rateBp.value : this.rateBp,
+      isInclusive: data.isInclusive.present
+          ? data.isInclusive.value
+          : this.isInclusive,
+      splitMode: data.splitMode.present ? data.splitMode.value : this.splitMode,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaxProfileRow(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('rateBp: $rateBp, ')
+          ..write('isInclusive: $isInclusive, ')
+          ..write('splitMode: $splitMode, ')
+          ..write('isActive: $isActive, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    rateBp,
+    isInclusive,
+    splitMode,
+    isActive,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TaxProfileRow &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.rateBp == this.rateBp &&
+          other.isInclusive == this.isInclusive &&
+          other.splitMode == this.splitMode &&
+          other.isActive == this.isActive &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class TaxProfilesCompanion extends UpdateCompanion<TaxProfileRow> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<int> rateBp;
+  final Value<bool> isInclusive;
+  final Value<String> splitMode;
+  final Value<bool> isActive;
+  final Value<int> sortOrder;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const TaxProfilesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.rateBp = const Value.absent(),
+    this.isInclusive = const Value.absent(),
+    this.splitMode = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TaxProfilesCompanion.insert({
+    required String id,
+    required String name,
+    required int rateBp,
+    this.isInclusive = const Value.absent(),
+    this.splitMode = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       rateBp = Value(rateBp),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<TaxProfileRow> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<int>? rateBp,
+    Expression<bool>? isInclusive,
+    Expression<String>? splitMode,
+    Expression<bool>? isActive,
+    Expression<int>? sortOrder,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (rateBp != null) 'rate_bp': rateBp,
+      if (isInclusive != null) 'is_inclusive': isInclusive,
+      if (splitMode != null) 'split_mode': splitMode,
+      if (isActive != null) 'is_active': isActive,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TaxProfilesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<int>? rateBp,
+    Value<bool>? isInclusive,
+    Value<String>? splitMode,
+    Value<bool>? isActive,
+    Value<int>? sortOrder,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return TaxProfilesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      rateBp: rateBp ?? this.rateBp,
+      isInclusive: isInclusive ?? this.isInclusive,
+      splitMode: splitMode ?? this.splitMode,
+      isActive: isActive ?? this.isActive,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (rateBp.present) {
+      map['rate_bp'] = Variable<int>(rateBp.value);
+    }
+    if (isInclusive.present) {
+      map['is_inclusive'] = Variable<bool>(isInclusive.value);
+    }
+    if (splitMode.present) {
+      map['split_mode'] = Variable<String>(splitMode.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaxProfilesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('rateBp: $rateBp, ')
+          ..write('isInclusive: $isInclusive, ')
+          ..write('splitMode: $splitMode, ')
+          ..write('isActive: $isActive, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $KitchenStationsTable extends KitchenStations
+    with TableInfo<$KitchenStationsTable, KitchenStationRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $KitchenStationsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    isActive,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'kitchen_stations';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<KitchenStationRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  KitchenStationRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return KitchenStationRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $KitchenStationsTable createAlias(String alias) {
+    return $KitchenStationsTable(attachedDatabase, alias);
+  }
+}
+
+class KitchenStationRow extends DataClass
+    implements Insertable<KitchenStationRow> {
+  final String id;
+  final String name;
+  final bool isActive;
+  final int sortOrder;
+  final int createdAt;
+  final int updatedAt;
+  const KitchenStationRow({
+    required this.id,
+    required this.name,
+    required this.isActive,
+    required this.sortOrder,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['is_active'] = Variable<bool>(isActive);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  KitchenStationsCompanion toCompanion(bool nullToAbsent) {
+    return KitchenStationsCompanion(
+      id: Value(id),
+      name: Value(name),
+      isActive: Value(isActive),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory KitchenStationRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return KitchenStationRow(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'isActive': serializer.toJson<bool>(isActive),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  KitchenStationRow copyWith({
+    String? id,
+    String? name,
+    bool? isActive,
+    int? sortOrder,
+    int? createdAt,
+    int? updatedAt,
+  }) => KitchenStationRow(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    isActive: isActive ?? this.isActive,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  KitchenStationRow copyWithCompanion(KitchenStationsCompanion data) {
+    return KitchenStationRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KitchenStationRow(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('isActive: $isActive, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, isActive, sortOrder, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is KitchenStationRow &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.isActive == this.isActive &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class KitchenStationsCompanion extends UpdateCompanion<KitchenStationRow> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<bool> isActive;
+  final Value<int> sortOrder;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const KitchenStationsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  KitchenStationsCompanion.insert({
+    required String id,
+    required String name,
+    this.isActive = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<KitchenStationRow> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<bool>? isActive,
+    Expression<int>? sortOrder,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (isActive != null) 'is_active': isActive,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  KitchenStationsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<bool>? isActive,
+    Value<int>? sortOrder,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return KitchenStationsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      isActive: isActive ?? this.isActive,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KitchenStationsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('isActive: $isActive, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MenuCategoriesTable extends MenuCategories
+    with TableInfo<$MenuCategoriesTable, MenuCategoryRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MenuCategoriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _parentIdMeta = const VerificationMeta(
+    'parentId',
+  );
+  @override
+  late final GeneratedColumn<String> parentId = GeneratedColumn<String>(
+    'parent_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES menu_categories (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    parentId,
+    isActive,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'menu_categories';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MenuCategoryRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('parent_id')) {
+      context.handle(
+        _parentIdMeta,
+        parentId.isAcceptableOrUnknown(data['parent_id']!, _parentIdMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MenuCategoryRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MenuCategoryRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      parentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}parent_id'],
+      ),
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $MenuCategoriesTable createAlias(String alias) {
+    return $MenuCategoriesTable(attachedDatabase, alias);
+  }
+}
+
+class MenuCategoryRow extends DataClass implements Insertable<MenuCategoryRow> {
+  final String id;
+  final String name;
+
+  /// Set for a subcategory. Only one level of nesting is allowed.
+  final String? parentId;
+  final bool isActive;
+  final int sortOrder;
+  final int createdAt;
+  final int updatedAt;
+  const MenuCategoryRow({
+    required this.id,
+    required this.name,
+    this.parentId,
+    required this.isActive,
+    required this.sortOrder,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || parentId != null) {
+      map['parent_id'] = Variable<String>(parentId);
+    }
+    map['is_active'] = Variable<bool>(isActive);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  MenuCategoriesCompanion toCompanion(bool nullToAbsent) {
+    return MenuCategoriesCompanion(
+      id: Value(id),
+      name: Value(name),
+      parentId: parentId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(parentId),
+      isActive: Value(isActive),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory MenuCategoryRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MenuCategoryRow(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      parentId: serializer.fromJson<String?>(json['parentId']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'parentId': serializer.toJson<String?>(parentId),
+      'isActive': serializer.toJson<bool>(isActive),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  MenuCategoryRow copyWith({
+    String? id,
+    String? name,
+    Value<String?> parentId = const Value.absent(),
+    bool? isActive,
+    int? sortOrder,
+    int? createdAt,
+    int? updatedAt,
+  }) => MenuCategoryRow(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    parentId: parentId.present ? parentId.value : this.parentId,
+    isActive: isActive ?? this.isActive,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  MenuCategoryRow copyWithCompanion(MenuCategoriesCompanion data) {
+    return MenuCategoryRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      parentId: data.parentId.present ? data.parentId.value : this.parentId,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MenuCategoryRow(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('parentId: $parentId, ')
+          ..write('isActive: $isActive, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    parentId,
+    isActive,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MenuCategoryRow &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.parentId == this.parentId &&
+          other.isActive == this.isActive &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class MenuCategoriesCompanion extends UpdateCompanion<MenuCategoryRow> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String?> parentId;
+  final Value<bool> isActive;
+  final Value<int> sortOrder;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const MenuCategoriesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.parentId = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MenuCategoriesCompanion.insert({
+    required String id,
+    required String name,
+    this.parentId = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<MenuCategoryRow> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? parentId,
+    Expression<bool>? isActive,
+    Expression<int>? sortOrder,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (parentId != null) 'parent_id': parentId,
+      if (isActive != null) 'is_active': isActive,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MenuCategoriesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String?>? parentId,
+    Value<bool>? isActive,
+    Value<int>? sortOrder,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return MenuCategoriesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      parentId: parentId ?? this.parentId,
+      isActive: isActive ?? this.isActive,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (parentId.present) {
+      map['parent_id'] = Variable<String>(parentId.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MenuCategoriesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('parentId: $parentId, ')
+          ..write('isActive: $isActive, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MenuItemsTable extends MenuItems
+    with TableInfo<$MenuItemsTable, MenuItemRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MenuItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoryIdMeta = const VerificationMeta(
+    'categoryId',
+  );
+  @override
+  late final GeneratedColumn<String> categoryId = GeneratedColumn<String>(
+    'category_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES menu_categories (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _skuMeta = const VerificationMeta('sku');
+  @override
+  late final GeneratedColumn<String> sku = GeneratedColumn<String>(
+    'sku',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _basePricePaiseMeta = const VerificationMeta(
+    'basePricePaise',
+  );
+  @override
+  late final GeneratedColumn<int> basePricePaise = GeneratedColumn<int>(
+    'base_price_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _taxProfileIdMeta = const VerificationMeta(
+    'taxProfileId',
+  );
+  @override
+  late final GeneratedColumn<String> taxProfileId = GeneratedColumn<String>(
+    'tax_profile_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES tax_profiles (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _foodTypeMeta = const VerificationMeta(
+    'foodType',
+  );
+  @override
+  late final GeneratedColumn<String> foodType = GeneratedColumn<String>(
+    'food_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('veg'),
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _availableDineInMeta = const VerificationMeta(
+    'availableDineIn',
+  );
+  @override
+  late final GeneratedColumn<bool> availableDineIn = GeneratedColumn<bool>(
+    'available_dine_in',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("available_dine_in" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _availableTakeawayMeta = const VerificationMeta(
+    'availableTakeaway',
+  );
+  @override
+  late final GeneratedColumn<bool> availableTakeaway = GeneratedColumn<bool>(
+    'available_takeaway',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("available_takeaway" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _stationIdMeta = const VerificationMeta(
+    'stationId',
+  );
+  @override
+  late final GeneratedColumn<String> stationId = GeneratedColumn<String>(
+    'station_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES kitchen_stations (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _isFavoriteMeta = const VerificationMeta(
+    'isFavorite',
+  );
+  @override
+  late final GeneratedColumn<bool> isFavorite = GeneratedColumn<bool>(
+    'is_favorite',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_favorite" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _prepMinutesMeta = const VerificationMeta(
+    'prepMinutes',
+  );
+  @override
+  late final GeneratedColumn<int> prepMinutes = GeneratedColumn<int>(
+    'prep_minutes',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _imagePathMeta = const VerificationMeta(
+    'imagePath',
+  );
+  @override
+  late final GeneratedColumn<String> imagePath = GeneratedColumn<String>(
+    'image_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    categoryId,
+    name,
+    description,
+    sku,
+    basePricePaise,
+    taxProfileId,
+    foodType,
+    isActive,
+    availableDineIn,
+    availableTakeaway,
+    stationId,
+    isFavorite,
+    prepMinutes,
+    imagePath,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'menu_items';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MenuItemRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('category_id')) {
+      context.handle(
+        _categoryIdMeta,
+        categoryId.isAcceptableOrUnknown(data['category_id']!, _categoryIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sku')) {
+      context.handle(
+        _skuMeta,
+        sku.isAcceptableOrUnknown(data['sku']!, _skuMeta),
+      );
+    }
+    if (data.containsKey('base_price_paise')) {
+      context.handle(
+        _basePricePaiseMeta,
+        basePricePaise.isAcceptableOrUnknown(
+          data['base_price_paise']!,
+          _basePricePaiseMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_basePricePaiseMeta);
+    }
+    if (data.containsKey('tax_profile_id')) {
+      context.handle(
+        _taxProfileIdMeta,
+        taxProfileId.isAcceptableOrUnknown(
+          data['tax_profile_id']!,
+          _taxProfileIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('food_type')) {
+      context.handle(
+        _foodTypeMeta,
+        foodType.isAcceptableOrUnknown(data['food_type']!, _foodTypeMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('available_dine_in')) {
+      context.handle(
+        _availableDineInMeta,
+        availableDineIn.isAcceptableOrUnknown(
+          data['available_dine_in']!,
+          _availableDineInMeta,
+        ),
+      );
+    }
+    if (data.containsKey('available_takeaway')) {
+      context.handle(
+        _availableTakeawayMeta,
+        availableTakeaway.isAcceptableOrUnknown(
+          data['available_takeaway']!,
+          _availableTakeawayMeta,
+        ),
+      );
+    }
+    if (data.containsKey('station_id')) {
+      context.handle(
+        _stationIdMeta,
+        stationId.isAcceptableOrUnknown(data['station_id']!, _stationIdMeta),
+      );
+    }
+    if (data.containsKey('is_favorite')) {
+      context.handle(
+        _isFavoriteMeta,
+        isFavorite.isAcceptableOrUnknown(data['is_favorite']!, _isFavoriteMeta),
+      );
+    }
+    if (data.containsKey('prep_minutes')) {
+      context.handle(
+        _prepMinutesMeta,
+        prepMinutes.isAcceptableOrUnknown(
+          data['prep_minutes']!,
+          _prepMinutesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('image_path')) {
+      context.handle(
+        _imagePathMeta,
+        imagePath.isAcceptableOrUnknown(data['image_path']!, _imagePathMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MenuItemRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MenuItemRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      categoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      sku: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sku'],
+      ),
+      basePricePaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}base_price_paise'],
+      )!,
+      taxProfileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tax_profile_id'],
+      ),
+      foodType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}food_type'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      availableDineIn: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}available_dine_in'],
+      )!,
+      availableTakeaway: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}available_takeaway'],
+      )!,
+      stationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}station_id'],
+      ),
+      isFavorite: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_favorite'],
+      )!,
+      prepMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prep_minutes'],
+      ),
+      imagePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}image_path'],
+      ),
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $MenuItemsTable createAlias(String alias) {
+    return $MenuItemsTable(attachedDatabase, alias);
+  }
+}
+
+class MenuItemRow extends DataClass implements Insertable<MenuItemRow> {
+  final String id;
+  final String categoryId;
+  final String name;
+  final String description;
+
+  /// Short code, unique among items when set (checked in the repository).
+  final String? sku;
+  final int basePricePaise;
+
+  /// Null means the item is not taxed.
+  final String? taxProfileId;
+
+  /// `FoodType.name`: veg | nonVeg | egg | other.
+  final String foodType;
+  final bool isActive;
+  final bool availableDineIn;
+  final bool availableTakeaway;
+  final String? stationId;
+  final bool isFavorite;
+  final int? prepMinutes;
+  final String? imagePath;
+  final int sortOrder;
+  final int createdAt;
+  final int updatedAt;
+  const MenuItemRow({
+    required this.id,
+    required this.categoryId,
+    required this.name,
+    required this.description,
+    this.sku,
+    required this.basePricePaise,
+    this.taxProfileId,
+    required this.foodType,
+    required this.isActive,
+    required this.availableDineIn,
+    required this.availableTakeaway,
+    this.stationId,
+    required this.isFavorite,
+    this.prepMinutes,
+    this.imagePath,
+    required this.sortOrder,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['category_id'] = Variable<String>(categoryId);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    if (!nullToAbsent || sku != null) {
+      map['sku'] = Variable<String>(sku);
+    }
+    map['base_price_paise'] = Variable<int>(basePricePaise);
+    if (!nullToAbsent || taxProfileId != null) {
+      map['tax_profile_id'] = Variable<String>(taxProfileId);
+    }
+    map['food_type'] = Variable<String>(foodType);
+    map['is_active'] = Variable<bool>(isActive);
+    map['available_dine_in'] = Variable<bool>(availableDineIn);
+    map['available_takeaway'] = Variable<bool>(availableTakeaway);
+    if (!nullToAbsent || stationId != null) {
+      map['station_id'] = Variable<String>(stationId);
+    }
+    map['is_favorite'] = Variable<bool>(isFavorite);
+    if (!nullToAbsent || prepMinutes != null) {
+      map['prep_minutes'] = Variable<int>(prepMinutes);
+    }
+    if (!nullToAbsent || imagePath != null) {
+      map['image_path'] = Variable<String>(imagePath);
+    }
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  MenuItemsCompanion toCompanion(bool nullToAbsent) {
+    return MenuItemsCompanion(
+      id: Value(id),
+      categoryId: Value(categoryId),
+      name: Value(name),
+      description: Value(description),
+      sku: sku == null && nullToAbsent ? const Value.absent() : Value(sku),
+      basePricePaise: Value(basePricePaise),
+      taxProfileId: taxProfileId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(taxProfileId),
+      foodType: Value(foodType),
+      isActive: Value(isActive),
+      availableDineIn: Value(availableDineIn),
+      availableTakeaway: Value(availableTakeaway),
+      stationId: stationId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(stationId),
+      isFavorite: Value(isFavorite),
+      prepMinutes: prepMinutes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(prepMinutes),
+      imagePath: imagePath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(imagePath),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory MenuItemRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MenuItemRow(
+      id: serializer.fromJson<String>(json['id']),
+      categoryId: serializer.fromJson<String>(json['categoryId']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      sku: serializer.fromJson<String?>(json['sku']),
+      basePricePaise: serializer.fromJson<int>(json['basePricePaise']),
+      taxProfileId: serializer.fromJson<String?>(json['taxProfileId']),
+      foodType: serializer.fromJson<String>(json['foodType']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      availableDineIn: serializer.fromJson<bool>(json['availableDineIn']),
+      availableTakeaway: serializer.fromJson<bool>(json['availableTakeaway']),
+      stationId: serializer.fromJson<String?>(json['stationId']),
+      isFavorite: serializer.fromJson<bool>(json['isFavorite']),
+      prepMinutes: serializer.fromJson<int?>(json['prepMinutes']),
+      imagePath: serializer.fromJson<String?>(json['imagePath']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'categoryId': serializer.toJson<String>(categoryId),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'sku': serializer.toJson<String?>(sku),
+      'basePricePaise': serializer.toJson<int>(basePricePaise),
+      'taxProfileId': serializer.toJson<String?>(taxProfileId),
+      'foodType': serializer.toJson<String>(foodType),
+      'isActive': serializer.toJson<bool>(isActive),
+      'availableDineIn': serializer.toJson<bool>(availableDineIn),
+      'availableTakeaway': serializer.toJson<bool>(availableTakeaway),
+      'stationId': serializer.toJson<String?>(stationId),
+      'isFavorite': serializer.toJson<bool>(isFavorite),
+      'prepMinutes': serializer.toJson<int?>(prepMinutes),
+      'imagePath': serializer.toJson<String?>(imagePath),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  MenuItemRow copyWith({
+    String? id,
+    String? categoryId,
+    String? name,
+    String? description,
+    Value<String?> sku = const Value.absent(),
+    int? basePricePaise,
+    Value<String?> taxProfileId = const Value.absent(),
+    String? foodType,
+    bool? isActive,
+    bool? availableDineIn,
+    bool? availableTakeaway,
+    Value<String?> stationId = const Value.absent(),
+    bool? isFavorite,
+    Value<int?> prepMinutes = const Value.absent(),
+    Value<String?> imagePath = const Value.absent(),
+    int? sortOrder,
+    int? createdAt,
+    int? updatedAt,
+  }) => MenuItemRow(
+    id: id ?? this.id,
+    categoryId: categoryId ?? this.categoryId,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    sku: sku.present ? sku.value : this.sku,
+    basePricePaise: basePricePaise ?? this.basePricePaise,
+    taxProfileId: taxProfileId.present ? taxProfileId.value : this.taxProfileId,
+    foodType: foodType ?? this.foodType,
+    isActive: isActive ?? this.isActive,
+    availableDineIn: availableDineIn ?? this.availableDineIn,
+    availableTakeaway: availableTakeaway ?? this.availableTakeaway,
+    stationId: stationId.present ? stationId.value : this.stationId,
+    isFavorite: isFavorite ?? this.isFavorite,
+    prepMinutes: prepMinutes.present ? prepMinutes.value : this.prepMinutes,
+    imagePath: imagePath.present ? imagePath.value : this.imagePath,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  MenuItemRow copyWithCompanion(MenuItemsCompanion data) {
+    return MenuItemRow(
+      id: data.id.present ? data.id.value : this.id,
+      categoryId: data.categoryId.present
+          ? data.categoryId.value
+          : this.categoryId,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      sku: data.sku.present ? data.sku.value : this.sku,
+      basePricePaise: data.basePricePaise.present
+          ? data.basePricePaise.value
+          : this.basePricePaise,
+      taxProfileId: data.taxProfileId.present
+          ? data.taxProfileId.value
+          : this.taxProfileId,
+      foodType: data.foodType.present ? data.foodType.value : this.foodType,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      availableDineIn: data.availableDineIn.present
+          ? data.availableDineIn.value
+          : this.availableDineIn,
+      availableTakeaway: data.availableTakeaway.present
+          ? data.availableTakeaway.value
+          : this.availableTakeaway,
+      stationId: data.stationId.present ? data.stationId.value : this.stationId,
+      isFavorite: data.isFavorite.present
+          ? data.isFavorite.value
+          : this.isFavorite,
+      prepMinutes: data.prepMinutes.present
+          ? data.prepMinutes.value
+          : this.prepMinutes,
+      imagePath: data.imagePath.present ? data.imagePath.value : this.imagePath,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MenuItemRow(')
+          ..write('id: $id, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('sku: $sku, ')
+          ..write('basePricePaise: $basePricePaise, ')
+          ..write('taxProfileId: $taxProfileId, ')
+          ..write('foodType: $foodType, ')
+          ..write('isActive: $isActive, ')
+          ..write('availableDineIn: $availableDineIn, ')
+          ..write('availableTakeaway: $availableTakeaway, ')
+          ..write('stationId: $stationId, ')
+          ..write('isFavorite: $isFavorite, ')
+          ..write('prepMinutes: $prepMinutes, ')
+          ..write('imagePath: $imagePath, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    categoryId,
+    name,
+    description,
+    sku,
+    basePricePaise,
+    taxProfileId,
+    foodType,
+    isActive,
+    availableDineIn,
+    availableTakeaway,
+    stationId,
+    isFavorite,
+    prepMinutes,
+    imagePath,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MenuItemRow &&
+          other.id == this.id &&
+          other.categoryId == this.categoryId &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.sku == this.sku &&
+          other.basePricePaise == this.basePricePaise &&
+          other.taxProfileId == this.taxProfileId &&
+          other.foodType == this.foodType &&
+          other.isActive == this.isActive &&
+          other.availableDineIn == this.availableDineIn &&
+          other.availableTakeaway == this.availableTakeaway &&
+          other.stationId == this.stationId &&
+          other.isFavorite == this.isFavorite &&
+          other.prepMinutes == this.prepMinutes &&
+          other.imagePath == this.imagePath &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class MenuItemsCompanion extends UpdateCompanion<MenuItemRow> {
+  final Value<String> id;
+  final Value<String> categoryId;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<String?> sku;
+  final Value<int> basePricePaise;
+  final Value<String?> taxProfileId;
+  final Value<String> foodType;
+  final Value<bool> isActive;
+  final Value<bool> availableDineIn;
+  final Value<bool> availableTakeaway;
+  final Value<String?> stationId;
+  final Value<bool> isFavorite;
+  final Value<int?> prepMinutes;
+  final Value<String?> imagePath;
+  final Value<int> sortOrder;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const MenuItemsCompanion({
+    this.id = const Value.absent(),
+    this.categoryId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.sku = const Value.absent(),
+    this.basePricePaise = const Value.absent(),
+    this.taxProfileId = const Value.absent(),
+    this.foodType = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.availableDineIn = const Value.absent(),
+    this.availableTakeaway = const Value.absent(),
+    this.stationId = const Value.absent(),
+    this.isFavorite = const Value.absent(),
+    this.prepMinutes = const Value.absent(),
+    this.imagePath = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MenuItemsCompanion.insert({
+    required String id,
+    required String categoryId,
+    required String name,
+    this.description = const Value.absent(),
+    this.sku = const Value.absent(),
+    required int basePricePaise,
+    this.taxProfileId = const Value.absent(),
+    this.foodType = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.availableDineIn = const Value.absent(),
+    this.availableTakeaway = const Value.absent(),
+    this.stationId = const Value.absent(),
+    this.isFavorite = const Value.absent(),
+    this.prepMinutes = const Value.absent(),
+    this.imagePath = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       categoryId = Value(categoryId),
+       name = Value(name),
+       basePricePaise = Value(basePricePaise),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<MenuItemRow> custom({
+    Expression<String>? id,
+    Expression<String>? categoryId,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<String>? sku,
+    Expression<int>? basePricePaise,
+    Expression<String>? taxProfileId,
+    Expression<String>? foodType,
+    Expression<bool>? isActive,
+    Expression<bool>? availableDineIn,
+    Expression<bool>? availableTakeaway,
+    Expression<String>? stationId,
+    Expression<bool>? isFavorite,
+    Expression<int>? prepMinutes,
+    Expression<String>? imagePath,
+    Expression<int>? sortOrder,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (categoryId != null) 'category_id': categoryId,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (sku != null) 'sku': sku,
+      if (basePricePaise != null) 'base_price_paise': basePricePaise,
+      if (taxProfileId != null) 'tax_profile_id': taxProfileId,
+      if (foodType != null) 'food_type': foodType,
+      if (isActive != null) 'is_active': isActive,
+      if (availableDineIn != null) 'available_dine_in': availableDineIn,
+      if (availableTakeaway != null) 'available_takeaway': availableTakeaway,
+      if (stationId != null) 'station_id': stationId,
+      if (isFavorite != null) 'is_favorite': isFavorite,
+      if (prepMinutes != null) 'prep_minutes': prepMinutes,
+      if (imagePath != null) 'image_path': imagePath,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MenuItemsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? categoryId,
+    Value<String>? name,
+    Value<String>? description,
+    Value<String?>? sku,
+    Value<int>? basePricePaise,
+    Value<String?>? taxProfileId,
+    Value<String>? foodType,
+    Value<bool>? isActive,
+    Value<bool>? availableDineIn,
+    Value<bool>? availableTakeaway,
+    Value<String?>? stationId,
+    Value<bool>? isFavorite,
+    Value<int?>? prepMinutes,
+    Value<String?>? imagePath,
+    Value<int>? sortOrder,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return MenuItemsCompanion(
+      id: id ?? this.id,
+      categoryId: categoryId ?? this.categoryId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      sku: sku ?? this.sku,
+      basePricePaise: basePricePaise ?? this.basePricePaise,
+      taxProfileId: taxProfileId ?? this.taxProfileId,
+      foodType: foodType ?? this.foodType,
+      isActive: isActive ?? this.isActive,
+      availableDineIn: availableDineIn ?? this.availableDineIn,
+      availableTakeaway: availableTakeaway ?? this.availableTakeaway,
+      stationId: stationId ?? this.stationId,
+      isFavorite: isFavorite ?? this.isFavorite,
+      prepMinutes: prepMinutes ?? this.prepMinutes,
+      imagePath: imagePath ?? this.imagePath,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (categoryId.present) {
+      map['category_id'] = Variable<String>(categoryId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (sku.present) {
+      map['sku'] = Variable<String>(sku.value);
+    }
+    if (basePricePaise.present) {
+      map['base_price_paise'] = Variable<int>(basePricePaise.value);
+    }
+    if (taxProfileId.present) {
+      map['tax_profile_id'] = Variable<String>(taxProfileId.value);
+    }
+    if (foodType.present) {
+      map['food_type'] = Variable<String>(foodType.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (availableDineIn.present) {
+      map['available_dine_in'] = Variable<bool>(availableDineIn.value);
+    }
+    if (availableTakeaway.present) {
+      map['available_takeaway'] = Variable<bool>(availableTakeaway.value);
+    }
+    if (stationId.present) {
+      map['station_id'] = Variable<String>(stationId.value);
+    }
+    if (isFavorite.present) {
+      map['is_favorite'] = Variable<bool>(isFavorite.value);
+    }
+    if (prepMinutes.present) {
+      map['prep_minutes'] = Variable<int>(prepMinutes.value);
+    }
+    if (imagePath.present) {
+      map['image_path'] = Variable<String>(imagePath.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MenuItemsCompanion(')
+          ..write('id: $id, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('sku: $sku, ')
+          ..write('basePricePaise: $basePricePaise, ')
+          ..write('taxProfileId: $taxProfileId, ')
+          ..write('foodType: $foodType, ')
+          ..write('isActive: $isActive, ')
+          ..write('availableDineIn: $availableDineIn, ')
+          ..write('availableTakeaway: $availableTakeaway, ')
+          ..write('stationId: $stationId, ')
+          ..write('isFavorite: $isFavorite, ')
+          ..write('prepMinutes: $prepMinutes, ')
+          ..write('imagePath: $imagePath, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $OptionGroupsTable extends OptionGroups
+    with TableInfo<$OptionGroupsTable, OptionGroupRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $OptionGroupsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _minSelectMeta = const VerificationMeta(
+    'minSelect',
+  );
+  @override
+  late final GeneratedColumn<int> minSelect = GeneratedColumn<int>(
+    'min_select',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _maxSelectMeta = const VerificationMeta(
+    'maxSelect',
+  );
+  @override
+  late final GeneratedColumn<int> maxSelect = GeneratedColumn<int>(
+    'max_select',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    kind,
+    minSelect,
+    maxSelect,
+    isActive,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'option_groups';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<OptionGroupRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('min_select')) {
+      context.handle(
+        _minSelectMeta,
+        minSelect.isAcceptableOrUnknown(data['min_select']!, _minSelectMeta),
+      );
+    }
+    if (data.containsKey('max_select')) {
+      context.handle(
+        _maxSelectMeta,
+        maxSelect.isAcceptableOrUnknown(data['max_select']!, _maxSelectMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  OptionGroupRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return OptionGroupRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      minSelect: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}min_select'],
+      )!,
+      maxSelect: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_select'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $OptionGroupsTable createAlias(String alias) {
+    return $OptionGroupsTable(attachedDatabase, alias);
+  }
+}
+
+class OptionGroupRow extends DataClass implements Insertable<OptionGroupRow> {
+  final String id;
+  final String name;
+
+  /// `OptionGroupKind.name`: variant | addon.
+  final String kind;
+
+  /// 0 = optional. 1 or more = that many choices are required.
+  final int minSelect;
+
+  /// 1 = single-select. Must be >= max(1, minSelect).
+  final int maxSelect;
+  final bool isActive;
+  final int sortOrder;
+  final int createdAt;
+  final int updatedAt;
+  const OptionGroupRow({
+    required this.id,
+    required this.name,
+    required this.kind,
+    required this.minSelect,
+    required this.maxSelect,
+    required this.isActive,
+    required this.sortOrder,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['kind'] = Variable<String>(kind);
+    map['min_select'] = Variable<int>(minSelect);
+    map['max_select'] = Variable<int>(maxSelect);
+    map['is_active'] = Variable<bool>(isActive);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  OptionGroupsCompanion toCompanion(bool nullToAbsent) {
+    return OptionGroupsCompanion(
+      id: Value(id),
+      name: Value(name),
+      kind: Value(kind),
+      minSelect: Value(minSelect),
+      maxSelect: Value(maxSelect),
+      isActive: Value(isActive),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory OptionGroupRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return OptionGroupRow(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      kind: serializer.fromJson<String>(json['kind']),
+      minSelect: serializer.fromJson<int>(json['minSelect']),
+      maxSelect: serializer.fromJson<int>(json['maxSelect']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'kind': serializer.toJson<String>(kind),
+      'minSelect': serializer.toJson<int>(minSelect),
+      'maxSelect': serializer.toJson<int>(maxSelect),
+      'isActive': serializer.toJson<bool>(isActive),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  OptionGroupRow copyWith({
+    String? id,
+    String? name,
+    String? kind,
+    int? minSelect,
+    int? maxSelect,
+    bool? isActive,
+    int? sortOrder,
+    int? createdAt,
+    int? updatedAt,
+  }) => OptionGroupRow(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    kind: kind ?? this.kind,
+    minSelect: minSelect ?? this.minSelect,
+    maxSelect: maxSelect ?? this.maxSelect,
+    isActive: isActive ?? this.isActive,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  OptionGroupRow copyWithCompanion(OptionGroupsCompanion data) {
+    return OptionGroupRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      minSelect: data.minSelect.present ? data.minSelect.value : this.minSelect,
+      maxSelect: data.maxSelect.present ? data.maxSelect.value : this.maxSelect,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OptionGroupRow(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('kind: $kind, ')
+          ..write('minSelect: $minSelect, ')
+          ..write('maxSelect: $maxSelect, ')
+          ..write('isActive: $isActive, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    kind,
+    minSelect,
+    maxSelect,
+    isActive,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is OptionGroupRow &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.kind == this.kind &&
+          other.minSelect == this.minSelect &&
+          other.maxSelect == this.maxSelect &&
+          other.isActive == this.isActive &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class OptionGroupsCompanion extends UpdateCompanion<OptionGroupRow> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> kind;
+  final Value<int> minSelect;
+  final Value<int> maxSelect;
+  final Value<bool> isActive;
+  final Value<int> sortOrder;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const OptionGroupsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.minSelect = const Value.absent(),
+    this.maxSelect = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  OptionGroupsCompanion.insert({
+    required String id,
+    required String name,
+    required String kind,
+    this.minSelect = const Value.absent(),
+    this.maxSelect = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       kind = Value(kind),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<OptionGroupRow> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? kind,
+    Expression<int>? minSelect,
+    Expression<int>? maxSelect,
+    Expression<bool>? isActive,
+    Expression<int>? sortOrder,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (kind != null) 'kind': kind,
+      if (minSelect != null) 'min_select': minSelect,
+      if (maxSelect != null) 'max_select': maxSelect,
+      if (isActive != null) 'is_active': isActive,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  OptionGroupsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String>? kind,
+    Value<int>? minSelect,
+    Value<int>? maxSelect,
+    Value<bool>? isActive,
+    Value<int>? sortOrder,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return OptionGroupsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      kind: kind ?? this.kind,
+      minSelect: minSelect ?? this.minSelect,
+      maxSelect: maxSelect ?? this.maxSelect,
+      isActive: isActive ?? this.isActive,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (minSelect.present) {
+      map['min_select'] = Variable<int>(minSelect.value);
+    }
+    if (maxSelect.present) {
+      map['max_select'] = Variable<int>(maxSelect.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OptionGroupsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('kind: $kind, ')
+          ..write('minSelect: $minSelect, ')
+          ..write('maxSelect: $maxSelect, ')
+          ..write('isActive: $isActive, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $OptionChoicesTable extends OptionChoices
+    with TableInfo<$OptionChoicesTable, OptionChoiceRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $OptionChoicesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _groupIdMeta = const VerificationMeta(
+    'groupId',
+  );
+  @override
+  late final GeneratedColumn<String> groupId = GeneratedColumn<String>(
+    'group_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES option_groups (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _priceDeltaPaiseMeta = const VerificationMeta(
+    'priceDeltaPaise',
+  );
+  @override
+  late final GeneratedColumn<int> priceDeltaPaise = GeneratedColumn<int>(
+    'price_delta_paise',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    groupId,
+    name,
+    priceDeltaPaise,
+    isActive,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'option_choices';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<OptionChoiceRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('group_id')) {
+      context.handle(
+        _groupIdMeta,
+        groupId.isAcceptableOrUnknown(data['group_id']!, _groupIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_groupIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('price_delta_paise')) {
+      context.handle(
+        _priceDeltaPaiseMeta,
+        priceDeltaPaise.isAcceptableOrUnknown(
+          data['price_delta_paise']!,
+          _priceDeltaPaiseMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  OptionChoiceRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return OptionChoiceRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      groupId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}group_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      priceDeltaPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}price_delta_paise'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $OptionChoicesTable createAlias(String alias) {
+    return $OptionChoicesTable(attachedDatabase, alias);
+  }
+}
+
+class OptionChoiceRow extends DataClass implements Insertable<OptionChoiceRow> {
+  final String id;
+  final String groupId;
+  final String name;
+
+  /// Added to the item's base price when chosen (may be 0).
+  final int priceDeltaPaise;
+  final bool isActive;
+  final int sortOrder;
+  final int createdAt;
+  final int updatedAt;
+  const OptionChoiceRow({
+    required this.id,
+    required this.groupId,
+    required this.name,
+    required this.priceDeltaPaise,
+    required this.isActive,
+    required this.sortOrder,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['group_id'] = Variable<String>(groupId);
+    map['name'] = Variable<String>(name);
+    map['price_delta_paise'] = Variable<int>(priceDeltaPaise);
+    map['is_active'] = Variable<bool>(isActive);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  OptionChoicesCompanion toCompanion(bool nullToAbsent) {
+    return OptionChoicesCompanion(
+      id: Value(id),
+      groupId: Value(groupId),
+      name: Value(name),
+      priceDeltaPaise: Value(priceDeltaPaise),
+      isActive: Value(isActive),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory OptionChoiceRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return OptionChoiceRow(
+      id: serializer.fromJson<String>(json['id']),
+      groupId: serializer.fromJson<String>(json['groupId']),
+      name: serializer.fromJson<String>(json['name']),
+      priceDeltaPaise: serializer.fromJson<int>(json['priceDeltaPaise']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'groupId': serializer.toJson<String>(groupId),
+      'name': serializer.toJson<String>(name),
+      'priceDeltaPaise': serializer.toJson<int>(priceDeltaPaise),
+      'isActive': serializer.toJson<bool>(isActive),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  OptionChoiceRow copyWith({
+    String? id,
+    String? groupId,
+    String? name,
+    int? priceDeltaPaise,
+    bool? isActive,
+    int? sortOrder,
+    int? createdAt,
+    int? updatedAt,
+  }) => OptionChoiceRow(
+    id: id ?? this.id,
+    groupId: groupId ?? this.groupId,
+    name: name ?? this.name,
+    priceDeltaPaise: priceDeltaPaise ?? this.priceDeltaPaise,
+    isActive: isActive ?? this.isActive,
+    sortOrder: sortOrder ?? this.sortOrder,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  OptionChoiceRow copyWithCompanion(OptionChoicesCompanion data) {
+    return OptionChoiceRow(
+      id: data.id.present ? data.id.value : this.id,
+      groupId: data.groupId.present ? data.groupId.value : this.groupId,
+      name: data.name.present ? data.name.value : this.name,
+      priceDeltaPaise: data.priceDeltaPaise.present
+          ? data.priceDeltaPaise.value
+          : this.priceDeltaPaise,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OptionChoiceRow(')
+          ..write('id: $id, ')
+          ..write('groupId: $groupId, ')
+          ..write('name: $name, ')
+          ..write('priceDeltaPaise: $priceDeltaPaise, ')
+          ..write('isActive: $isActive, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    groupId,
+    name,
+    priceDeltaPaise,
+    isActive,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is OptionChoiceRow &&
+          other.id == this.id &&
+          other.groupId == this.groupId &&
+          other.name == this.name &&
+          other.priceDeltaPaise == this.priceDeltaPaise &&
+          other.isActive == this.isActive &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class OptionChoicesCompanion extends UpdateCompanion<OptionChoiceRow> {
+  final Value<String> id;
+  final Value<String> groupId;
+  final Value<String> name;
+  final Value<int> priceDeltaPaise;
+  final Value<bool> isActive;
+  final Value<int> sortOrder;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const OptionChoicesCompanion({
+    this.id = const Value.absent(),
+    this.groupId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.priceDeltaPaise = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  OptionChoicesCompanion.insert({
+    required String id,
+    required String groupId,
+    required String name,
+    this.priceDeltaPaise = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       groupId = Value(groupId),
+       name = Value(name),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<OptionChoiceRow> custom({
+    Expression<String>? id,
+    Expression<String>? groupId,
+    Expression<String>? name,
+    Expression<int>? priceDeltaPaise,
+    Expression<bool>? isActive,
+    Expression<int>? sortOrder,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (groupId != null) 'group_id': groupId,
+      if (name != null) 'name': name,
+      if (priceDeltaPaise != null) 'price_delta_paise': priceDeltaPaise,
+      if (isActive != null) 'is_active': isActive,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  OptionChoicesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? groupId,
+    Value<String>? name,
+    Value<int>? priceDeltaPaise,
+    Value<bool>? isActive,
+    Value<int>? sortOrder,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return OptionChoicesCompanion(
+      id: id ?? this.id,
+      groupId: groupId ?? this.groupId,
+      name: name ?? this.name,
+      priceDeltaPaise: priceDeltaPaise ?? this.priceDeltaPaise,
+      isActive: isActive ?? this.isActive,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (groupId.present) {
+      map['group_id'] = Variable<String>(groupId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (priceDeltaPaise.present) {
+      map['price_delta_paise'] = Variable<int>(priceDeltaPaise.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OptionChoicesCompanion(')
+          ..write('id: $id, ')
+          ..write('groupId: $groupId, ')
+          ..write('name: $name, ')
+          ..write('priceDeltaPaise: $priceDeltaPaise, ')
+          ..write('isActive: $isActive, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ItemOptionGroupsTable extends ItemOptionGroups
+    with TableInfo<$ItemOptionGroupsTable, ItemOptionGroupRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ItemOptionGroupsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _itemIdMeta = const VerificationMeta('itemId');
+  @override
+  late final GeneratedColumn<String> itemId = GeneratedColumn<String>(
+    'item_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES menu_items (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _groupIdMeta = const VerificationMeta(
+    'groupId',
+  );
+  @override
+  late final GeneratedColumn<String> groupId = GeneratedColumn<String>(
+    'group_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES option_groups (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [itemId, groupId, sortOrder];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'item_option_groups';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ItemOptionGroupRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('item_id')) {
+      context.handle(
+        _itemIdMeta,
+        itemId.isAcceptableOrUnknown(data['item_id']!, _itemIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_itemIdMeta);
+    }
+    if (data.containsKey('group_id')) {
+      context.handle(
+        _groupIdMeta,
+        groupId.isAcceptableOrUnknown(data['group_id']!, _groupIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_groupIdMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {itemId, groupId};
+  @override
+  ItemOptionGroupRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ItemOptionGroupRow(
+      itemId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}item_id'],
+      )!,
+      groupId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}group_id'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+    );
+  }
+
+  @override
+  $ItemOptionGroupsTable createAlias(String alias) {
+    return $ItemOptionGroupsTable(attachedDatabase, alias);
+  }
+}
+
+class ItemOptionGroupRow extends DataClass
+    implements Insertable<ItemOptionGroupRow> {
+  final String itemId;
+  final String groupId;
+  final int sortOrder;
+  const ItemOptionGroupRow({
+    required this.itemId,
+    required this.groupId,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['item_id'] = Variable<String>(itemId);
+    map['group_id'] = Variable<String>(groupId);
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  ItemOptionGroupsCompanion toCompanion(bool nullToAbsent) {
+    return ItemOptionGroupsCompanion(
+      itemId: Value(itemId),
+      groupId: Value(groupId),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory ItemOptionGroupRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ItemOptionGroupRow(
+      itemId: serializer.fromJson<String>(json['itemId']),
+      groupId: serializer.fromJson<String>(json['groupId']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'itemId': serializer.toJson<String>(itemId),
+      'groupId': serializer.toJson<String>(groupId),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  ItemOptionGroupRow copyWith({
+    String? itemId,
+    String? groupId,
+    int? sortOrder,
+  }) => ItemOptionGroupRow(
+    itemId: itemId ?? this.itemId,
+    groupId: groupId ?? this.groupId,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  ItemOptionGroupRow copyWithCompanion(ItemOptionGroupsCompanion data) {
+    return ItemOptionGroupRow(
+      itemId: data.itemId.present ? data.itemId.value : this.itemId,
+      groupId: data.groupId.present ? data.groupId.value : this.groupId,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ItemOptionGroupRow(')
+          ..write('itemId: $itemId, ')
+          ..write('groupId: $groupId, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(itemId, groupId, sortOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ItemOptionGroupRow &&
+          other.itemId == this.itemId &&
+          other.groupId == this.groupId &&
+          other.sortOrder == this.sortOrder);
+}
+
+class ItemOptionGroupsCompanion extends UpdateCompanion<ItemOptionGroupRow> {
+  final Value<String> itemId;
+  final Value<String> groupId;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const ItemOptionGroupsCompanion({
+    this.itemId = const Value.absent(),
+    this.groupId = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ItemOptionGroupsCompanion.insert({
+    required String itemId,
+    required String groupId,
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : itemId = Value(itemId),
+       groupId = Value(groupId);
+  static Insertable<ItemOptionGroupRow> custom({
+    Expression<String>? itemId,
+    Expression<String>? groupId,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (itemId != null) 'item_id': itemId,
+      if (groupId != null) 'group_id': groupId,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ItemOptionGroupsCompanion copyWith({
+    Value<String>? itemId,
+    Value<String>? groupId,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return ItemOptionGroupsCompanion(
+      itemId: itemId ?? this.itemId,
+      groupId: groupId ?? this.groupId,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (itemId.present) {
+      map['item_id'] = Variable<String>(itemId.value);
+    }
+    if (groupId.present) {
+      map['group_id'] = Variable<String>(groupId.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ItemOptionGroupsCompanion(')
+          ..write('itemId: $itemId, ')
+          ..write('groupId: $groupId, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3835,6 +7659,17 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $PrintJobsTable printJobs = $PrintJobsTable(this);
   late final $PrintHistoryTable printHistory = $PrintHistoryTable(this);
   late final $AuditLogTable auditLog = $AuditLogTable(this);
+  late final $TaxProfilesTable taxProfiles = $TaxProfilesTable(this);
+  late final $KitchenStationsTable kitchenStations = $KitchenStationsTable(
+    this,
+  );
+  late final $MenuCategoriesTable menuCategories = $MenuCategoriesTable(this);
+  late final $MenuItemsTable menuItems = $MenuItemsTable(this);
+  late final $OptionGroupsTable optionGroups = $OptionGroupsTable(this);
+  late final $OptionChoicesTable optionChoices = $OptionChoicesTable(this);
+  late final $ItemOptionGroupsTable itemOptionGroups = $ItemOptionGroupsTable(
+    this,
+  );
   late final Index idxPrintJobsStatus = Index(
     'idx_print_jobs_status',
     'CREATE INDEX idx_print_jobs_status ON print_jobs (status)',
@@ -3851,6 +7686,22 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_audit_log_at',
     'CREATE INDEX idx_audit_log_at ON audit_log (at)',
   );
+  late final Index idxMenuCategoriesParent = Index(
+    'idx_menu_categories_parent',
+    'CREATE INDEX idx_menu_categories_parent ON menu_categories (parent_id)',
+  );
+  late final Index idxMenuItemsCategory = Index(
+    'idx_menu_items_category',
+    'CREATE INDEX idx_menu_items_category ON menu_items (category_id)',
+  );
+  late final Index idxMenuItemsSku = Index(
+    'idx_menu_items_sku',
+    'CREATE INDEX idx_menu_items_sku ON menu_items (sku)',
+  );
+  late final Index idxOptionChoicesGroup = Index(
+    'idx_option_choices_group',
+    'CREATE INDEX idx_option_choices_group ON option_choices (group_id)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3863,11 +7714,32 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     printJobs,
     printHistory,
     auditLog,
+    taxProfiles,
+    kitchenStations,
+    menuCategories,
+    menuItems,
+    optionGroups,
+    optionChoices,
+    itemOptionGroups,
     idxPrintJobsStatus,
     idxPrintJobsSourceKey,
     idxPrintHistoryAt,
     idxAuditLogAt,
+    idxMenuCategoriesParent,
+    idxMenuItemsCategory,
+    idxMenuItemsSku,
+    idxOptionChoicesGroup,
   ];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'menu_items',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('item_option_groups', kind: UpdateKind.delete)],
+    ),
+  ]);
 }
 
 typedef $$MigrationLogTableCreateCompanionBuilder =
@@ -5860,6 +9732,3251 @@ typedef $$AuditLogTableProcessedTableManager =
       AuditLogRow,
       PrefetchHooks Function()
     >;
+typedef $$TaxProfilesTableCreateCompanionBuilder =
+    TaxProfilesCompanion Function({
+      required String id,
+      required String name,
+      required int rateBp,
+      Value<bool> isInclusive,
+      Value<String> splitMode,
+      Value<bool> isActive,
+      Value<int> sortOrder,
+      required int createdAt,
+      required int updatedAt,
+      Value<int> rowid,
+    });
+typedef $$TaxProfilesTableUpdateCompanionBuilder =
+    TaxProfilesCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<int> rateBp,
+      Value<bool> isInclusive,
+      Value<String> splitMode,
+      Value<bool> isActive,
+      Value<int> sortOrder,
+      Value<int> createdAt,
+      Value<int> updatedAt,
+      Value<int> rowid,
+    });
+
+final class $$TaxProfilesTableReferences
+    extends BaseReferences<_$AppDatabase, $TaxProfilesTable, TaxProfileRow> {
+  $$TaxProfilesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$MenuItemsTable, List<MenuItemRow>>
+  _menuItemsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.menuItems,
+    aliasName: 'tax_profiles__id__menu_items__tax_profile_id',
+  );
+
+  $$MenuItemsTableProcessedTableManager get menuItemsRefs {
+    final manager = $$MenuItemsTableTableManager(
+      $_db,
+      $_db.menuItems,
+    ).filter((f) => f.taxProfileId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_menuItemsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$TaxProfilesTableFilterComposer
+    extends Composer<_$AppDatabase, $TaxProfilesTable> {
+  $$TaxProfilesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get rateBp => $composableBuilder(
+    column: $table.rateBp,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isInclusive => $composableBuilder(
+    column: $table.isInclusive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get splitMode => $composableBuilder(
+    column: $table.splitMode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> menuItemsRefs(
+    Expression<bool> Function($$MenuItemsTableFilterComposer f) f,
+  ) {
+    final $$MenuItemsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.menuItems,
+      getReferencedColumn: (t) => t.taxProfileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuItemsTableFilterComposer(
+            $db: $db,
+            $table: $db.menuItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$TaxProfilesTableOrderingComposer
+    extends Composer<_$AppDatabase, $TaxProfilesTable> {
+  $$TaxProfilesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get rateBp => $composableBuilder(
+    column: $table.rateBp,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isInclusive => $composableBuilder(
+    column: $table.isInclusive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get splitMode => $composableBuilder(
+    column: $table.splitMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TaxProfilesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TaxProfilesTable> {
+  $$TaxProfilesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get rateBp =>
+      $composableBuilder(column: $table.rateBp, builder: (column) => column);
+
+  GeneratedColumn<bool> get isInclusive => $composableBuilder(
+    column: $table.isInclusive,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get splitMode =>
+      $composableBuilder(column: $table.splitMode, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  Expression<T> menuItemsRefs<T extends Object>(
+    Expression<T> Function($$MenuItemsTableAnnotationComposer a) f,
+  ) {
+    final $$MenuItemsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.menuItems,
+      getReferencedColumn: (t) => t.taxProfileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuItemsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.menuItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$TaxProfilesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TaxProfilesTable,
+          TaxProfileRow,
+          $$TaxProfilesTableFilterComposer,
+          $$TaxProfilesTableOrderingComposer,
+          $$TaxProfilesTableAnnotationComposer,
+          $$TaxProfilesTableCreateCompanionBuilder,
+          $$TaxProfilesTableUpdateCompanionBuilder,
+          (TaxProfileRow, $$TaxProfilesTableReferences),
+          TaxProfileRow,
+          PrefetchHooks Function({bool menuItemsRefs})
+        > {
+  $$TaxProfilesTableTableManager(_$AppDatabase db, $TaxProfilesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TaxProfilesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TaxProfilesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TaxProfilesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> rateBp = const Value.absent(),
+                Value<bool> isInclusive = const Value.absent(),
+                Value<String> splitMode = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TaxProfilesCompanion(
+                id: id,
+                name: name,
+                rateBp: rateBp,
+                isInclusive: isInclusive,
+                splitMode: splitMode,
+                isActive: isActive,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                required int rateBp,
+                Value<bool> isInclusive = const Value.absent(),
+                Value<String> splitMode = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                required int createdAt,
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => TaxProfilesCompanion.insert(
+                id: id,
+                name: name,
+                rateBp: rateBp,
+                isInclusive: isInclusive,
+                splitMode: splitMode,
+                isActive: isActive,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$TaxProfilesTable, TaxProfileRow>(table),
+                  $$TaxProfilesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({menuItemsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (menuItemsRefs) db.menuItems],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (menuItemsRefs)
+                    await $_getPrefetchedDataByColumns<
+                      TaxProfileRow,
+                      $TaxProfilesTable,
+                      MenuItemRow,
+                      $MenuItemsTable
+                    >(
+                      currentTable: table,
+                      referencedTable: $$TaxProfilesTableReferences
+                          ._menuItemsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$TaxProfilesTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).menuItemsRefs,
+                      currentColumn: 'id',
+                      referencedColumn: 'tax_profile_id',
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$TaxProfilesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TaxProfilesTable,
+      TaxProfileRow,
+      $$TaxProfilesTableFilterComposer,
+      $$TaxProfilesTableOrderingComposer,
+      $$TaxProfilesTableAnnotationComposer,
+      $$TaxProfilesTableCreateCompanionBuilder,
+      $$TaxProfilesTableUpdateCompanionBuilder,
+      (TaxProfileRow, $$TaxProfilesTableReferences),
+      TaxProfileRow,
+      PrefetchHooks Function({bool menuItemsRefs})
+    >;
+typedef $$KitchenStationsTableCreateCompanionBuilder =
+    KitchenStationsCompanion Function({
+      required String id,
+      required String name,
+      Value<bool> isActive,
+      Value<int> sortOrder,
+      required int createdAt,
+      required int updatedAt,
+      Value<int> rowid,
+    });
+typedef $$KitchenStationsTableUpdateCompanionBuilder =
+    KitchenStationsCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<bool> isActive,
+      Value<int> sortOrder,
+      Value<int> createdAt,
+      Value<int> updatedAt,
+      Value<int> rowid,
+    });
+
+final class $$KitchenStationsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $KitchenStationsTable,
+          KitchenStationRow
+        > {
+  $$KitchenStationsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<$MenuItemsTable, List<MenuItemRow>>
+  _menuItemsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.menuItems,
+    aliasName: 'kitchen_stations__id__menu_items__station_id',
+  );
+
+  $$MenuItemsTableProcessedTableManager get menuItemsRefs {
+    final manager = $$MenuItemsTableTableManager(
+      $_db,
+      $_db.menuItems,
+    ).filter((f) => f.stationId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_menuItemsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$KitchenStationsTableFilterComposer
+    extends Composer<_$AppDatabase, $KitchenStationsTable> {
+  $$KitchenStationsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> menuItemsRefs(
+    Expression<bool> Function($$MenuItemsTableFilterComposer f) f,
+  ) {
+    final $$MenuItemsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.menuItems,
+      getReferencedColumn: (t) => t.stationId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuItemsTableFilterComposer(
+            $db: $db,
+            $table: $db.menuItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$KitchenStationsTableOrderingComposer
+    extends Composer<_$AppDatabase, $KitchenStationsTable> {
+  $$KitchenStationsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$KitchenStationsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $KitchenStationsTable> {
+  $$KitchenStationsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  Expression<T> menuItemsRefs<T extends Object>(
+    Expression<T> Function($$MenuItemsTableAnnotationComposer a) f,
+  ) {
+    final $$MenuItemsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.menuItems,
+      getReferencedColumn: (t) => t.stationId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuItemsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.menuItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$KitchenStationsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $KitchenStationsTable,
+          KitchenStationRow,
+          $$KitchenStationsTableFilterComposer,
+          $$KitchenStationsTableOrderingComposer,
+          $$KitchenStationsTableAnnotationComposer,
+          $$KitchenStationsTableCreateCompanionBuilder,
+          $$KitchenStationsTableUpdateCompanionBuilder,
+          (KitchenStationRow, $$KitchenStationsTableReferences),
+          KitchenStationRow,
+          PrefetchHooks Function({bool menuItemsRefs})
+        > {
+  $$KitchenStationsTableTableManager(
+    _$AppDatabase db,
+    $KitchenStationsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$KitchenStationsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$KitchenStationsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$KitchenStationsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => KitchenStationsCompanion(
+                id: id,
+                name: name,
+                isActive: isActive,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                Value<bool> isActive = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                required int createdAt,
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => KitchenStationsCompanion.insert(
+                id: id,
+                name: name,
+                isActive: isActive,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$KitchenStationsTable, KitchenStationRow>(table),
+                  $$KitchenStationsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({menuItemsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (menuItemsRefs) db.menuItems],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (menuItemsRefs)
+                    await $_getPrefetchedDataByColumns<
+                      KitchenStationRow,
+                      $KitchenStationsTable,
+                      MenuItemRow,
+                      $MenuItemsTable
+                    >(
+                      currentTable: table,
+                      referencedTable: $$KitchenStationsTableReferences
+                          ._menuItemsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$KitchenStationsTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).menuItemsRefs,
+                      currentColumn: 'id',
+                      referencedColumn: 'station_id',
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$KitchenStationsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $KitchenStationsTable,
+      KitchenStationRow,
+      $$KitchenStationsTableFilterComposer,
+      $$KitchenStationsTableOrderingComposer,
+      $$KitchenStationsTableAnnotationComposer,
+      $$KitchenStationsTableCreateCompanionBuilder,
+      $$KitchenStationsTableUpdateCompanionBuilder,
+      (KitchenStationRow, $$KitchenStationsTableReferences),
+      KitchenStationRow,
+      PrefetchHooks Function({bool menuItemsRefs})
+    >;
+typedef $$MenuCategoriesTableCreateCompanionBuilder =
+    MenuCategoriesCompanion Function({
+      required String id,
+      required String name,
+      Value<String?> parentId,
+      Value<bool> isActive,
+      Value<int> sortOrder,
+      required int createdAt,
+      required int updatedAt,
+      Value<int> rowid,
+    });
+typedef $$MenuCategoriesTableUpdateCompanionBuilder =
+    MenuCategoriesCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<String?> parentId,
+      Value<bool> isActive,
+      Value<int> sortOrder,
+      Value<int> createdAt,
+      Value<int> updatedAt,
+      Value<int> rowid,
+    });
+
+final class $$MenuCategoriesTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $MenuCategoriesTable, MenuCategoryRow> {
+  $$MenuCategoriesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $MenuCategoriesTable _parentIdTable(_$AppDatabase db) => db
+      .menuCategories
+      .createAlias('menu_categories__parent_id__menu_categories__id');
+
+  $$MenuCategoriesTableProcessedTableManager? get parentId {
+    final $_column = $_itemColumn<String>('parent_id');
+    if ($_column == null) return null;
+    final manager = $$MenuCategoriesTableTableManager(
+      $_db,
+      $_db.menuCategories,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_parentIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$MenuItemsTable, List<MenuItemRow>>
+  _menuItemsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.menuItems,
+    aliasName: 'menu_categories__id__menu_items__category_id',
+  );
+
+  $$MenuItemsTableProcessedTableManager get menuItemsRefs {
+    final manager = $$MenuItemsTableTableManager(
+      $_db,
+      $_db.menuItems,
+    ).filter((f) => f.categoryId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_menuItemsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$MenuCategoriesTableFilterComposer
+    extends Composer<_$AppDatabase, $MenuCategoriesTable> {
+  $$MenuCategoriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$MenuCategoriesTableFilterComposer get parentId {
+    final $$MenuCategoriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.parentId,
+      referencedTable: $db.menuCategories,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuCategoriesTableFilterComposer(
+            $db: $db,
+            $table: $db.menuCategories,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> menuItemsRefs(
+    Expression<bool> Function($$MenuItemsTableFilterComposer f) f,
+  ) {
+    final $$MenuItemsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.menuItems,
+      getReferencedColumn: (t) => t.categoryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuItemsTableFilterComposer(
+            $db: $db,
+            $table: $db.menuItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$MenuCategoriesTableOrderingComposer
+    extends Composer<_$AppDatabase, $MenuCategoriesTable> {
+  $$MenuCategoriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$MenuCategoriesTableOrderingComposer get parentId {
+    final $$MenuCategoriesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.parentId,
+      referencedTable: $db.menuCategories,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuCategoriesTableOrderingComposer(
+            $db: $db,
+            $table: $db.menuCategories,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MenuCategoriesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MenuCategoriesTable> {
+  $$MenuCategoriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$MenuCategoriesTableAnnotationComposer get parentId {
+    final $$MenuCategoriesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.parentId,
+      referencedTable: $db.menuCategories,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuCategoriesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.menuCategories,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> menuItemsRefs<T extends Object>(
+    Expression<T> Function($$MenuItemsTableAnnotationComposer a) f,
+  ) {
+    final $$MenuItemsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.menuItems,
+      getReferencedColumn: (t) => t.categoryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuItemsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.menuItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$MenuCategoriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MenuCategoriesTable,
+          MenuCategoryRow,
+          $$MenuCategoriesTableFilterComposer,
+          $$MenuCategoriesTableOrderingComposer,
+          $$MenuCategoriesTableAnnotationComposer,
+          $$MenuCategoriesTableCreateCompanionBuilder,
+          $$MenuCategoriesTableUpdateCompanionBuilder,
+          (MenuCategoryRow, $$MenuCategoriesTableReferences),
+          MenuCategoryRow,
+          PrefetchHooks Function({bool parentId, bool menuItemsRefs})
+        > {
+  $$MenuCategoriesTableTableManager(
+    _$AppDatabase db,
+    $MenuCategoriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MenuCategoriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MenuCategoriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MenuCategoriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> parentId = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MenuCategoriesCompanion(
+                id: id,
+                name: name,
+                parentId: parentId,
+                isActive: isActive,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                Value<String?> parentId = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                required int createdAt,
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => MenuCategoriesCompanion.insert(
+                id: id,
+                name: name,
+                parentId: parentId,
+                isActive: isActive,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$MenuCategoriesTable, MenuCategoryRow>(table),
+                  $$MenuCategoriesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({parentId = false, menuItemsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (menuItemsRefs) db.menuItems],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (parentId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.parentId,
+                        referencedTable: $$MenuCategoriesTableReferences
+                            ._parentIdTable(db),
+                        referencedColumn: $$MenuCategoriesTableReferences
+                            ._parentIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (menuItemsRefs)
+                    await $_getPrefetchedDataByColumns<
+                      MenuCategoryRow,
+                      $MenuCategoriesTable,
+                      MenuItemRow,
+                      $MenuItemsTable
+                    >(
+                      currentTable: table,
+                      referencedTable: $$MenuCategoriesTableReferences
+                          ._menuItemsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$MenuCategoriesTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).menuItemsRefs,
+                      currentColumn: 'id',
+                      referencedColumn: 'category_id',
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$MenuCategoriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MenuCategoriesTable,
+      MenuCategoryRow,
+      $$MenuCategoriesTableFilterComposer,
+      $$MenuCategoriesTableOrderingComposer,
+      $$MenuCategoriesTableAnnotationComposer,
+      $$MenuCategoriesTableCreateCompanionBuilder,
+      $$MenuCategoriesTableUpdateCompanionBuilder,
+      (MenuCategoryRow, $$MenuCategoriesTableReferences),
+      MenuCategoryRow,
+      PrefetchHooks Function({bool parentId, bool menuItemsRefs})
+    >;
+typedef $$MenuItemsTableCreateCompanionBuilder = MenuItemsCompanion Function({
+  required String id,
+  required String categoryId,
+  required String name,
+  Value<String> description,
+  Value<String?> sku,
+  required int basePricePaise,
+  Value<String?> taxProfileId,
+  Value<String> foodType,
+  Value<bool> isActive,
+  Value<bool> availableDineIn,
+  Value<bool> availableTakeaway,
+  Value<String?> stationId,
+  Value<bool> isFavorite,
+  Value<int?> prepMinutes,
+  Value<String?> imagePath,
+  Value<int> sortOrder,
+  required int createdAt,
+  required int updatedAt,
+  Value<int> rowid,
+});
+typedef $$MenuItemsTableUpdateCompanionBuilder = MenuItemsCompanion Function({
+  Value<String> id,
+  Value<String> categoryId,
+  Value<String> name,
+  Value<String> description,
+  Value<String?> sku,
+  Value<int> basePricePaise,
+  Value<String?> taxProfileId,
+  Value<String> foodType,
+  Value<bool> isActive,
+  Value<bool> availableDineIn,
+  Value<bool> availableTakeaway,
+  Value<String?> stationId,
+  Value<bool> isFavorite,
+  Value<int?> prepMinutes,
+  Value<String?> imagePath,
+  Value<int> sortOrder,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int> rowid,
+});
+
+final class $$MenuItemsTableReferences
+    extends BaseReferences<_$AppDatabase, $MenuItemsTable, MenuItemRow> {
+  $$MenuItemsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $MenuCategoriesTable _categoryIdTable(_$AppDatabase db) => db
+      .menuCategories
+      .createAlias('menu_items__category_id__menu_categories__id');
+
+  $$MenuCategoriesTableProcessedTableManager get categoryId {
+    final $_column = $_itemColumn<String>('category_id')!;
+
+    final manager = $$MenuCategoriesTableTableManager(
+      $_db,
+      $_db.menuCategories,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_categoryIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $TaxProfilesTable _taxProfileIdTable(_$AppDatabase db) => db
+      .taxProfiles
+      .createAlias('menu_items__tax_profile_id__tax_profiles__id');
+
+  $$TaxProfilesTableProcessedTableManager? get taxProfileId {
+    final $_column = $_itemColumn<String>('tax_profile_id');
+    if ($_column == null) return null;
+    final manager = $$TaxProfilesTableTableManager(
+      $_db,
+      $_db.taxProfiles,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_taxProfileIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $KitchenStationsTable _stationIdTable(_$AppDatabase db) => db
+      .kitchenStations
+      .createAlias('menu_items__station_id__kitchen_stations__id');
+
+  $$KitchenStationsTableProcessedTableManager? get stationId {
+    final $_column = $_itemColumn<String>('station_id');
+    if ($_column == null) return null;
+    final manager = $$KitchenStationsTableTableManager(
+      $_db,
+      $_db.kitchenStations,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_stationIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$ItemOptionGroupsTable, List<ItemOptionGroupRow>>
+  _itemOptionGroupsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.itemOptionGroups,
+    aliasName: 'menu_items__id__item_option_groups__item_id',
+  );
+
+  $$ItemOptionGroupsTableProcessedTableManager get itemOptionGroupsRefs {
+    final manager = $$ItemOptionGroupsTableTableManager(
+      $_db,
+      $_db.itemOptionGroups,
+    ).filter((f) => f.itemId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _itemOptionGroupsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$MenuItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $MenuItemsTable> {
+  $$MenuItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sku => $composableBuilder(
+    column: $table.sku,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get basePricePaise => $composableBuilder(
+    column: $table.basePricePaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get foodType => $composableBuilder(
+    column: $table.foodType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get availableDineIn => $composableBuilder(
+    column: $table.availableDineIn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get availableTakeaway => $composableBuilder(
+    column: $table.availableTakeaway,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isFavorite => $composableBuilder(
+    column: $table.isFavorite,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get prepMinutes => $composableBuilder(
+    column: $table.prepMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get imagePath => $composableBuilder(
+    column: $table.imagePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$MenuCategoriesTableFilterComposer get categoryId {
+    final $$MenuCategoriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.categoryId,
+      referencedTable: $db.menuCategories,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuCategoriesTableFilterComposer(
+            $db: $db,
+            $table: $db.menuCategories,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$TaxProfilesTableFilterComposer get taxProfileId {
+    final $$TaxProfilesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.taxProfileId,
+      referencedTable: $db.taxProfiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TaxProfilesTableFilterComposer(
+            $db: $db,
+            $table: $db.taxProfiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$KitchenStationsTableFilterComposer get stationId {
+    final $$KitchenStationsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.stationId,
+      referencedTable: $db.kitchenStations,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$KitchenStationsTableFilterComposer(
+            $db: $db,
+            $table: $db.kitchenStations,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> itemOptionGroupsRefs(
+    Expression<bool> Function($$ItemOptionGroupsTableFilterComposer f) f,
+  ) {
+    final $$ItemOptionGroupsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.itemOptionGroups,
+      getReferencedColumn: (t) => t.itemId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ItemOptionGroupsTableFilterComposer(
+            $db: $db,
+            $table: $db.itemOptionGroups,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$MenuItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $MenuItemsTable> {
+  $$MenuItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sku => $composableBuilder(
+    column: $table.sku,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get basePricePaise => $composableBuilder(
+    column: $table.basePricePaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get foodType => $composableBuilder(
+    column: $table.foodType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get availableDineIn => $composableBuilder(
+    column: $table.availableDineIn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get availableTakeaway => $composableBuilder(
+    column: $table.availableTakeaway,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isFavorite => $composableBuilder(
+    column: $table.isFavorite,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get prepMinutes => $composableBuilder(
+    column: $table.prepMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get imagePath => $composableBuilder(
+    column: $table.imagePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$MenuCategoriesTableOrderingComposer get categoryId {
+    final $$MenuCategoriesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.categoryId,
+      referencedTable: $db.menuCategories,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuCategoriesTableOrderingComposer(
+            $db: $db,
+            $table: $db.menuCategories,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$TaxProfilesTableOrderingComposer get taxProfileId {
+    final $$TaxProfilesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.taxProfileId,
+      referencedTable: $db.taxProfiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TaxProfilesTableOrderingComposer(
+            $db: $db,
+            $table: $db.taxProfiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$KitchenStationsTableOrderingComposer get stationId {
+    final $$KitchenStationsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.stationId,
+      referencedTable: $db.kitchenStations,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$KitchenStationsTableOrderingComposer(
+            $db: $db,
+            $table: $db.kitchenStations,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MenuItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MenuItemsTable> {
+  $$MenuItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sku =>
+      $composableBuilder(column: $table.sku, builder: (column) => column);
+
+  GeneratedColumn<int> get basePricePaise => $composableBuilder(
+    column: $table.basePricePaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get foodType =>
+      $composableBuilder(column: $table.foodType, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<bool> get availableDineIn => $composableBuilder(
+    column: $table.availableDineIn,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get availableTakeaway => $composableBuilder(
+    column: $table.availableTakeaway,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isFavorite => $composableBuilder(
+    column: $table.isFavorite,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get prepMinutes => $composableBuilder(
+    column: $table.prepMinutes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get imagePath =>
+      $composableBuilder(column: $table.imagePath, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$MenuCategoriesTableAnnotationComposer get categoryId {
+    final $$MenuCategoriesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.categoryId,
+      referencedTable: $db.menuCategories,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuCategoriesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.menuCategories,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$TaxProfilesTableAnnotationComposer get taxProfileId {
+    final $$TaxProfilesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.taxProfileId,
+      referencedTable: $db.taxProfiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TaxProfilesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.taxProfiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$KitchenStationsTableAnnotationComposer get stationId {
+    final $$KitchenStationsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.stationId,
+      referencedTable: $db.kitchenStations,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$KitchenStationsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.kitchenStations,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> itemOptionGroupsRefs<T extends Object>(
+    Expression<T> Function($$ItemOptionGroupsTableAnnotationComposer a) f,
+  ) {
+    final $$ItemOptionGroupsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.itemOptionGroups,
+      getReferencedColumn: (t) => t.itemId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ItemOptionGroupsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.itemOptionGroups,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$MenuItemsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MenuItemsTable,
+          MenuItemRow,
+          $$MenuItemsTableFilterComposer,
+          $$MenuItemsTableOrderingComposer,
+          $$MenuItemsTableAnnotationComposer,
+          $$MenuItemsTableCreateCompanionBuilder,
+          $$MenuItemsTableUpdateCompanionBuilder,
+          (MenuItemRow, $$MenuItemsTableReferences),
+          MenuItemRow,
+          PrefetchHooks Function({
+            bool categoryId,
+            bool taxProfileId,
+            bool stationId,
+            bool itemOptionGroupsRefs,
+          })
+        > {
+  $$MenuItemsTableTableManager(_$AppDatabase db, $MenuItemsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MenuItemsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MenuItemsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MenuItemsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> categoryId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String?> sku = const Value.absent(),
+                Value<int> basePricePaise = const Value.absent(),
+                Value<String?> taxProfileId = const Value.absent(),
+                Value<String> foodType = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<bool> availableDineIn = const Value.absent(),
+                Value<bool> availableTakeaway = const Value.absent(),
+                Value<String?> stationId = const Value.absent(),
+                Value<bool> isFavorite = const Value.absent(),
+                Value<int?> prepMinutes = const Value.absent(),
+                Value<String?> imagePath = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MenuItemsCompanion(
+                id: id,
+                categoryId: categoryId,
+                name: name,
+                description: description,
+                sku: sku,
+                basePricePaise: basePricePaise,
+                taxProfileId: taxProfileId,
+                foodType: foodType,
+                isActive: isActive,
+                availableDineIn: availableDineIn,
+                availableTakeaway: availableTakeaway,
+                stationId: stationId,
+                isFavorite: isFavorite,
+                prepMinutes: prepMinutes,
+                imagePath: imagePath,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String categoryId,
+                required String name,
+                Value<String> description = const Value.absent(),
+                Value<String?> sku = const Value.absent(),
+                required int basePricePaise,
+                Value<String?> taxProfileId = const Value.absent(),
+                Value<String> foodType = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<bool> availableDineIn = const Value.absent(),
+                Value<bool> availableTakeaway = const Value.absent(),
+                Value<String?> stationId = const Value.absent(),
+                Value<bool> isFavorite = const Value.absent(),
+                Value<int?> prepMinutes = const Value.absent(),
+                Value<String?> imagePath = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                required int createdAt,
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => MenuItemsCompanion.insert(
+                id: id,
+                categoryId: categoryId,
+                name: name,
+                description: description,
+                sku: sku,
+                basePricePaise: basePricePaise,
+                taxProfileId: taxProfileId,
+                foodType: foodType,
+                isActive: isActive,
+                availableDineIn: availableDineIn,
+                availableTakeaway: availableTakeaway,
+                stationId: stationId,
+                isFavorite: isFavorite,
+                prepMinutes: prepMinutes,
+                imagePath: imagePath,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$MenuItemsTable, MenuItemRow>(table),
+                  $$MenuItemsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                categoryId = false,
+                taxProfileId = false,
+                stationId = false,
+                itemOptionGroupsRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (itemOptionGroupsRefs) db.itemOptionGroups,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (categoryId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.categoryId,
+                            referencedTable: $$MenuItemsTableReferences
+                                ._categoryIdTable(db),
+                            referencedColumn: $$MenuItemsTableReferences
+                                ._categoryIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+                        if (taxProfileId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.taxProfileId,
+                            referencedTable: $$MenuItemsTableReferences
+                                ._taxProfileIdTable(db),
+                            referencedColumn: $$MenuItemsTableReferences
+                                ._taxProfileIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+                        if (stationId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.stationId,
+                            referencedTable: $$MenuItemsTableReferences
+                                ._stationIdTable(db),
+                            referencedColumn: $$MenuItemsTableReferences
+                                ._stationIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (itemOptionGroupsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          MenuItemRow,
+                          $MenuItemsTable,
+                          ItemOptionGroupRow,
+                          $ItemOptionGroupsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$MenuItemsTableReferences
+                              ._itemOptionGroupsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$MenuItemsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).itemOptionGroupsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'item_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$MenuItemsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MenuItemsTable,
+      MenuItemRow,
+      $$MenuItemsTableFilterComposer,
+      $$MenuItemsTableOrderingComposer,
+      $$MenuItemsTableAnnotationComposer,
+      $$MenuItemsTableCreateCompanionBuilder,
+      $$MenuItemsTableUpdateCompanionBuilder,
+      (MenuItemRow, $$MenuItemsTableReferences),
+      MenuItemRow,
+      PrefetchHooks Function({
+        bool categoryId,
+        bool taxProfileId,
+        bool stationId,
+        bool itemOptionGroupsRefs,
+      })
+    >;
+typedef $$OptionGroupsTableCreateCompanionBuilder =
+    OptionGroupsCompanion Function({
+      required String id,
+      required String name,
+      required String kind,
+      Value<int> minSelect,
+      Value<int> maxSelect,
+      Value<bool> isActive,
+      Value<int> sortOrder,
+      required int createdAt,
+      required int updatedAt,
+      Value<int> rowid,
+    });
+typedef $$OptionGroupsTableUpdateCompanionBuilder =
+    OptionGroupsCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<String> kind,
+      Value<int> minSelect,
+      Value<int> maxSelect,
+      Value<bool> isActive,
+      Value<int> sortOrder,
+      Value<int> createdAt,
+      Value<int> updatedAt,
+      Value<int> rowid,
+    });
+
+final class $$OptionGroupsTableReferences
+    extends BaseReferences<_$AppDatabase, $OptionGroupsTable, OptionGroupRow> {
+  $$OptionGroupsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$OptionChoicesTable, List<OptionChoiceRow>>
+  _optionChoicesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.optionChoices,
+    aliasName: 'option_groups__id__option_choices__group_id',
+  );
+
+  $$OptionChoicesTableProcessedTableManager get optionChoicesRefs {
+    final manager = $$OptionChoicesTableTableManager(
+      $_db,
+      $_db.optionChoices,
+    ).filter((f) => f.groupId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_optionChoicesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$ItemOptionGroupsTable, List<ItemOptionGroupRow>>
+  _itemOptionGroupsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.itemOptionGroups,
+    aliasName: 'option_groups__id__item_option_groups__group_id',
+  );
+
+  $$ItemOptionGroupsTableProcessedTableManager get itemOptionGroupsRefs {
+    final manager = $$ItemOptionGroupsTableTableManager(
+      $_db,
+      $_db.itemOptionGroups,
+    ).filter((f) => f.groupId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _itemOptionGroupsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$OptionGroupsTableFilterComposer
+    extends Composer<_$AppDatabase, $OptionGroupsTable> {
+  $$OptionGroupsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get minSelect => $composableBuilder(
+    column: $table.minSelect,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxSelect => $composableBuilder(
+    column: $table.maxSelect,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> optionChoicesRefs(
+    Expression<bool> Function($$OptionChoicesTableFilterComposer f) f,
+  ) {
+    final $$OptionChoicesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.optionChoices,
+      getReferencedColumn: (t) => t.groupId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OptionChoicesTableFilterComposer(
+            $db: $db,
+            $table: $db.optionChoices,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> itemOptionGroupsRefs(
+    Expression<bool> Function($$ItemOptionGroupsTableFilterComposer f) f,
+  ) {
+    final $$ItemOptionGroupsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.itemOptionGroups,
+      getReferencedColumn: (t) => t.groupId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ItemOptionGroupsTableFilterComposer(
+            $db: $db,
+            $table: $db.itemOptionGroups,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$OptionGroupsTableOrderingComposer
+    extends Composer<_$AppDatabase, $OptionGroupsTable> {
+  $$OptionGroupsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get minSelect => $composableBuilder(
+    column: $table.minSelect,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxSelect => $composableBuilder(
+    column: $table.maxSelect,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$OptionGroupsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $OptionGroupsTable> {
+  $$OptionGroupsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<int> get minSelect =>
+      $composableBuilder(column: $table.minSelect, builder: (column) => column);
+
+  GeneratedColumn<int> get maxSelect =>
+      $composableBuilder(column: $table.maxSelect, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  Expression<T> optionChoicesRefs<T extends Object>(
+    Expression<T> Function($$OptionChoicesTableAnnotationComposer a) f,
+  ) {
+    final $$OptionChoicesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.optionChoices,
+      getReferencedColumn: (t) => t.groupId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OptionChoicesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.optionChoices,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> itemOptionGroupsRefs<T extends Object>(
+    Expression<T> Function($$ItemOptionGroupsTableAnnotationComposer a) f,
+  ) {
+    final $$ItemOptionGroupsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.itemOptionGroups,
+      getReferencedColumn: (t) => t.groupId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ItemOptionGroupsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.itemOptionGroups,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$OptionGroupsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $OptionGroupsTable,
+          OptionGroupRow,
+          $$OptionGroupsTableFilterComposer,
+          $$OptionGroupsTableOrderingComposer,
+          $$OptionGroupsTableAnnotationComposer,
+          $$OptionGroupsTableCreateCompanionBuilder,
+          $$OptionGroupsTableUpdateCompanionBuilder,
+          (OptionGroupRow, $$OptionGroupsTableReferences),
+          OptionGroupRow,
+          PrefetchHooks Function({
+            bool optionChoicesRefs,
+            bool itemOptionGroupsRefs,
+          })
+        > {
+  $$OptionGroupsTableTableManager(_$AppDatabase db, $OptionGroupsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$OptionGroupsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$OptionGroupsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$OptionGroupsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<int> minSelect = const Value.absent(),
+                Value<int> maxSelect = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => OptionGroupsCompanion(
+                id: id,
+                name: name,
+                kind: kind,
+                minSelect: minSelect,
+                maxSelect: maxSelect,
+                isActive: isActive,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                required String kind,
+                Value<int> minSelect = const Value.absent(),
+                Value<int> maxSelect = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                required int createdAt,
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => OptionGroupsCompanion.insert(
+                id: id,
+                name: name,
+                kind: kind,
+                minSelect: minSelect,
+                maxSelect: maxSelect,
+                isActive: isActive,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$OptionGroupsTable, OptionGroupRow>(table),
+                  $$OptionGroupsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({optionChoicesRefs = false, itemOptionGroupsRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (optionChoicesRefs) db.optionChoices,
+                    if (itemOptionGroupsRefs) db.itemOptionGroups,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (optionChoicesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          OptionGroupRow,
+                          $OptionGroupsTable,
+                          OptionChoiceRow,
+                          $OptionChoicesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$OptionGroupsTableReferences
+                              ._optionChoicesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$OptionGroupsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).optionChoicesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'group_id',
+                          typedResults: items,
+                        ),
+                      if (itemOptionGroupsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          OptionGroupRow,
+                          $OptionGroupsTable,
+                          ItemOptionGroupRow,
+                          $ItemOptionGroupsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$OptionGroupsTableReferences
+                              ._itemOptionGroupsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$OptionGroupsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).itemOptionGroupsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'group_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$OptionGroupsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $OptionGroupsTable,
+      OptionGroupRow,
+      $$OptionGroupsTableFilterComposer,
+      $$OptionGroupsTableOrderingComposer,
+      $$OptionGroupsTableAnnotationComposer,
+      $$OptionGroupsTableCreateCompanionBuilder,
+      $$OptionGroupsTableUpdateCompanionBuilder,
+      (OptionGroupRow, $$OptionGroupsTableReferences),
+      OptionGroupRow,
+      PrefetchHooks Function({
+        bool optionChoicesRefs,
+        bool itemOptionGroupsRefs,
+      })
+    >;
+typedef $$OptionChoicesTableCreateCompanionBuilder =
+    OptionChoicesCompanion Function({
+      required String id,
+      required String groupId,
+      required String name,
+      Value<int> priceDeltaPaise,
+      Value<bool> isActive,
+      Value<int> sortOrder,
+      required int createdAt,
+      required int updatedAt,
+      Value<int> rowid,
+    });
+typedef $$OptionChoicesTableUpdateCompanionBuilder =
+    OptionChoicesCompanion Function({
+      Value<String> id,
+      Value<String> groupId,
+      Value<String> name,
+      Value<int> priceDeltaPaise,
+      Value<bool> isActive,
+      Value<int> sortOrder,
+      Value<int> createdAt,
+      Value<int> updatedAt,
+      Value<int> rowid,
+    });
+
+final class $$OptionChoicesTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $OptionChoicesTable, OptionChoiceRow> {
+  $$OptionChoicesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $OptionGroupsTable _groupIdTable(_$AppDatabase db) => db.optionGroups
+      .createAlias('option_choices__group_id__option_groups__id');
+
+  $$OptionGroupsTableProcessedTableManager get groupId {
+    final $_column = $_itemColumn<String>('group_id')!;
+
+    final manager = $$OptionGroupsTableTableManager(
+      $_db,
+      $_db.optionGroups,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_groupIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$OptionChoicesTableFilterComposer
+    extends Composer<_$AppDatabase, $OptionChoicesTable> {
+  $$OptionChoicesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get priceDeltaPaise => $composableBuilder(
+    column: $table.priceDeltaPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$OptionGroupsTableFilterComposer get groupId {
+    final $$OptionGroupsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.groupId,
+      referencedTable: $db.optionGroups,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OptionGroupsTableFilterComposer(
+            $db: $db,
+            $table: $db.optionGroups,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$OptionChoicesTableOrderingComposer
+    extends Composer<_$AppDatabase, $OptionChoicesTable> {
+  $$OptionChoicesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get priceDeltaPaise => $composableBuilder(
+    column: $table.priceDeltaPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$OptionGroupsTableOrderingComposer get groupId {
+    final $$OptionGroupsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.groupId,
+      referencedTable: $db.optionGroups,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OptionGroupsTableOrderingComposer(
+            $db: $db,
+            $table: $db.optionGroups,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$OptionChoicesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $OptionChoicesTable> {
+  $$OptionChoicesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get priceDeltaPaise => $composableBuilder(
+    column: $table.priceDeltaPaise,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$OptionGroupsTableAnnotationComposer get groupId {
+    final $$OptionGroupsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.groupId,
+      referencedTable: $db.optionGroups,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OptionGroupsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.optionGroups,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$OptionChoicesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $OptionChoicesTable,
+          OptionChoiceRow,
+          $$OptionChoicesTableFilterComposer,
+          $$OptionChoicesTableOrderingComposer,
+          $$OptionChoicesTableAnnotationComposer,
+          $$OptionChoicesTableCreateCompanionBuilder,
+          $$OptionChoicesTableUpdateCompanionBuilder,
+          (OptionChoiceRow, $$OptionChoicesTableReferences),
+          OptionChoiceRow,
+          PrefetchHooks Function({bool groupId})
+        > {
+  $$OptionChoicesTableTableManager(_$AppDatabase db, $OptionChoicesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$OptionChoicesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$OptionChoicesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$OptionChoicesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> groupId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> priceDeltaPaise = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => OptionChoicesCompanion(
+                id: id,
+                groupId: groupId,
+                name: name,
+                priceDeltaPaise: priceDeltaPaise,
+                isActive: isActive,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String groupId,
+                required String name,
+                Value<int> priceDeltaPaise = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                required int createdAt,
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => OptionChoicesCompanion.insert(
+                id: id,
+                groupId: groupId,
+                name: name,
+                priceDeltaPaise: priceDeltaPaise,
+                isActive: isActive,
+                sortOrder: sortOrder,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$OptionChoicesTable, OptionChoiceRow>(table),
+                  $$OptionChoicesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({groupId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (groupId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.groupId,
+                        referencedTable: $$OptionChoicesTableReferences
+                            ._groupIdTable(db),
+                        referencedColumn: $$OptionChoicesTableReferences
+                            ._groupIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$OptionChoicesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $OptionChoicesTable,
+      OptionChoiceRow,
+      $$OptionChoicesTableFilterComposer,
+      $$OptionChoicesTableOrderingComposer,
+      $$OptionChoicesTableAnnotationComposer,
+      $$OptionChoicesTableCreateCompanionBuilder,
+      $$OptionChoicesTableUpdateCompanionBuilder,
+      (OptionChoiceRow, $$OptionChoicesTableReferences),
+      OptionChoiceRow,
+      PrefetchHooks Function({bool groupId})
+    >;
+typedef $$ItemOptionGroupsTableCreateCompanionBuilder =
+    ItemOptionGroupsCompanion Function({
+      required String itemId,
+      required String groupId,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+typedef $$ItemOptionGroupsTableUpdateCompanionBuilder =
+    ItemOptionGroupsCompanion Function({
+      Value<String> itemId,
+      Value<String> groupId,
+      Value<int> sortOrder,
+      Value<int> rowid,
+    });
+
+final class $$ItemOptionGroupsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $ItemOptionGroupsTable,
+          ItemOptionGroupRow
+        > {
+  $$ItemOptionGroupsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $MenuItemsTable _itemIdTable(_$AppDatabase db) =>
+      db.menuItems.createAlias('item_option_groups__item_id__menu_items__id');
+
+  $$MenuItemsTableProcessedTableManager get itemId {
+    final $_column = $_itemColumn<String>('item_id')!;
+
+    final manager = $$MenuItemsTableTableManager(
+      $_db,
+      $_db.menuItems,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_itemIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $OptionGroupsTable _groupIdTable(_$AppDatabase db) => db.optionGroups
+      .createAlias('item_option_groups__group_id__option_groups__id');
+
+  $$OptionGroupsTableProcessedTableManager get groupId {
+    final $_column = $_itemColumn<String>('group_id')!;
+
+    final manager = $$OptionGroupsTableTableManager(
+      $_db,
+      $_db.optionGroups,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_groupIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ItemOptionGroupsTableFilterComposer
+    extends Composer<_$AppDatabase, $ItemOptionGroupsTable> {
+  $$ItemOptionGroupsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$MenuItemsTableFilterComposer get itemId {
+    final $$MenuItemsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.itemId,
+      referencedTable: $db.menuItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuItemsTableFilterComposer(
+            $db: $db,
+            $table: $db.menuItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$OptionGroupsTableFilterComposer get groupId {
+    final $$OptionGroupsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.groupId,
+      referencedTable: $db.optionGroups,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OptionGroupsTableFilterComposer(
+            $db: $db,
+            $table: $db.optionGroups,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ItemOptionGroupsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ItemOptionGroupsTable> {
+  $$ItemOptionGroupsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$MenuItemsTableOrderingComposer get itemId {
+    final $$MenuItemsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.itemId,
+      referencedTable: $db.menuItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuItemsTableOrderingComposer(
+            $db: $db,
+            $table: $db.menuItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$OptionGroupsTableOrderingComposer get groupId {
+    final $$OptionGroupsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.groupId,
+      referencedTable: $db.optionGroups,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OptionGroupsTableOrderingComposer(
+            $db: $db,
+            $table: $db.optionGroups,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ItemOptionGroupsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ItemOptionGroupsTable> {
+  $$ItemOptionGroupsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  $$MenuItemsTableAnnotationComposer get itemId {
+    final $$MenuItemsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.itemId,
+      referencedTable: $db.menuItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuItemsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.menuItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$OptionGroupsTableAnnotationComposer get groupId {
+    final $$OptionGroupsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.groupId,
+      referencedTable: $db.optionGroups,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OptionGroupsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.optionGroups,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ItemOptionGroupsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ItemOptionGroupsTable,
+          ItemOptionGroupRow,
+          $$ItemOptionGroupsTableFilterComposer,
+          $$ItemOptionGroupsTableOrderingComposer,
+          $$ItemOptionGroupsTableAnnotationComposer,
+          $$ItemOptionGroupsTableCreateCompanionBuilder,
+          $$ItemOptionGroupsTableUpdateCompanionBuilder,
+          (ItemOptionGroupRow, $$ItemOptionGroupsTableReferences),
+          ItemOptionGroupRow,
+          PrefetchHooks Function({bool itemId, bool groupId})
+        > {
+  $$ItemOptionGroupsTableTableManager(
+    _$AppDatabase db,
+    $ItemOptionGroupsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ItemOptionGroupsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ItemOptionGroupsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ItemOptionGroupsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> itemId = const Value.absent(),
+                Value<String> groupId = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ItemOptionGroupsCompanion(
+                itemId: itemId,
+                groupId: groupId,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String itemId,
+                required String groupId,
+                Value<int> sortOrder = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ItemOptionGroupsCompanion.insert(
+                itemId: itemId,
+                groupId: groupId,
+                sortOrder: sortOrder,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ItemOptionGroupsTable, ItemOptionGroupRow>(
+                    table,
+                  ),
+                  $$ItemOptionGroupsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({itemId = false, groupId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (itemId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.itemId,
+                        referencedTable: $$ItemOptionGroupsTableReferences
+                            ._itemIdTable(db),
+                        referencedColumn: $$ItemOptionGroupsTableReferences
+                            ._itemIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+                    if (groupId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.groupId,
+                        referencedTable: $$ItemOptionGroupsTableReferences
+                            ._groupIdTable(db),
+                        referencedColumn: $$ItemOptionGroupsTableReferences
+                            ._groupIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ItemOptionGroupsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ItemOptionGroupsTable,
+      ItemOptionGroupRow,
+      $$ItemOptionGroupsTableFilterComposer,
+      $$ItemOptionGroupsTableOrderingComposer,
+      $$ItemOptionGroupsTableAnnotationComposer,
+      $$ItemOptionGroupsTableCreateCompanionBuilder,
+      $$ItemOptionGroupsTableUpdateCompanionBuilder,
+      (ItemOptionGroupRow, $$ItemOptionGroupsTableReferences),
+      ItemOptionGroupRow,
+      PrefetchHooks Function({bool itemId, bool groupId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -5878,4 +12995,18 @@ class $AppDatabaseManager {
       $$PrintHistoryTableTableManager(_db, _db.printHistory);
   $$AuditLogTableTableManager get auditLog =>
       $$AuditLogTableTableManager(_db, _db.auditLog);
+  $$TaxProfilesTableTableManager get taxProfiles =>
+      $$TaxProfilesTableTableManager(_db, _db.taxProfiles);
+  $$KitchenStationsTableTableManager get kitchenStations =>
+      $$KitchenStationsTableTableManager(_db, _db.kitchenStations);
+  $$MenuCategoriesTableTableManager get menuCategories =>
+      $$MenuCategoriesTableTableManager(_db, _db.menuCategories);
+  $$MenuItemsTableTableManager get menuItems =>
+      $$MenuItemsTableTableManager(_db, _db.menuItems);
+  $$OptionGroupsTableTableManager get optionGroups =>
+      $$OptionGroupsTableTableManager(_db, _db.optionGroups);
+  $$OptionChoicesTableTableManager get optionChoices =>
+      $$OptionChoicesTableTableManager(_db, _db.optionChoices);
+  $$ItemOptionGroupsTableTableManager get itemOptionGroups =>
+      $$ItemOptionGroupsTableTableManager(_db, _db.itemOptionGroups);
 }

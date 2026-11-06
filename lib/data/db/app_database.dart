@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 import '../../core/util/clock.dart';
+import 'app_database.steps.dart';
 import 'tables.dart';
 
 part 'app_database.g.dart';
@@ -16,6 +17,8 @@ part 'app_database.g.dart';
 /// every change; never edit a released step):
 /// - v1: migration_log, app_settings, business_profiles, printer_profiles,
 ///   print_jobs, print_history, audit_log.
+/// - v2: tax_profiles, kitchen_stations, menu_categories, menu_items,
+///   option_groups, option_choices, item_option_groups.
 @DriftDatabase(
   tables: [
     MigrationLog,
@@ -25,6 +28,13 @@ part 'app_database.g.dart';
     PrintJobs,
     PrintHistory,
     AuditLog,
+    TaxProfiles,
+    KitchenStations,
+    MenuCategories,
+    MenuItems,
+    OptionGroups,
+    OptionChoices,
+    ItemOptionGroups,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -33,7 +43,7 @@ class AppDatabase extends _$AppDatabase {
   static const String fileName = 'pos.db';
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -41,11 +51,24 @@ class AppDatabase extends _$AppDatabase {
       await m.createAll();
       await _seedV1();
       await _logMigration(1, 'initial schema');
+      await _logMigration(2, 'menu tables (fresh install)');
     },
-    onUpgrade: (m, from, to) async {
-      // Future steps go here, e.g.:
-      // if (from < 2) { await m.createTable(menuItems); await _logMigration(2, '...'); }
-    },
+    onUpgrade: stepByStep(
+      from1To2: (m, schema) async {
+        await m.createTable(schema.taxProfiles);
+        await m.createTable(schema.kitchenStations);
+        await m.createTable(schema.menuCategories);
+        await m.createTable(schema.menuItems);
+        await m.createTable(schema.optionGroups);
+        await m.createTable(schema.optionChoices);
+        await m.createTable(schema.itemOptionGroups);
+        await m.createIndex(schema.idxMenuCategoriesParent);
+        await m.createIndex(schema.idxMenuItemsCategory);
+        await m.createIndex(schema.idxMenuItemsSku);
+        await m.createIndex(schema.idxOptionChoicesGroup);
+        await _logMigration(2, 'menu tables');
+      },
+    ),
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
     },
