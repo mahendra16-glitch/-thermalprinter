@@ -35,6 +35,9 @@ enum Permission {
   changeSettings,
   backupRestore,
   manageStaff,
+
+  /// v9: stock in, wastage, counts, stock items and recipes.
+  manageInventory,
 }
 
 extension PermissionX on Permission {
@@ -55,6 +58,7 @@ extension PermissionX on Permission {
     Permission.changeSettings => 'Change business, billing and table settings',
     Permission.backupRestore => 'Backup and restore',
     Permission.manageStaff => 'Manage staff and permissions',
+    Permission.manageInventory => 'Manage stock and recipes',
   };
 
   /// What the person is trying to do, for "X can't …" messages.
@@ -75,6 +79,7 @@ extension PermissionX on Permission {
     Permission.changeSettings => 'change settings',
     Permission.backupRestore => 'back up or restore data',
     Permission.manageStaff => 'manage staff',
+    Permission.manageInventory => 'change stock or recipes',
   };
 
   static Permission? tryParse(String s) {
@@ -103,6 +108,7 @@ const Map<StaffRole, Set<Permission>> defaultRolePermissions = {
     Permission.recordExpense,
     Permission.changePrinterSettings,
     Permission.changeSettings,
+    Permission.manageInventory,
   },
   StaffRole.cashier: {
     Permission.viewMenu,

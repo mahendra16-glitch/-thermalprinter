@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../domain/staff/staff_models.dart';
 import '../features/billing/billing_settings_screen.dart';
+import '../features/inventory/inventory_screen.dart';
 import '../features/staff/permission_guard.dart';
 import '../features/staff/staff_screen.dart';
 import '../models/print_mode.dart';
@@ -111,6 +112,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
           subtitle: 'Staff accounts, PIN sign-in, roles and activity log.',
           page: () => const StaffScreen(),
           permission: Permission.manageStaff,
+        ),
+        _navTile(
+          icon: Icons.inventory_2_rounded,
+          color: const Color(0xFF65A30D),
+          title: 'Stock',
+          subtitle: 'Ingredients, stock in, wastage, counts, low-stock alerts.',
+          page: () => const InventoryScreen(),
         ),
         _navTile(
           icon: Icons.storefront_rounded,

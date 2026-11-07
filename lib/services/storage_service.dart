@@ -7,6 +7,7 @@ import '../data/legacy/legacy_prefs_importer.dart';
 import '../data/repositories/audit_repository.dart';
 import '../data/repositories/bill_repository.dart';
 import '../data/repositories/business_profile_repository.dart';
+import '../data/repositories/inventory_repository.dart';
 import '../data/repositories/kitchen_repository.dart';
 import '../data/repositories/menu_repository.dart';
 import '../data/repositories/order_repository.dart';
@@ -50,10 +51,17 @@ class StorageService {
   late final MenuRepository menu = MenuRepository(db, audit);
   late final TableRepository tables = TableRepository(db, audit);
   late final OrderRepository orders = OrderRepository(db, audit, settings);
+  late final InventoryRepository inventory = InventoryRepository(
+    db,
+    audit,
+    settings,
+    orders,
+  );
   late final KitchenRepository kitchen = KitchenRepository(
     db,
     audit,
     printJobs,
+    inventory: inventory,
   );
   late final BillRepository bills = BillRepository(
     db,
@@ -62,6 +70,7 @@ class StorageService {
     orders,
     businessProfile,
     printJobs,
+    inventory: inventory,
   );
   late final ShiftRepository shifts = ShiftRepository(
     db,

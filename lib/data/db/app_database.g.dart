@@ -20708,6 +20708,1848 @@ class RolePermissionsCompanion extends UpdateCompanion<RolePermissionRow> {
   }
 }
 
+class $StockItemsTable extends StockItems
+    with TableInfo<$StockItemsTable, StockItemRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StockItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unitMeta = const VerificationMeta('unit');
+  @override
+  late final GeneratedColumn<String> unit = GeneratedColumn<String>(
+    'unit',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lowStockMilliMeta = const VerificationMeta(
+    'lowStockMilli',
+  );
+  @override
+  late final GeneratedColumn<int> lowStockMilli = GeneratedColumn<int>(
+    'low_stock_milli',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _activeMeta = const VerificationMeta('active');
+  @override
+  late final GeneratedColumn<bool> active = GeneratedColumn<bool>(
+    'active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    unit,
+    lowStockMilli,
+    note,
+    active,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'stock_items';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StockItemRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('unit')) {
+      context.handle(
+        _unitMeta,
+        unit.isAcceptableOrUnknown(data['unit']!, _unitMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_unitMeta);
+    }
+    if (data.containsKey('low_stock_milli')) {
+      context.handle(
+        _lowStockMilliMeta,
+        lowStockMilli.isAcceptableOrUnknown(
+          data['low_stock_milli']!,
+          _lowStockMilliMeta,
+        ),
+      );
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('active')) {
+      context.handle(
+        _activeMeta,
+        active.isAcceptableOrUnknown(data['active']!, _activeMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StockItemRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StockItemRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      unit: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}unit'],
+      )!,
+      lowStockMilli: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}low_stock_milli'],
+      ),
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      )!,
+      active: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}active'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $StockItemsTable createAlias(String alias) {
+    return $StockItemsTable(attachedDatabase, alias);
+  }
+}
+
+class StockItemRow extends DataClass implements Insertable<StockItemRow> {
+  final String id;
+  final String name;
+
+  /// `StockUnit.name`: kg | g | l | ml | pcs.
+  final String unit;
+
+  /// Alert when stock on hand is at or below this (null: no alert).
+  final int? lowStockMilli;
+  final String note;
+  final bool active;
+  final int createdAt;
+  final int updatedAt;
+  const StockItemRow({
+    required this.id,
+    required this.name,
+    required this.unit,
+    this.lowStockMilli,
+    required this.note,
+    required this.active,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['unit'] = Variable<String>(unit);
+    if (!nullToAbsent || lowStockMilli != null) {
+      map['low_stock_milli'] = Variable<int>(lowStockMilli);
+    }
+    map['note'] = Variable<String>(note);
+    map['active'] = Variable<bool>(active);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  StockItemsCompanion toCompanion(bool nullToAbsent) {
+    return StockItemsCompanion(
+      id: Value(id),
+      name: Value(name),
+      unit: Value(unit),
+      lowStockMilli: lowStockMilli == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lowStockMilli),
+      note: Value(note),
+      active: Value(active),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory StockItemRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StockItemRow(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      unit: serializer.fromJson<String>(json['unit']),
+      lowStockMilli: serializer.fromJson<int?>(json['lowStockMilli']),
+      note: serializer.fromJson<String>(json['note']),
+      active: serializer.fromJson<bool>(json['active']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'unit': serializer.toJson<String>(unit),
+      'lowStockMilli': serializer.toJson<int?>(lowStockMilli),
+      'note': serializer.toJson<String>(note),
+      'active': serializer.toJson<bool>(active),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  StockItemRow copyWith({
+    String? id,
+    String? name,
+    String? unit,
+    Value<int?> lowStockMilli = const Value.absent(),
+    String? note,
+    bool? active,
+    int? createdAt,
+    int? updatedAt,
+  }) => StockItemRow(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    unit: unit ?? this.unit,
+    lowStockMilli: lowStockMilli.present
+        ? lowStockMilli.value
+        : this.lowStockMilli,
+    note: note ?? this.note,
+    active: active ?? this.active,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  StockItemRow copyWithCompanion(StockItemsCompanion data) {
+    return StockItemRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      unit: data.unit.present ? data.unit.value : this.unit,
+      lowStockMilli: data.lowStockMilli.present
+          ? data.lowStockMilli.value
+          : this.lowStockMilli,
+      note: data.note.present ? data.note.value : this.note,
+      active: data.active.present ? data.active.value : this.active,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StockItemRow(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('unit: $unit, ')
+          ..write('lowStockMilli: $lowStockMilli, ')
+          ..write('note: $note, ')
+          ..write('active: $active, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    name,
+    unit,
+    lowStockMilli,
+    note,
+    active,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StockItemRow &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.unit == this.unit &&
+          other.lowStockMilli == this.lowStockMilli &&
+          other.note == this.note &&
+          other.active == this.active &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class StockItemsCompanion extends UpdateCompanion<StockItemRow> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> unit;
+  final Value<int?> lowStockMilli;
+  final Value<String> note;
+  final Value<bool> active;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const StockItemsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.unit = const Value.absent(),
+    this.lowStockMilli = const Value.absent(),
+    this.note = const Value.absent(),
+    this.active = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StockItemsCompanion.insert({
+    required String id,
+    required String name,
+    required String unit,
+    this.lowStockMilli = const Value.absent(),
+    this.note = const Value.absent(),
+    this.active = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       unit = Value(unit),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<StockItemRow> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? unit,
+    Expression<int>? lowStockMilli,
+    Expression<String>? note,
+    Expression<bool>? active,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (unit != null) 'unit': unit,
+      if (lowStockMilli != null) 'low_stock_milli': lowStockMilli,
+      if (note != null) 'note': note,
+      if (active != null) 'active': active,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StockItemsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String>? unit,
+    Value<int?>? lowStockMilli,
+    Value<String>? note,
+    Value<bool>? active,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return StockItemsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      unit: unit ?? this.unit,
+      lowStockMilli: lowStockMilli ?? this.lowStockMilli,
+      note: note ?? this.note,
+      active: active ?? this.active,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (unit.present) {
+      map['unit'] = Variable<String>(unit.value);
+    }
+    if (lowStockMilli.present) {
+      map['low_stock_milli'] = Variable<int>(lowStockMilli.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (active.present) {
+      map['active'] = Variable<bool>(active.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StockItemsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('unit: $unit, ')
+          ..write('lowStockMilli: $lowStockMilli, ')
+          ..write('note: $note, ')
+          ..write('active: $active, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $StockMovementsTable extends StockMovements
+    with TableInfo<$StockMovementsTable, StockMovementRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StockMovementsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stockItemIdMeta = const VerificationMeta(
+    'stockItemId',
+  );
+  @override
+  late final GeneratedColumn<String> stockItemId = GeneratedColumn<String>(
+    'stock_item_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES stock_items (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _qtyMilliMeta = const VerificationMeta(
+    'qtyMilli',
+  );
+  @override
+  late final GeneratedColumn<int> qtyMilli = GeneratedColumn<int>(
+    'qty_milli',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _costPaiseMeta = const VerificationMeta(
+    'costPaise',
+  );
+  @override
+  late final GeneratedColumn<int> costPaise = GeneratedColumn<int>(
+    'cost_paise',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _reasonMeta = const VerificationMeta('reason');
+  @override
+  late final GeneratedColumn<String> reason = GeneratedColumn<String>(
+    'reason',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _orderIdMeta = const VerificationMeta(
+    'orderId',
+  );
+  @override
+  late final GeneratedColumn<String> orderId = GeneratedColumn<String>(
+    'order_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _orderLineIdMeta = const VerificationMeta(
+    'orderLineId',
+  );
+  @override
+  late final GeneratedColumn<String> orderLineId = GeneratedColumn<String>(
+    'order_line_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sourceRefMeta = const VerificationMeta(
+    'sourceRef',
+  );
+  @override
+  late final GeneratedColumn<String> sourceRef = GeneratedColumn<String>(
+    'source_ref',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _unitsMeta = const VerificationMeta('units');
+  @override
+  late final GeneratedColumn<int> units = GeneratedColumn<int>(
+    'units',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sourceKeyMeta = const VerificationMeta(
+    'sourceKey',
+  );
+  @override
+  late final GeneratedColumn<String> sourceKey = GeneratedColumn<String>(
+    'source_key',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  static const VerificationMeta _staffIdMeta = const VerificationMeta(
+    'staffId',
+  );
+  @override
+  late final GeneratedColumn<String> staffId = GeneratedColumn<String>(
+    'staff_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _staffNameMeta = const VerificationMeta(
+    'staffName',
+  );
+  @override
+  late final GeneratedColumn<String> staffName = GeneratedColumn<String>(
+    'staff_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _businessDateMeta = const VerificationMeta(
+    'businessDate',
+  );
+  @override
+  late final GeneratedColumn<String> businessDate = GeneratedColumn<String>(
+    'business_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    stockItemId,
+    kind,
+    qtyMilli,
+    costPaise,
+    reason,
+    orderId,
+    orderLineId,
+    sourceRef,
+    units,
+    sourceKey,
+    staffId,
+    staffName,
+    businessDate,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'stock_movements';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StockMovementRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('stock_item_id')) {
+      context.handle(
+        _stockItemIdMeta,
+        stockItemId.isAcceptableOrUnknown(
+          data['stock_item_id']!,
+          _stockItemIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_stockItemIdMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('qty_milli')) {
+      context.handle(
+        _qtyMilliMeta,
+        qtyMilli.isAcceptableOrUnknown(data['qty_milli']!, _qtyMilliMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_qtyMilliMeta);
+    }
+    if (data.containsKey('cost_paise')) {
+      context.handle(
+        _costPaiseMeta,
+        costPaise.isAcceptableOrUnknown(data['cost_paise']!, _costPaiseMeta),
+      );
+    }
+    if (data.containsKey('reason')) {
+      context.handle(
+        _reasonMeta,
+        reason.isAcceptableOrUnknown(data['reason']!, _reasonMeta),
+      );
+    }
+    if (data.containsKey('order_id')) {
+      context.handle(
+        _orderIdMeta,
+        orderId.isAcceptableOrUnknown(data['order_id']!, _orderIdMeta),
+      );
+    }
+    if (data.containsKey('order_line_id')) {
+      context.handle(
+        _orderLineIdMeta,
+        orderLineId.isAcceptableOrUnknown(
+          data['order_line_id']!,
+          _orderLineIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('source_ref')) {
+      context.handle(
+        _sourceRefMeta,
+        sourceRef.isAcceptableOrUnknown(data['source_ref']!, _sourceRefMeta),
+      );
+    }
+    if (data.containsKey('units')) {
+      context.handle(
+        _unitsMeta,
+        units.isAcceptableOrUnknown(data['units']!, _unitsMeta),
+      );
+    }
+    if (data.containsKey('source_key')) {
+      context.handle(
+        _sourceKeyMeta,
+        sourceKey.isAcceptableOrUnknown(data['source_key']!, _sourceKeyMeta),
+      );
+    }
+    if (data.containsKey('staff_id')) {
+      context.handle(
+        _staffIdMeta,
+        staffId.isAcceptableOrUnknown(data['staff_id']!, _staffIdMeta),
+      );
+    }
+    if (data.containsKey('staff_name')) {
+      context.handle(
+        _staffNameMeta,
+        staffName.isAcceptableOrUnknown(data['staff_name']!, _staffNameMeta),
+      );
+    }
+    if (data.containsKey('business_date')) {
+      context.handle(
+        _businessDateMeta,
+        businessDate.isAcceptableOrUnknown(
+          data['business_date']!,
+          _businessDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_businessDateMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StockMovementRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StockMovementRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      stockItemId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}stock_item_id'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      qtyMilli: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}qty_milli'],
+      )!,
+      costPaise: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}cost_paise'],
+      ),
+      reason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reason'],
+      )!,
+      orderId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}order_id'],
+      ),
+      orderLineId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}order_line_id'],
+      ),
+      sourceRef: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_ref'],
+      ),
+      units: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}units'],
+      ),
+      sourceKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_key'],
+      ),
+      staffId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}staff_id'],
+      ),
+      staffName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}staff_name'],
+      )!,
+      businessDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}business_date'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $StockMovementsTable createAlias(String alias) {
+    return $StockMovementsTable(attachedDatabase, alias);
+  }
+}
+
+class StockMovementRow extends DataClass
+    implements Insertable<StockMovementRow> {
+  final String id;
+  final String stockItemId;
+
+  /// `StockMovementKind.name`: opening | purchase | wastage | count | sale |
+  /// saleReturn.
+  final String kind;
+
+  /// Signed: positive adds stock, negative takes it away.
+  final int qtyMilli;
+
+  /// Purchases only, optional: what was paid for this quantity.
+  final int? costPaise;
+  final String reason;
+  final String? orderId;
+  final String? orderLineId;
+
+  /// Kitchen ticket line or bill line the deduction came from.
+  final String? sourceRef;
+
+  /// Units of the menu item this row covers (sales only).
+  final int? units;
+
+  /// Stops the same deduction being written twice, e.g.
+  /// `KOT:<ticket line>:<stock item>` or `BILL:<bill line>:<stock item>`.
+  final String? sourceKey;
+  final String? staffId;
+  final String staffName;
+  final String businessDate;
+  final int createdAt;
+  const StockMovementRow({
+    required this.id,
+    required this.stockItemId,
+    required this.kind,
+    required this.qtyMilli,
+    this.costPaise,
+    required this.reason,
+    this.orderId,
+    this.orderLineId,
+    this.sourceRef,
+    this.units,
+    this.sourceKey,
+    this.staffId,
+    required this.staffName,
+    required this.businessDate,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['stock_item_id'] = Variable<String>(stockItemId);
+    map['kind'] = Variable<String>(kind);
+    map['qty_milli'] = Variable<int>(qtyMilli);
+    if (!nullToAbsent || costPaise != null) {
+      map['cost_paise'] = Variable<int>(costPaise);
+    }
+    map['reason'] = Variable<String>(reason);
+    if (!nullToAbsent || orderId != null) {
+      map['order_id'] = Variable<String>(orderId);
+    }
+    if (!nullToAbsent || orderLineId != null) {
+      map['order_line_id'] = Variable<String>(orderLineId);
+    }
+    if (!nullToAbsent || sourceRef != null) {
+      map['source_ref'] = Variable<String>(sourceRef);
+    }
+    if (!nullToAbsent || units != null) {
+      map['units'] = Variable<int>(units);
+    }
+    if (!nullToAbsent || sourceKey != null) {
+      map['source_key'] = Variable<String>(sourceKey);
+    }
+    if (!nullToAbsent || staffId != null) {
+      map['staff_id'] = Variable<String>(staffId);
+    }
+    map['staff_name'] = Variable<String>(staffName);
+    map['business_date'] = Variable<String>(businessDate);
+    map['created_at'] = Variable<int>(createdAt);
+    return map;
+  }
+
+  StockMovementsCompanion toCompanion(bool nullToAbsent) {
+    return StockMovementsCompanion(
+      id: Value(id),
+      stockItemId: Value(stockItemId),
+      kind: Value(kind),
+      qtyMilli: Value(qtyMilli),
+      costPaise: costPaise == null && nullToAbsent
+          ? const Value.absent()
+          : Value(costPaise),
+      reason: Value(reason),
+      orderId: orderId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(orderId),
+      orderLineId: orderLineId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(orderLineId),
+      sourceRef: sourceRef == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceRef),
+      units: units == null && nullToAbsent
+          ? const Value.absent()
+          : Value(units),
+      sourceKey: sourceKey == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sourceKey),
+      staffId: staffId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(staffId),
+      staffName: Value(staffName),
+      businessDate: Value(businessDate),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory StockMovementRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StockMovementRow(
+      id: serializer.fromJson<String>(json['id']),
+      stockItemId: serializer.fromJson<String>(json['stockItemId']),
+      kind: serializer.fromJson<String>(json['kind']),
+      qtyMilli: serializer.fromJson<int>(json['qtyMilli']),
+      costPaise: serializer.fromJson<int?>(json['costPaise']),
+      reason: serializer.fromJson<String>(json['reason']),
+      orderId: serializer.fromJson<String?>(json['orderId']),
+      orderLineId: serializer.fromJson<String?>(json['orderLineId']),
+      sourceRef: serializer.fromJson<String?>(json['sourceRef']),
+      units: serializer.fromJson<int?>(json['units']),
+      sourceKey: serializer.fromJson<String?>(json['sourceKey']),
+      staffId: serializer.fromJson<String?>(json['staffId']),
+      staffName: serializer.fromJson<String>(json['staffName']),
+      businessDate: serializer.fromJson<String>(json['businessDate']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'stockItemId': serializer.toJson<String>(stockItemId),
+      'kind': serializer.toJson<String>(kind),
+      'qtyMilli': serializer.toJson<int>(qtyMilli),
+      'costPaise': serializer.toJson<int?>(costPaise),
+      'reason': serializer.toJson<String>(reason),
+      'orderId': serializer.toJson<String?>(orderId),
+      'orderLineId': serializer.toJson<String?>(orderLineId),
+      'sourceRef': serializer.toJson<String?>(sourceRef),
+      'units': serializer.toJson<int?>(units),
+      'sourceKey': serializer.toJson<String?>(sourceKey),
+      'staffId': serializer.toJson<String?>(staffId),
+      'staffName': serializer.toJson<String>(staffName),
+      'businessDate': serializer.toJson<String>(businessDate),
+      'createdAt': serializer.toJson<int>(createdAt),
+    };
+  }
+
+  StockMovementRow copyWith({
+    String? id,
+    String? stockItemId,
+    String? kind,
+    int? qtyMilli,
+    Value<int?> costPaise = const Value.absent(),
+    String? reason,
+    Value<String?> orderId = const Value.absent(),
+    Value<String?> orderLineId = const Value.absent(),
+    Value<String?> sourceRef = const Value.absent(),
+    Value<int?> units = const Value.absent(),
+    Value<String?> sourceKey = const Value.absent(),
+    Value<String?> staffId = const Value.absent(),
+    String? staffName,
+    String? businessDate,
+    int? createdAt,
+  }) => StockMovementRow(
+    id: id ?? this.id,
+    stockItemId: stockItemId ?? this.stockItemId,
+    kind: kind ?? this.kind,
+    qtyMilli: qtyMilli ?? this.qtyMilli,
+    costPaise: costPaise.present ? costPaise.value : this.costPaise,
+    reason: reason ?? this.reason,
+    orderId: orderId.present ? orderId.value : this.orderId,
+    orderLineId: orderLineId.present ? orderLineId.value : this.orderLineId,
+    sourceRef: sourceRef.present ? sourceRef.value : this.sourceRef,
+    units: units.present ? units.value : this.units,
+    sourceKey: sourceKey.present ? sourceKey.value : this.sourceKey,
+    staffId: staffId.present ? staffId.value : this.staffId,
+    staffName: staffName ?? this.staffName,
+    businessDate: businessDate ?? this.businessDate,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  StockMovementRow copyWithCompanion(StockMovementsCompanion data) {
+    return StockMovementRow(
+      id: data.id.present ? data.id.value : this.id,
+      stockItemId: data.stockItemId.present
+          ? data.stockItemId.value
+          : this.stockItemId,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      qtyMilli: data.qtyMilli.present ? data.qtyMilli.value : this.qtyMilli,
+      costPaise: data.costPaise.present ? data.costPaise.value : this.costPaise,
+      reason: data.reason.present ? data.reason.value : this.reason,
+      orderId: data.orderId.present ? data.orderId.value : this.orderId,
+      orderLineId: data.orderLineId.present
+          ? data.orderLineId.value
+          : this.orderLineId,
+      sourceRef: data.sourceRef.present ? data.sourceRef.value : this.sourceRef,
+      units: data.units.present ? data.units.value : this.units,
+      sourceKey: data.sourceKey.present ? data.sourceKey.value : this.sourceKey,
+      staffId: data.staffId.present ? data.staffId.value : this.staffId,
+      staffName: data.staffName.present ? data.staffName.value : this.staffName,
+      businessDate: data.businessDate.present
+          ? data.businessDate.value
+          : this.businessDate,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StockMovementRow(')
+          ..write('id: $id, ')
+          ..write('stockItemId: $stockItemId, ')
+          ..write('kind: $kind, ')
+          ..write('qtyMilli: $qtyMilli, ')
+          ..write('costPaise: $costPaise, ')
+          ..write('reason: $reason, ')
+          ..write('orderId: $orderId, ')
+          ..write('orderLineId: $orderLineId, ')
+          ..write('sourceRef: $sourceRef, ')
+          ..write('units: $units, ')
+          ..write('sourceKey: $sourceKey, ')
+          ..write('staffId: $staffId, ')
+          ..write('staffName: $staffName, ')
+          ..write('businessDate: $businessDate, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    stockItemId,
+    kind,
+    qtyMilli,
+    costPaise,
+    reason,
+    orderId,
+    orderLineId,
+    sourceRef,
+    units,
+    sourceKey,
+    staffId,
+    staffName,
+    businessDate,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StockMovementRow &&
+          other.id == this.id &&
+          other.stockItemId == this.stockItemId &&
+          other.kind == this.kind &&
+          other.qtyMilli == this.qtyMilli &&
+          other.costPaise == this.costPaise &&
+          other.reason == this.reason &&
+          other.orderId == this.orderId &&
+          other.orderLineId == this.orderLineId &&
+          other.sourceRef == this.sourceRef &&
+          other.units == this.units &&
+          other.sourceKey == this.sourceKey &&
+          other.staffId == this.staffId &&
+          other.staffName == this.staffName &&
+          other.businessDate == this.businessDate &&
+          other.createdAt == this.createdAt);
+}
+
+class StockMovementsCompanion extends UpdateCompanion<StockMovementRow> {
+  final Value<String> id;
+  final Value<String> stockItemId;
+  final Value<String> kind;
+  final Value<int> qtyMilli;
+  final Value<int?> costPaise;
+  final Value<String> reason;
+  final Value<String?> orderId;
+  final Value<String?> orderLineId;
+  final Value<String?> sourceRef;
+  final Value<int?> units;
+  final Value<String?> sourceKey;
+  final Value<String?> staffId;
+  final Value<String> staffName;
+  final Value<String> businessDate;
+  final Value<int> createdAt;
+  final Value<int> rowid;
+  const StockMovementsCompanion({
+    this.id = const Value.absent(),
+    this.stockItemId = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.qtyMilli = const Value.absent(),
+    this.costPaise = const Value.absent(),
+    this.reason = const Value.absent(),
+    this.orderId = const Value.absent(),
+    this.orderLineId = const Value.absent(),
+    this.sourceRef = const Value.absent(),
+    this.units = const Value.absent(),
+    this.sourceKey = const Value.absent(),
+    this.staffId = const Value.absent(),
+    this.staffName = const Value.absent(),
+    this.businessDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  StockMovementsCompanion.insert({
+    required String id,
+    required String stockItemId,
+    required String kind,
+    required int qtyMilli,
+    this.costPaise = const Value.absent(),
+    this.reason = const Value.absent(),
+    this.orderId = const Value.absent(),
+    this.orderLineId = const Value.absent(),
+    this.sourceRef = const Value.absent(),
+    this.units = const Value.absent(),
+    this.sourceKey = const Value.absent(),
+    this.staffId = const Value.absent(),
+    this.staffName = const Value.absent(),
+    required String businessDate,
+    required int createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       stockItemId = Value(stockItemId),
+       kind = Value(kind),
+       qtyMilli = Value(qtyMilli),
+       businessDate = Value(businessDate),
+       createdAt = Value(createdAt);
+  static Insertable<StockMovementRow> custom({
+    Expression<String>? id,
+    Expression<String>? stockItemId,
+    Expression<String>? kind,
+    Expression<int>? qtyMilli,
+    Expression<int>? costPaise,
+    Expression<String>? reason,
+    Expression<String>? orderId,
+    Expression<String>? orderLineId,
+    Expression<String>? sourceRef,
+    Expression<int>? units,
+    Expression<String>? sourceKey,
+    Expression<String>? staffId,
+    Expression<String>? staffName,
+    Expression<String>? businessDate,
+    Expression<int>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (stockItemId != null) 'stock_item_id': stockItemId,
+      if (kind != null) 'kind': kind,
+      if (qtyMilli != null) 'qty_milli': qtyMilli,
+      if (costPaise != null) 'cost_paise': costPaise,
+      if (reason != null) 'reason': reason,
+      if (orderId != null) 'order_id': orderId,
+      if (orderLineId != null) 'order_line_id': orderLineId,
+      if (sourceRef != null) 'source_ref': sourceRef,
+      if (units != null) 'units': units,
+      if (sourceKey != null) 'source_key': sourceKey,
+      if (staffId != null) 'staff_id': staffId,
+      if (staffName != null) 'staff_name': staffName,
+      if (businessDate != null) 'business_date': businessDate,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  StockMovementsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? stockItemId,
+    Value<String>? kind,
+    Value<int>? qtyMilli,
+    Value<int?>? costPaise,
+    Value<String>? reason,
+    Value<String?>? orderId,
+    Value<String?>? orderLineId,
+    Value<String?>? sourceRef,
+    Value<int?>? units,
+    Value<String?>? sourceKey,
+    Value<String?>? staffId,
+    Value<String>? staffName,
+    Value<String>? businessDate,
+    Value<int>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return StockMovementsCompanion(
+      id: id ?? this.id,
+      stockItemId: stockItemId ?? this.stockItemId,
+      kind: kind ?? this.kind,
+      qtyMilli: qtyMilli ?? this.qtyMilli,
+      costPaise: costPaise ?? this.costPaise,
+      reason: reason ?? this.reason,
+      orderId: orderId ?? this.orderId,
+      orderLineId: orderLineId ?? this.orderLineId,
+      sourceRef: sourceRef ?? this.sourceRef,
+      units: units ?? this.units,
+      sourceKey: sourceKey ?? this.sourceKey,
+      staffId: staffId ?? this.staffId,
+      staffName: staffName ?? this.staffName,
+      businessDate: businessDate ?? this.businessDate,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (stockItemId.present) {
+      map['stock_item_id'] = Variable<String>(stockItemId.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (qtyMilli.present) {
+      map['qty_milli'] = Variable<int>(qtyMilli.value);
+    }
+    if (costPaise.present) {
+      map['cost_paise'] = Variable<int>(costPaise.value);
+    }
+    if (reason.present) {
+      map['reason'] = Variable<String>(reason.value);
+    }
+    if (orderId.present) {
+      map['order_id'] = Variable<String>(orderId.value);
+    }
+    if (orderLineId.present) {
+      map['order_line_id'] = Variable<String>(orderLineId.value);
+    }
+    if (sourceRef.present) {
+      map['source_ref'] = Variable<String>(sourceRef.value);
+    }
+    if (units.present) {
+      map['units'] = Variable<int>(units.value);
+    }
+    if (sourceKey.present) {
+      map['source_key'] = Variable<String>(sourceKey.value);
+    }
+    if (staffId.present) {
+      map['staff_id'] = Variable<String>(staffId.value);
+    }
+    if (staffName.present) {
+      map['staff_name'] = Variable<String>(staffName.value);
+    }
+    if (businessDate.present) {
+      map['business_date'] = Variable<String>(businessDate.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StockMovementsCompanion(')
+          ..write('id: $id, ')
+          ..write('stockItemId: $stockItemId, ')
+          ..write('kind: $kind, ')
+          ..write('qtyMilli: $qtyMilli, ')
+          ..write('costPaise: $costPaise, ')
+          ..write('reason: $reason, ')
+          ..write('orderId: $orderId, ')
+          ..write('orderLineId: $orderLineId, ')
+          ..write('sourceRef: $sourceRef, ')
+          ..write('units: $units, ')
+          ..write('sourceKey: $sourceKey, ')
+          ..write('staffId: $staffId, ')
+          ..write('staffName: $staffName, ')
+          ..write('businessDate: $businessDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RecipeLinesTable extends RecipeLines
+    with TableInfo<$RecipeLinesTable, RecipeLineRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RecipeLinesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _menuItemIdMeta = const VerificationMeta(
+    'menuItemId',
+  );
+  @override
+  late final GeneratedColumn<String> menuItemId = GeneratedColumn<String>(
+    'menu_item_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES menu_items (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _optionChoiceIdMeta = const VerificationMeta(
+    'optionChoiceId',
+  );
+  @override
+  late final GeneratedColumn<String> optionChoiceId = GeneratedColumn<String>(
+    'option_choice_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES option_choices (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _stockItemIdMeta = const VerificationMeta(
+    'stockItemId',
+  );
+  @override
+  late final GeneratedColumn<String> stockItemId = GeneratedColumn<String>(
+    'stock_item_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES stock_items (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _qtyMilliMeta = const VerificationMeta(
+    'qtyMilli',
+  );
+  @override
+  late final GeneratedColumn<int> qtyMilli = GeneratedColumn<int>(
+    'qty_milli',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    menuItemId,
+    optionChoiceId,
+    stockItemId,
+    qtyMilli,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'recipe_lines';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RecipeLineRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('menu_item_id')) {
+      context.handle(
+        _menuItemIdMeta,
+        menuItemId.isAcceptableOrUnknown(
+          data['menu_item_id']!,
+          _menuItemIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('option_choice_id')) {
+      context.handle(
+        _optionChoiceIdMeta,
+        optionChoiceId.isAcceptableOrUnknown(
+          data['option_choice_id']!,
+          _optionChoiceIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('stock_item_id')) {
+      context.handle(
+        _stockItemIdMeta,
+        stockItemId.isAcceptableOrUnknown(
+          data['stock_item_id']!,
+          _stockItemIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_stockItemIdMeta);
+    }
+    if (data.containsKey('qty_milli')) {
+      context.handle(
+        _qtyMilliMeta,
+        qtyMilli.isAcceptableOrUnknown(data['qty_milli']!, _qtyMilliMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_qtyMilliMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RecipeLineRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RecipeLineRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      menuItemId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}menu_item_id'],
+      ),
+      optionChoiceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}option_choice_id'],
+      ),
+      stockItemId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}stock_item_id'],
+      )!,
+      qtyMilli: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}qty_milli'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $RecipeLinesTable createAlias(String alias) {
+    return $RecipeLinesTable(attachedDatabase, alias);
+  }
+}
+
+class RecipeLineRow extends DataClass implements Insertable<RecipeLineRow> {
+  final String id;
+
+  /// Exactly one of [menuItemId] and [optionChoiceId] is set.
+  final String? menuItemId;
+  final String? optionChoiceId;
+  final String stockItemId;
+
+  /// Thousandths of the stock item's unit, per one unit sold.
+  final int qtyMilli;
+  final int updatedAt;
+  const RecipeLineRow({
+    required this.id,
+    this.menuItemId,
+    this.optionChoiceId,
+    required this.stockItemId,
+    required this.qtyMilli,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    if (!nullToAbsent || menuItemId != null) {
+      map['menu_item_id'] = Variable<String>(menuItemId);
+    }
+    if (!nullToAbsent || optionChoiceId != null) {
+      map['option_choice_id'] = Variable<String>(optionChoiceId);
+    }
+    map['stock_item_id'] = Variable<String>(stockItemId);
+    map['qty_milli'] = Variable<int>(qtyMilli);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  RecipeLinesCompanion toCompanion(bool nullToAbsent) {
+    return RecipeLinesCompanion(
+      id: Value(id),
+      menuItemId: menuItemId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(menuItemId),
+      optionChoiceId: optionChoiceId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(optionChoiceId),
+      stockItemId: Value(stockItemId),
+      qtyMilli: Value(qtyMilli),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory RecipeLineRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RecipeLineRow(
+      id: serializer.fromJson<String>(json['id']),
+      menuItemId: serializer.fromJson<String?>(json['menuItemId']),
+      optionChoiceId: serializer.fromJson<String?>(json['optionChoiceId']),
+      stockItemId: serializer.fromJson<String>(json['stockItemId']),
+      qtyMilli: serializer.fromJson<int>(json['qtyMilli']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'menuItemId': serializer.toJson<String?>(menuItemId),
+      'optionChoiceId': serializer.toJson<String?>(optionChoiceId),
+      'stockItemId': serializer.toJson<String>(stockItemId),
+      'qtyMilli': serializer.toJson<int>(qtyMilli),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  RecipeLineRow copyWith({
+    String? id,
+    Value<String?> menuItemId = const Value.absent(),
+    Value<String?> optionChoiceId = const Value.absent(),
+    String? stockItemId,
+    int? qtyMilli,
+    int? updatedAt,
+  }) => RecipeLineRow(
+    id: id ?? this.id,
+    menuItemId: menuItemId.present ? menuItemId.value : this.menuItemId,
+    optionChoiceId: optionChoiceId.present
+        ? optionChoiceId.value
+        : this.optionChoiceId,
+    stockItemId: stockItemId ?? this.stockItemId,
+    qtyMilli: qtyMilli ?? this.qtyMilli,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  RecipeLineRow copyWithCompanion(RecipeLinesCompanion data) {
+    return RecipeLineRow(
+      id: data.id.present ? data.id.value : this.id,
+      menuItemId: data.menuItemId.present
+          ? data.menuItemId.value
+          : this.menuItemId,
+      optionChoiceId: data.optionChoiceId.present
+          ? data.optionChoiceId.value
+          : this.optionChoiceId,
+      stockItemId: data.stockItemId.present
+          ? data.stockItemId.value
+          : this.stockItemId,
+      qtyMilli: data.qtyMilli.present ? data.qtyMilli.value : this.qtyMilli,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RecipeLineRow(')
+          ..write('id: $id, ')
+          ..write('menuItemId: $menuItemId, ')
+          ..write('optionChoiceId: $optionChoiceId, ')
+          ..write('stockItemId: $stockItemId, ')
+          ..write('qtyMilli: $qtyMilli, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    menuItemId,
+    optionChoiceId,
+    stockItemId,
+    qtyMilli,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RecipeLineRow &&
+          other.id == this.id &&
+          other.menuItemId == this.menuItemId &&
+          other.optionChoiceId == this.optionChoiceId &&
+          other.stockItemId == this.stockItemId &&
+          other.qtyMilli == this.qtyMilli &&
+          other.updatedAt == this.updatedAt);
+}
+
+class RecipeLinesCompanion extends UpdateCompanion<RecipeLineRow> {
+  final Value<String> id;
+  final Value<String?> menuItemId;
+  final Value<String?> optionChoiceId;
+  final Value<String> stockItemId;
+  final Value<int> qtyMilli;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const RecipeLinesCompanion({
+    this.id = const Value.absent(),
+    this.menuItemId = const Value.absent(),
+    this.optionChoiceId = const Value.absent(),
+    this.stockItemId = const Value.absent(),
+    this.qtyMilli = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RecipeLinesCompanion.insert({
+    required String id,
+    this.menuItemId = const Value.absent(),
+    this.optionChoiceId = const Value.absent(),
+    required String stockItemId,
+    required int qtyMilli,
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       stockItemId = Value(stockItemId),
+       qtyMilli = Value(qtyMilli),
+       updatedAt = Value(updatedAt);
+  static Insertable<RecipeLineRow> custom({
+    Expression<String>? id,
+    Expression<String>? menuItemId,
+    Expression<String>? optionChoiceId,
+    Expression<String>? stockItemId,
+    Expression<int>? qtyMilli,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (menuItemId != null) 'menu_item_id': menuItemId,
+      if (optionChoiceId != null) 'option_choice_id': optionChoiceId,
+      if (stockItemId != null) 'stock_item_id': stockItemId,
+      if (qtyMilli != null) 'qty_milli': qtyMilli,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RecipeLinesCompanion copyWith({
+    Value<String>? id,
+    Value<String?>? menuItemId,
+    Value<String?>? optionChoiceId,
+    Value<String>? stockItemId,
+    Value<int>? qtyMilli,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return RecipeLinesCompanion(
+      id: id ?? this.id,
+      menuItemId: menuItemId ?? this.menuItemId,
+      optionChoiceId: optionChoiceId ?? this.optionChoiceId,
+      stockItemId: stockItemId ?? this.stockItemId,
+      qtyMilli: qtyMilli ?? this.qtyMilli,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (menuItemId.present) {
+      map['menu_item_id'] = Variable<String>(menuItemId.value);
+    }
+    if (optionChoiceId.present) {
+      map['option_choice_id'] = Variable<String>(optionChoiceId.value);
+    }
+    if (stockItemId.present) {
+      map['stock_item_id'] = Variable<String>(stockItemId.value);
+    }
+    if (qtyMilli.present) {
+      map['qty_milli'] = Variable<int>(qtyMilli.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RecipeLinesCompanion(')
+          ..write('id: $id, ')
+          ..write('menuItemId: $menuItemId, ')
+          ..write('optionChoiceId: $optionChoiceId, ')
+          ..write('stockItemId: $stockItemId, ')
+          ..write('qtyMilli: $qtyMilli, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -20759,6 +22601,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $RolePermissionsTable rolePermissions = $RolePermissionsTable(
     this,
   );
+  late final $StockItemsTable stockItems = $StockItemsTable(this);
+  late final $StockMovementsTable stockMovements = $StockMovementsTable(this);
+  late final $RecipeLinesTable recipeLines = $RecipeLinesTable(this);
   late final Index idxPrintJobsStatus = Index(
     'idx_print_jobs_status',
     'CREATE INDEX idx_print_jobs_status ON print_jobs (status)',
@@ -20875,6 +22720,26 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_expenses_shift',
     'CREATE INDEX idx_expenses_shift ON expenses (shift_id)',
   );
+  late final Index idxStockMovementsItem = Index(
+    'idx_stock_movements_item',
+    'CREATE INDEX idx_stock_movements_item ON stock_movements (stock_item_id)',
+  );
+  late final Index idxStockMovementsOrderLine = Index(
+    'idx_stock_movements_order_line',
+    'CREATE INDEX idx_stock_movements_order_line ON stock_movements (order_line_id)',
+  );
+  late final Index idxStockMovementsDate = Index(
+    'idx_stock_movements_date',
+    'CREATE INDEX idx_stock_movements_date ON stock_movements (business_date)',
+  );
+  late final Index idxRecipeLinesItem = Index(
+    'idx_recipe_lines_item',
+    'CREATE INDEX idx_recipe_lines_item ON recipe_lines (menu_item_id)',
+  );
+  late final Index idxRecipeLinesChoice = Index(
+    'idx_recipe_lines_choice',
+    'CREATE INDEX idx_recipe_lines_choice ON recipe_lines (option_choice_id)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -20911,6 +22776,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     expenses,
     staffUsers,
     rolePermissions,
+    stockItems,
+    stockMovements,
+    recipeLines,
     idxPrintJobsStatus,
     idxPrintJobsSourceKey,
     idxPrintHistoryAt,
@@ -20940,6 +22808,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     idxCashMovementsShift,
     idxExpensesBusinessDate,
     idxExpensesShift,
+    idxStockMovementsItem,
+    idxStockMovementsOrderLine,
+    idxStockMovementsDate,
+    idxRecipeLinesItem,
+    idxRecipeLinesChoice,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -20956,6 +22829,20 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('order_line_options', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'menu_items',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('recipe_lines', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'option_choices',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('recipe_lines', kind: UpdateKind.delete)],
     ),
   ]);
 }
@@ -24351,6 +26238,24 @@ final class $$MenuItemsTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$RecipeLinesTable, List<RecipeLineRow>>
+  _recipeLinesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.recipeLines,
+    aliasName: 'menu_items__id__recipe_lines__menu_item_id',
+  );
+
+  $$RecipeLinesTableProcessedTableManager get recipeLinesRefs {
+    final manager = $$RecipeLinesTableTableManager(
+      $_db,
+      $_db.recipeLines,
+    ).filter((f) => f.menuItemId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_recipeLinesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$MenuItemsTableFilterComposer
@@ -24547,6 +26452,31 @@ class $$MenuItemsTableFilterComposer
           }) => $$OrderLinesTableFilterComposer(
             $db: $db,
             $table: $db.orderLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> recipeLinesRefs(
+    Expression<bool> Function($$RecipeLinesTableFilterComposer f) f,
+  ) {
+    final $$RecipeLinesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.recipeLines,
+      getReferencedColumn: (t) => t.menuItemId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RecipeLinesTableFilterComposer(
+            $db: $db,
+            $table: $db.recipeLines,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -24895,6 +26825,31 @@ class $$MenuItemsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> recipeLinesRefs<T extends Object>(
+    Expression<T> Function($$RecipeLinesTableAnnotationComposer a) f,
+  ) {
+    final $$RecipeLinesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.recipeLines,
+      getReferencedColumn: (t) => t.menuItemId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RecipeLinesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.recipeLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$MenuItemsTableTableManager
@@ -24916,6 +26871,7 @@ class $$MenuItemsTableTableManager
             bool stationId,
             bool itemOptionGroupsRefs,
             bool orderLinesRefs,
+            bool recipeLinesRefs,
           })
         > {
   $$MenuItemsTableTableManager(_$AppDatabase db, $MenuItemsTable table)
@@ -25028,12 +26984,14 @@ class $$MenuItemsTableTableManager
                 stationId = false,
                 itemOptionGroupsRefs = false,
                 orderLinesRefs = false,
+                recipeLinesRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (itemOptionGroupsRefs) db.itemOptionGroups,
                     if (orderLinesRefs) db.orderLines,
+                    if (recipeLinesRefs) db.recipeLines,
                   ],
                   addJoins:
                       <
@@ -25129,6 +27087,26 @@ class $$MenuItemsTableTableManager
                           referencedColumn: 'menu_item_id',
                           typedResults: items,
                         ),
+                      if (recipeLinesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          MenuItemRow,
+                          $MenuItemsTable,
+                          RecipeLineRow,
+                          $RecipeLinesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$MenuItemsTableReferences
+                              ._recipeLinesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$MenuItemsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).recipeLinesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'menu_item_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -25155,6 +27133,7 @@ typedef $$MenuItemsTableProcessedTableManager =
         bool stationId,
         bool itemOptionGroupsRefs,
         bool orderLinesRefs,
+        bool recipeLinesRefs,
       })
     >;
 typedef $$OptionGroupsTableCreateCompanionBuilder =
@@ -25685,6 +27664,24 @@ final class $$OptionChoicesTableReferences
       manager.$state.copyWith(prefetchedData: [item]),
     );
   }
+
+  static MultiTypedResultKey<$RecipeLinesTable, List<RecipeLineRow>>
+  _recipeLinesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.recipeLines,
+    aliasName: 'option_choices__id__recipe_lines__option_choice_id',
+  );
+
+  $$RecipeLinesTableProcessedTableManager get recipeLinesRefs {
+    final manager = $$RecipeLinesTableTableManager(
+      $_db,
+      $_db.recipeLines,
+    ).filter((f) => f.optionChoiceId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_recipeLinesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$OptionChoicesTableFilterComposer
@@ -25752,6 +27749,31 @@ class $$OptionChoicesTableFilterComposer
           ),
     );
     return composer;
+  }
+
+  Expression<bool> recipeLinesRefs(
+    Expression<bool> Function($$RecipeLinesTableFilterComposer f) f,
+  ) {
+    final $$RecipeLinesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.recipeLines,
+      getReferencedColumn: (t) => t.optionChoiceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RecipeLinesTableFilterComposer(
+            $db: $db,
+            $table: $db.recipeLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
   }
 }
 
@@ -25877,6 +27899,31 @@ class $$OptionChoicesTableAnnotationComposer
     );
     return composer;
   }
+
+  Expression<T> recipeLinesRefs<T extends Object>(
+    Expression<T> Function($$RecipeLinesTableAnnotationComposer a) f,
+  ) {
+    final $$RecipeLinesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.recipeLines,
+      getReferencedColumn: (t) => t.optionChoiceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RecipeLinesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.recipeLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$OptionChoicesTableTableManager
@@ -25892,7 +27939,7 @@ class $$OptionChoicesTableTableManager
           $$OptionChoicesTableUpdateCompanionBuilder,
           (OptionChoiceRow, $$OptionChoicesTableReferences),
           OptionChoiceRow,
-          PrefetchHooks Function({bool groupId})
+          PrefetchHooks Function({bool groupId, bool recipeLinesRefs})
         > {
   $$OptionChoicesTableTableManager(_$AppDatabase db, $OptionChoicesTable table)
     : super(
@@ -25957,10 +28004,10 @@ class $$OptionChoicesTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({groupId = false}) {
+          prefetchHooksCallback: ({groupId = false, recipeLinesRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [],
+              explicitlyWatchedTables: [if (recipeLinesRefs) db.recipeLines],
               addJoins:
                   <
                     T extends TableManagerState<
@@ -25992,7 +28039,28 @@ class $$OptionChoicesTableTableManager
                     return state;
                   },
               getPrefetchedDataCallback: (items) async {
-                return [];
+                return [
+                  if (recipeLinesRefs)
+                    await $_getPrefetchedDataByColumns<
+                      OptionChoiceRow,
+                      $OptionChoicesTable,
+                      RecipeLineRow,
+                      $RecipeLinesTable
+                    >(
+                      currentTable: table,
+                      referencedTable: $$OptionChoicesTableReferences
+                          ._recipeLinesRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$OptionChoicesTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).recipeLinesRefs,
+                      currentColumn: 'id',
+                      referencedColumn: 'option_choice_id',
+                      typedResults: items,
+                    ),
+                ];
               },
             );
           },
@@ -26012,7 +28080,7 @@ typedef $$OptionChoicesTableProcessedTableManager =
       $$OptionChoicesTableUpdateCompanionBuilder,
       (OptionChoiceRow, $$OptionChoicesTableReferences),
       OptionChoiceRow,
-      PrefetchHooks Function({bool groupId})
+      PrefetchHooks Function({bool groupId, bool recipeLinesRefs})
     >;
 typedef $$ItemOptionGroupsTableCreateCompanionBuilder =
     ItemOptionGroupsCompanion Function({
@@ -35698,6 +37766,1492 @@ typedef $$RolePermissionsTableProcessedTableManager =
       RolePermissionRow,
       PrefetchHooks Function()
     >;
+typedef $$StockItemsTableCreateCompanionBuilder = StockItemsCompanion Function({
+  required String id,
+  required String name,
+  required String unit,
+  Value<int?> lowStockMilli,
+  Value<String> note,
+  Value<bool> active,
+  required int createdAt,
+  required int updatedAt,
+  Value<int> rowid,
+});
+typedef $$StockItemsTableUpdateCompanionBuilder = StockItemsCompanion Function({
+  Value<String> id,
+  Value<String> name,
+  Value<String> unit,
+  Value<int?> lowStockMilli,
+  Value<String> note,
+  Value<bool> active,
+  Value<int> createdAt,
+  Value<int> updatedAt,
+  Value<int> rowid,
+});
+
+final class $$StockItemsTableReferences
+    extends BaseReferences<_$AppDatabase, $StockItemsTable, StockItemRow> {
+  $$StockItemsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$StockMovementsTable, List<StockMovementRow>>
+  _stockMovementsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.stockMovements,
+    aliasName: 'stock_items__id__stock_movements__stock_item_id',
+  );
+
+  $$StockMovementsTableProcessedTableManager get stockMovementsRefs {
+    final manager = $$StockMovementsTableTableManager(
+      $_db,
+      $_db.stockMovements,
+    ).filter((f) => f.stockItemId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_stockMovementsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$RecipeLinesTable, List<RecipeLineRow>>
+  _recipeLinesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.recipeLines,
+    aliasName: 'stock_items__id__recipe_lines__stock_item_id',
+  );
+
+  $$RecipeLinesTableProcessedTableManager get recipeLinesRefs {
+    final manager = $$RecipeLinesTableTableManager(
+      $_db,
+      $_db.recipeLines,
+    ).filter((f) => f.stockItemId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_recipeLinesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$StockItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $StockItemsTable> {
+  $$StockItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lowStockMilli => $composableBuilder(
+    column: $table.lowStockMilli,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get active => $composableBuilder(
+    column: $table.active,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> stockMovementsRefs(
+    Expression<bool> Function($$StockMovementsTableFilterComposer f) f,
+  ) {
+    final $$StockMovementsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.stockMovements,
+      getReferencedColumn: (t) => t.stockItemId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StockMovementsTableFilterComposer(
+            $db: $db,
+            $table: $db.stockMovements,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> recipeLinesRefs(
+    Expression<bool> Function($$RecipeLinesTableFilterComposer f) f,
+  ) {
+    final $$RecipeLinesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.recipeLines,
+      getReferencedColumn: (t) => t.stockItemId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RecipeLinesTableFilterComposer(
+            $db: $db,
+            $table: $db.recipeLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$StockItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $StockItemsTable> {
+  $$StockItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lowStockMilli => $composableBuilder(
+    column: $table.lowStockMilli,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get active => $composableBuilder(
+    column: $table.active,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$StockItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $StockItemsTable> {
+  $$StockItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get unit =>
+      $composableBuilder(column: $table.unit, builder: (column) => column);
+
+  GeneratedColumn<int> get lowStockMilli => $composableBuilder(
+    column: $table.lowStockMilli,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<bool> get active =>
+      $composableBuilder(column: $table.active, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  Expression<T> stockMovementsRefs<T extends Object>(
+    Expression<T> Function($$StockMovementsTableAnnotationComposer a) f,
+  ) {
+    final $$StockMovementsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.stockMovements,
+      getReferencedColumn: (t) => t.stockItemId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StockMovementsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.stockMovements,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> recipeLinesRefs<T extends Object>(
+    Expression<T> Function($$RecipeLinesTableAnnotationComposer a) f,
+  ) {
+    final $$RecipeLinesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.recipeLines,
+      getReferencedColumn: (t) => t.stockItemId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RecipeLinesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.recipeLines,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$StockItemsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $StockItemsTable,
+          StockItemRow,
+          $$StockItemsTableFilterComposer,
+          $$StockItemsTableOrderingComposer,
+          $$StockItemsTableAnnotationComposer,
+          $$StockItemsTableCreateCompanionBuilder,
+          $$StockItemsTableUpdateCompanionBuilder,
+          (StockItemRow, $$StockItemsTableReferences),
+          StockItemRow,
+          PrefetchHooks Function({
+            bool stockMovementsRefs,
+            bool recipeLinesRefs,
+          })
+        > {
+  $$StockItemsTableTableManager(_$AppDatabase db, $StockItemsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StockItemsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StockItemsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StockItemsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> unit = const Value.absent(),
+                Value<int?> lowStockMilli = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                Value<bool> active = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StockItemsCompanion(
+                id: id,
+                name: name,
+                unit: unit,
+                lowStockMilli: lowStockMilli,
+                note: note,
+                active: active,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                required String unit,
+                Value<int?> lowStockMilli = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                Value<bool> active = const Value.absent(),
+                required int createdAt,
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => StockItemsCompanion.insert(
+                id: id,
+                name: name,
+                unit: unit,
+                lowStockMilli: lowStockMilli,
+                note: note,
+                active: active,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$StockItemsTable, StockItemRow>(table),
+                  $$StockItemsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({stockMovementsRefs = false, recipeLinesRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (stockMovementsRefs) db.stockMovements,
+                    if (recipeLinesRefs) db.recipeLines,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (stockMovementsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          StockItemRow,
+                          $StockItemsTable,
+                          StockMovementRow,
+                          $StockMovementsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$StockItemsTableReferences
+                              ._stockMovementsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$StockItemsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).stockMovementsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'stock_item_id',
+                          typedResults: items,
+                        ),
+                      if (recipeLinesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          StockItemRow,
+                          $StockItemsTable,
+                          RecipeLineRow,
+                          $RecipeLinesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$StockItemsTableReferences
+                              ._recipeLinesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$StockItemsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).recipeLinesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'stock_item_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$StockItemsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $StockItemsTable,
+      StockItemRow,
+      $$StockItemsTableFilterComposer,
+      $$StockItemsTableOrderingComposer,
+      $$StockItemsTableAnnotationComposer,
+      $$StockItemsTableCreateCompanionBuilder,
+      $$StockItemsTableUpdateCompanionBuilder,
+      (StockItemRow, $$StockItemsTableReferences),
+      StockItemRow,
+      PrefetchHooks Function({bool stockMovementsRefs, bool recipeLinesRefs})
+    >;
+typedef $$StockMovementsTableCreateCompanionBuilder =
+    StockMovementsCompanion Function({
+      required String id,
+      required String stockItemId,
+      required String kind,
+      required int qtyMilli,
+      Value<int?> costPaise,
+      Value<String> reason,
+      Value<String?> orderId,
+      Value<String?> orderLineId,
+      Value<String?> sourceRef,
+      Value<int?> units,
+      Value<String?> sourceKey,
+      Value<String?> staffId,
+      Value<String> staffName,
+      required String businessDate,
+      required int createdAt,
+      Value<int> rowid,
+    });
+typedef $$StockMovementsTableUpdateCompanionBuilder =
+    StockMovementsCompanion Function({
+      Value<String> id,
+      Value<String> stockItemId,
+      Value<String> kind,
+      Value<int> qtyMilli,
+      Value<int?> costPaise,
+      Value<String> reason,
+      Value<String?> orderId,
+      Value<String?> orderLineId,
+      Value<String?> sourceRef,
+      Value<int?> units,
+      Value<String?> sourceKey,
+      Value<String?> staffId,
+      Value<String> staffName,
+      Value<String> businessDate,
+      Value<int> createdAt,
+      Value<int> rowid,
+    });
+
+final class $$StockMovementsTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $StockMovementsTable, StockMovementRow> {
+  $$StockMovementsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $StockItemsTable _stockItemIdTable(_$AppDatabase db) => db.stockItems
+      .createAlias('stock_movements__stock_item_id__stock_items__id');
+
+  $$StockItemsTableProcessedTableManager get stockItemId {
+    final $_column = $_itemColumn<String>('stock_item_id')!;
+
+    final manager = $$StockItemsTableTableManager(
+      $_db,
+      $_db.stockItems,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_stockItemIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$StockMovementsTableFilterComposer
+    extends Composer<_$AppDatabase, $StockMovementsTable> {
+  $$StockMovementsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get qtyMilli => $composableBuilder(
+    column: $table.qtyMilli,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get costPaise => $composableBuilder(
+    column: $table.costPaise,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get reason => $composableBuilder(
+    column: $table.reason,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get orderId => $composableBuilder(
+    column: $table.orderId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get orderLineId => $composableBuilder(
+    column: $table.orderLineId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceRef => $composableBuilder(
+    column: $table.sourceRef,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get units => $composableBuilder(
+    column: $table.units,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceKey => $composableBuilder(
+    column: $table.sourceKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get staffId => $composableBuilder(
+    column: $table.staffId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get staffName => $composableBuilder(
+    column: $table.staffName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get businessDate => $composableBuilder(
+    column: $table.businessDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$StockItemsTableFilterComposer get stockItemId {
+    final $$StockItemsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.stockItemId,
+      referencedTable: $db.stockItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StockItemsTableFilterComposer(
+            $db: $db,
+            $table: $db.stockItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StockMovementsTableOrderingComposer
+    extends Composer<_$AppDatabase, $StockMovementsTable> {
+  $$StockMovementsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get qtyMilli => $composableBuilder(
+    column: $table.qtyMilli,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get costPaise => $composableBuilder(
+    column: $table.costPaise,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get reason => $composableBuilder(
+    column: $table.reason,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get orderId => $composableBuilder(
+    column: $table.orderId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get orderLineId => $composableBuilder(
+    column: $table.orderLineId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceRef => $composableBuilder(
+    column: $table.sourceRef,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get units => $composableBuilder(
+    column: $table.units,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceKey => $composableBuilder(
+    column: $table.sourceKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get staffId => $composableBuilder(
+    column: $table.staffId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get staffName => $composableBuilder(
+    column: $table.staffName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get businessDate => $composableBuilder(
+    column: $table.businessDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$StockItemsTableOrderingComposer get stockItemId {
+    final $$StockItemsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.stockItemId,
+      referencedTable: $db.stockItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StockItemsTableOrderingComposer(
+            $db: $db,
+            $table: $db.stockItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StockMovementsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $StockMovementsTable> {
+  $$StockMovementsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<int> get qtyMilli =>
+      $composableBuilder(column: $table.qtyMilli, builder: (column) => column);
+
+  GeneratedColumn<int> get costPaise =>
+      $composableBuilder(column: $table.costPaise, builder: (column) => column);
+
+  GeneratedColumn<String> get reason =>
+      $composableBuilder(column: $table.reason, builder: (column) => column);
+
+  GeneratedColumn<String> get orderId =>
+      $composableBuilder(column: $table.orderId, builder: (column) => column);
+
+  GeneratedColumn<String> get orderLineId => $composableBuilder(
+    column: $table.orderLineId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sourceRef =>
+      $composableBuilder(column: $table.sourceRef, builder: (column) => column);
+
+  GeneratedColumn<int> get units =>
+      $composableBuilder(column: $table.units, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceKey =>
+      $composableBuilder(column: $table.sourceKey, builder: (column) => column);
+
+  GeneratedColumn<String> get staffId =>
+      $composableBuilder(column: $table.staffId, builder: (column) => column);
+
+  GeneratedColumn<String> get staffName =>
+      $composableBuilder(column: $table.staffName, builder: (column) => column);
+
+  GeneratedColumn<String> get businessDate => $composableBuilder(
+    column: $table.businessDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$StockItemsTableAnnotationComposer get stockItemId {
+    final $$StockItemsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.stockItemId,
+      referencedTable: $db.stockItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StockItemsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.stockItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StockMovementsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $StockMovementsTable,
+          StockMovementRow,
+          $$StockMovementsTableFilterComposer,
+          $$StockMovementsTableOrderingComposer,
+          $$StockMovementsTableAnnotationComposer,
+          $$StockMovementsTableCreateCompanionBuilder,
+          $$StockMovementsTableUpdateCompanionBuilder,
+          (StockMovementRow, $$StockMovementsTableReferences),
+          StockMovementRow,
+          PrefetchHooks Function({bool stockItemId})
+        > {
+  $$StockMovementsTableTableManager(
+    _$AppDatabase db,
+    $StockMovementsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StockMovementsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StockMovementsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StockMovementsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> stockItemId = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<int> qtyMilli = const Value.absent(),
+                Value<int?> costPaise = const Value.absent(),
+                Value<String> reason = const Value.absent(),
+                Value<String?> orderId = const Value.absent(),
+                Value<String?> orderLineId = const Value.absent(),
+                Value<String?> sourceRef = const Value.absent(),
+                Value<int?> units = const Value.absent(),
+                Value<String?> sourceKey = const Value.absent(),
+                Value<String?> staffId = const Value.absent(),
+                Value<String> staffName = const Value.absent(),
+                Value<String> businessDate = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => StockMovementsCompanion(
+                id: id,
+                stockItemId: stockItemId,
+                kind: kind,
+                qtyMilli: qtyMilli,
+                costPaise: costPaise,
+                reason: reason,
+                orderId: orderId,
+                orderLineId: orderLineId,
+                sourceRef: sourceRef,
+                units: units,
+                sourceKey: sourceKey,
+                staffId: staffId,
+                staffName: staffName,
+                businessDate: businessDate,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String stockItemId,
+                required String kind,
+                required int qtyMilli,
+                Value<int?> costPaise = const Value.absent(),
+                Value<String> reason = const Value.absent(),
+                Value<String?> orderId = const Value.absent(),
+                Value<String?> orderLineId = const Value.absent(),
+                Value<String?> sourceRef = const Value.absent(),
+                Value<int?> units = const Value.absent(),
+                Value<String?> sourceKey = const Value.absent(),
+                Value<String?> staffId = const Value.absent(),
+                Value<String> staffName = const Value.absent(),
+                required String businessDate,
+                required int createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => StockMovementsCompanion.insert(
+                id: id,
+                stockItemId: stockItemId,
+                kind: kind,
+                qtyMilli: qtyMilli,
+                costPaise: costPaise,
+                reason: reason,
+                orderId: orderId,
+                orderLineId: orderLineId,
+                sourceRef: sourceRef,
+                units: units,
+                sourceKey: sourceKey,
+                staffId: staffId,
+                staffName: staffName,
+                businessDate: businessDate,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$StockMovementsTable, StockMovementRow>(table),
+                  $$StockMovementsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({stockItemId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (stockItemId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.stockItemId,
+                        referencedTable: $$StockMovementsTableReferences
+                            ._stockItemIdTable(db),
+                        referencedColumn: $$StockMovementsTableReferences
+                            ._stockItemIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$StockMovementsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $StockMovementsTable,
+      StockMovementRow,
+      $$StockMovementsTableFilterComposer,
+      $$StockMovementsTableOrderingComposer,
+      $$StockMovementsTableAnnotationComposer,
+      $$StockMovementsTableCreateCompanionBuilder,
+      $$StockMovementsTableUpdateCompanionBuilder,
+      (StockMovementRow, $$StockMovementsTableReferences),
+      StockMovementRow,
+      PrefetchHooks Function({bool stockItemId})
+    >;
+typedef $$RecipeLinesTableCreateCompanionBuilder =
+    RecipeLinesCompanion Function({
+      required String id,
+      Value<String?> menuItemId,
+      Value<String?> optionChoiceId,
+      required String stockItemId,
+      required int qtyMilli,
+      required int updatedAt,
+      Value<int> rowid,
+    });
+typedef $$RecipeLinesTableUpdateCompanionBuilder =
+    RecipeLinesCompanion Function({
+      Value<String> id,
+      Value<String?> menuItemId,
+      Value<String?> optionChoiceId,
+      Value<String> stockItemId,
+      Value<int> qtyMilli,
+      Value<int> updatedAt,
+      Value<int> rowid,
+    });
+
+final class $$RecipeLinesTableReferences
+    extends BaseReferences<_$AppDatabase, $RecipeLinesTable, RecipeLineRow> {
+  $$RecipeLinesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $MenuItemsTable _menuItemIdTable(_$AppDatabase db) =>
+      db.menuItems.createAlias('recipe_lines__menu_item_id__menu_items__id');
+
+  $$MenuItemsTableProcessedTableManager? get menuItemId {
+    final $_column = $_itemColumn<String>('menu_item_id');
+    if ($_column == null) return null;
+    final manager = $$MenuItemsTableTableManager(
+      $_db,
+      $_db.menuItems,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_menuItemIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $OptionChoicesTable _optionChoiceIdTable(_$AppDatabase db) => db
+      .optionChoices
+      .createAlias('recipe_lines__option_choice_id__option_choices__id');
+
+  $$OptionChoicesTableProcessedTableManager? get optionChoiceId {
+    final $_column = $_itemColumn<String>('option_choice_id');
+    if ($_column == null) return null;
+    final manager = $$OptionChoicesTableTableManager(
+      $_db,
+      $_db.optionChoices,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_optionChoiceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $StockItemsTable _stockItemIdTable(_$AppDatabase db) =>
+      db.stockItems.createAlias('recipe_lines__stock_item_id__stock_items__id');
+
+  $$StockItemsTableProcessedTableManager get stockItemId {
+    final $_column = $_itemColumn<String>('stock_item_id')!;
+
+    final manager = $$StockItemsTableTableManager(
+      $_db,
+      $_db.stockItems,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_stockItemIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$RecipeLinesTableFilterComposer
+    extends Composer<_$AppDatabase, $RecipeLinesTable> {
+  $$RecipeLinesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get qtyMilli => $composableBuilder(
+    column: $table.qtyMilli,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$MenuItemsTableFilterComposer get menuItemId {
+    final $$MenuItemsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.menuItemId,
+      referencedTable: $db.menuItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuItemsTableFilterComposer(
+            $db: $db,
+            $table: $db.menuItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$OptionChoicesTableFilterComposer get optionChoiceId {
+    final $$OptionChoicesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.optionChoiceId,
+      referencedTable: $db.optionChoices,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OptionChoicesTableFilterComposer(
+            $db: $db,
+            $table: $db.optionChoices,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$StockItemsTableFilterComposer get stockItemId {
+    final $$StockItemsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.stockItemId,
+      referencedTable: $db.stockItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StockItemsTableFilterComposer(
+            $db: $db,
+            $table: $db.stockItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RecipeLinesTableOrderingComposer
+    extends Composer<_$AppDatabase, $RecipeLinesTable> {
+  $$RecipeLinesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get qtyMilli => $composableBuilder(
+    column: $table.qtyMilli,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$MenuItemsTableOrderingComposer get menuItemId {
+    final $$MenuItemsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.menuItemId,
+      referencedTable: $db.menuItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuItemsTableOrderingComposer(
+            $db: $db,
+            $table: $db.menuItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$OptionChoicesTableOrderingComposer get optionChoiceId {
+    final $$OptionChoicesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.optionChoiceId,
+      referencedTable: $db.optionChoices,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OptionChoicesTableOrderingComposer(
+            $db: $db,
+            $table: $db.optionChoices,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$StockItemsTableOrderingComposer get stockItemId {
+    final $$StockItemsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.stockItemId,
+      referencedTable: $db.stockItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StockItemsTableOrderingComposer(
+            $db: $db,
+            $table: $db.stockItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RecipeLinesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RecipeLinesTable> {
+  $$RecipeLinesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get qtyMilli =>
+      $composableBuilder(column: $table.qtyMilli, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$MenuItemsTableAnnotationComposer get menuItemId {
+    final $$MenuItemsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.menuItemId,
+      referencedTable: $db.menuItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuItemsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.menuItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$OptionChoicesTableAnnotationComposer get optionChoiceId {
+    final $$OptionChoicesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.optionChoiceId,
+      referencedTable: $db.optionChoices,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OptionChoicesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.optionChoices,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$StockItemsTableAnnotationComposer get stockItemId {
+    final $$StockItemsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.stockItemId,
+      referencedTable: $db.stockItems,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StockItemsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.stockItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RecipeLinesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RecipeLinesTable,
+          RecipeLineRow,
+          $$RecipeLinesTableFilterComposer,
+          $$RecipeLinesTableOrderingComposer,
+          $$RecipeLinesTableAnnotationComposer,
+          $$RecipeLinesTableCreateCompanionBuilder,
+          $$RecipeLinesTableUpdateCompanionBuilder,
+          (RecipeLineRow, $$RecipeLinesTableReferences),
+          RecipeLineRow,
+          PrefetchHooks Function({
+            bool menuItemId,
+            bool optionChoiceId,
+            bool stockItemId,
+          })
+        > {
+  $$RecipeLinesTableTableManager(_$AppDatabase db, $RecipeLinesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RecipeLinesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RecipeLinesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RecipeLinesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String?> menuItemId = const Value.absent(),
+                Value<String?> optionChoiceId = const Value.absent(),
+                Value<String> stockItemId = const Value.absent(),
+                Value<int> qtyMilli = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RecipeLinesCompanion(
+                id: id,
+                menuItemId: menuItemId,
+                optionChoiceId: optionChoiceId,
+                stockItemId: stockItemId,
+                qtyMilli: qtyMilli,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                Value<String?> menuItemId = const Value.absent(),
+                Value<String?> optionChoiceId = const Value.absent(),
+                required String stockItemId,
+                required int qtyMilli,
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => RecipeLinesCompanion.insert(
+                id: id,
+                menuItemId: menuItemId,
+                optionChoiceId: optionChoiceId,
+                stockItemId: stockItemId,
+                qtyMilli: qtyMilli,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$RecipeLinesTable, RecipeLineRow>(table),
+                  $$RecipeLinesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                menuItemId = false,
+                optionChoiceId = false,
+                stockItemId = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (menuItemId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.menuItemId,
+                            referencedTable: $$RecipeLinesTableReferences
+                                ._menuItemIdTable(db),
+                            referencedColumn: $$RecipeLinesTableReferences
+                                ._menuItemIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+                        if (optionChoiceId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.optionChoiceId,
+                            referencedTable: $$RecipeLinesTableReferences
+                                ._optionChoiceIdTable(db),
+                            referencedColumn: $$RecipeLinesTableReferences
+                                ._optionChoiceIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+                        if (stockItemId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.stockItemId,
+                            referencedTable: $$RecipeLinesTableReferences
+                                ._stockItemIdTable(db),
+                            referencedColumn: $$RecipeLinesTableReferences
+                                ._stockItemIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$RecipeLinesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RecipeLinesTable,
+      RecipeLineRow,
+      $$RecipeLinesTableFilterComposer,
+      $$RecipeLinesTableOrderingComposer,
+      $$RecipeLinesTableAnnotationComposer,
+      $$RecipeLinesTableCreateCompanionBuilder,
+      $$RecipeLinesTableUpdateCompanionBuilder,
+      (RecipeLineRow, $$RecipeLinesTableReferences),
+      RecipeLineRow,
+      PrefetchHooks Function({
+        bool menuItemId,
+        bool optionChoiceId,
+        bool stockItemId,
+      })
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -35764,4 +39318,10 @@ class $AppDatabaseManager {
       $$StaffUsersTableTableManager(_db, _db.staffUsers);
   $$RolePermissionsTableTableManager get rolePermissions =>
       $$RolePermissionsTableTableManager(_db, _db.rolePermissions);
+  $$StockItemsTableTableManager get stockItems =>
+      $$StockItemsTableTableManager(_db, _db.stockItems);
+  $$StockMovementsTableTableManager get stockMovements =>
+      $$StockMovementsTableTableManager(_db, _db.stockMovements);
+  $$RecipeLinesTableTableManager get recipeLines =>
+      $$RecipeLinesTableTableManager(_db, _db.recipeLines);
 }

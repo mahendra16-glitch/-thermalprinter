@@ -11,6 +11,7 @@ import '../../models/printer_device.dart';
 import '../db/app_database.dart';
 import '../db/tables.dart';
 import 'audit_repository.dart';
+import 'inventory_repository.dart';
 import 'print_job_repository.dart';
 
 /// Kitchen order tickets (KOT).
@@ -27,7 +28,10 @@ class KitchenRepository {
   final AuditRepository _audit;
   final PrintJobRepository _jobs;
 
-  KitchenRepository(this._db, this._audit, this._jobs);
+  /// Takes stock for sent items (v9). Null in tests that don't need it.
+  final InventoryRepository? inventory;
+
+  KitchenRepository(this._db, this._audit, this._jobs, {this.inventory});
 
   static const String defaultStation = StationPrinters.defaultStation;
   static const String defaultStationName = 'Kitchen';
@@ -146,6 +150,7 @@ class KitchenRepository {
         if (printers.isEmpty) unrouted.add(stationName);
         jobCount += await _queueTicket(ticketId, order, printers);
         ticketIds.add(ticketId);
+        await inventory?.onKitchenTicket(ticketId);
       }
       await _touch(orderId, now);
       await _audit.record(

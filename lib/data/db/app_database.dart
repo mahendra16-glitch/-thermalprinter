@@ -30,6 +30,8 @@ part 'app_database.g.dart';
 /// - v8: staff_users, role_permissions (seeded with the default roles);
 ///   staff_id on payments, cash_movements, expenses; opened_by_id and
 ///   closed_by_id on cash_shifts.
+/// - v9: stock_items, stock_movements, recipe_lines; the manager role gets
+///   the new manageInventory permission.
 @DriftDatabase(
   tables: [
     MigrationLog,
@@ -63,6 +65,9 @@ part 'app_database.g.dart';
     Expenses,
     StaffUsers,
     RolePermissions,
+    StockItems,
+    StockMovements,
+    RecipeLines,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -71,7 +76,7 @@ class AppDatabase extends _$AppDatabase {
   static const String fileName = 'pos.db';
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -87,6 +92,7 @@ class AppDatabase extends _$AppDatabase {
       await _logMigration(7, 'shifts and expenses (fresh install)');
       await _seedRolePermissions();
       await _logMigration(8, 'staff and permissions (fresh install)');
+      await _logMigration(9, 'inventory (fresh install)');
     },
     onUpgrade: stepByStep(
       from1To2: (m, schema) async {
@@ -172,6 +178,27 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(schema.rolePermissions);
         await _seedRolePermissions();
         await _logMigration(8, 'staff and permissions');
+      },
+      from8To9: (m, schema) async {
+        await m.createTable(schema.stockItems);
+        await m.createTable(schema.stockMovements);
+        await m.createTable(schema.recipeLines);
+        await m.createIndex(schema.idxStockMovementsItem);
+        await m.createIndex(schema.idxStockMovementsOrderLine);
+        await m.createIndex(schema.idxStockMovementsDate);
+        await m.createIndex(schema.idxRecipeLinesItem);
+        await m.createIndex(schema.idxRecipeLinesChoice);
+        // Only the new permission: roles the owner changed stay as they are.
+        await customInsert(
+          'INSERT OR IGNORE INTO role_permissions (role, permission, '
+          'updated_at) VALUES (?, ?, ?)',
+          variables: [
+            Variable.withString(StaffRole.manager.name),
+            Variable.withString(Permission.manageInventory.name),
+            Variable.withInt(Clock.nowMs()),
+          ],
+        );
+        await _logMigration(9, 'inventory');
       },
     ),
     beforeOpen: (details) async {

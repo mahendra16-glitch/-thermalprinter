@@ -14,6 +14,8 @@ import 'stations_screen.dart';
 import 'tax_profiles_screen.dart';
 import '../staff/permission_guard.dart';
 import '../../domain/staff/staff_models.dart';
+import '../inventory/inventory_screen.dart';
+import '../inventory/recipe_screen.dart';
 
 const String _all = '__all__';
 const String _favorites = '__fav__';
@@ -235,9 +237,16 @@ class _MenuScreenState extends State<MenuScreen> {
               onSelected: (v) {
                 if (v == 'edit') _open(ItemEditScreen(itemId: item.id));
                 if (v == 'active') _toggleActive(item);
+                if (v == 'recipe') {
+                  Navigator.of(context).push(recipeRoute(item));
+                }
               },
               itemBuilder: (_) => [
                 const PopupMenuItem(value: 'edit', child: Text('Edit')),
+                const PopupMenuItem(
+                  value: 'recipe',
+                  child: Text('Recipe (stock used)'),
+                ),
                 PopupMenuItem(
                   value: 'active',
                   child: Text(item.isActive ? 'Turn off' : 'Turn on'),
@@ -367,6 +376,10 @@ class _MenuScreenState extends State<MenuScreen> {
                   _open(const MenuImportScreen());
                 case 'export':
                   exportMenuCsv(context);
+                case 'stock':
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const InventoryScreen()),
+                  );
               }
             },
             itemBuilder: (_) => [
@@ -389,6 +402,8 @@ class _MenuScreenState extends State<MenuScreen> {
                 value: 'stations',
                 child: Text('Kitchen stations'),
               ),
+              const PopupMenuDivider(),
+              const PopupMenuItem(value: 'stock', child: Text('Stock')),
               const PopupMenuDivider(),
               const PopupMenuItem(value: 'import', child: Text('Import CSV')),
               const PopupMenuItem(value: 'export', child: Text('Export CSV')),

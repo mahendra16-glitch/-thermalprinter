@@ -34,7 +34,7 @@ void main() {
     }
   });
 
-  test('v1 -> v8 keeps existing printers, jobs and settings', () async {
+  test('v1 -> v9 keeps existing printers, jobs and settings', () async {
     final schema = await verifier.schemaAt(1);
     final raw = schema.rawDatabase;
     raw.execute(
@@ -58,7 +58,7 @@ void main() {
     );
 
     final db = AppDatabase(schema.newConnection());
-    await verifier.migrateAndValidate(db, 8);
+    await verifier.migrateAndValidate(db, 9);
 
     final printers = await db.select(db.printerProfiles).get();
     expect(printers.single.id, 'PRINTER-1');
@@ -70,7 +70,7 @@ void main() {
     final setting = await db.select(db.appSettings).getSingle();
     expect(setting.value, 'PRINTER-1');
     final log = await db.select(db.migrationLog).get();
-    expect(log.map((r) => r.version), [1, 2, 3, 4, 5, 6, 7, 8]);
+    expect(log.map((r) => r.version), [1, 2, 3, 4, 5, 6, 7, 8, 9]);
     expect(await db.select(db.menuItems).get(), isEmpty);
     expect(await db.select(db.orders).get(), isEmpty);
     expect(await db.select(db.bills).get(), isEmpty);
@@ -119,4 +119,38 @@ void main() {
     expect(log.map((r) => r.version), contains(8));
     await db.close();
   });
+
+  test(
+    'v8 -> v9 keeps staff and changed roles; adds stock permission',
+    () async {
+      final schema = await verifier.schemaAt(8);
+      final raw = schema.rawDatabase;
+      raw.execute(
+        "INSERT INTO staff_users (id, name, role, pin_hash, pin_salt, "
+        "pin_iterations, created_at, updated_at) VALUES "
+        "('u1', 'Meera', 'owner', 'h', 's', 1000, 1000, 1000)",
+      );
+      // The owner had taken "view reports" away from managers.
+      raw.execute(
+        "DELETE FROM role_permissions WHERE role = 'manager' "
+        "AND permission = 'viewReports'",
+      );
+      final db = AppDatabase(schema.newConnection());
+      await verifier.migrateAndValidate(db, 9);
+      expect((await db.select(db.staffUsers).getSingle()).name, 'Meera');
+      final perms = await db.select(db.rolePermissions).get();
+      final manager = perms
+          .where((p) => p.role == 'manager')
+          .map((p) => p.permission);
+      expect(manager, contains('manageInventory'));
+      expect(manager, isNot(contains('viewReports')));
+      expect(
+        perms.where((p) => p.permission == 'manageInventory'),
+        hasLength(1),
+      );
+      expect(await db.select(db.stockItems).get(), isEmpty);
+      expect(await db.select(db.recipeLines).get(), isEmpty);
+      await db.close();
+    },
+  );
 }

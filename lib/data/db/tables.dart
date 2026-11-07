@@ -871,3 +871,98 @@ class RolePermissions extends Table {
   @override
   Set<Column> get primaryKey => {role, permission};
 }
+
+/// v9: an ingredient or other stock item. Quantities are integer
+/// thousandths of [unit] (e.g. 1500 = 1.5 kg). Never deleted; turned off.
+@DataClassName('StockItemRow')
+class StockItems extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+
+  /// `StockUnit.name`: kg | g | l | ml | pcs.
+  TextColumn get unit => text()();
+
+  /// Alert when stock on hand is at or below this (null: no alert).
+  IntColumn get lowStockMilli => integer().nullable()();
+  TextColumn get note => text().withDefault(const Constant(''))();
+  BoolColumn get active => boolean().withDefault(const Constant(true))();
+  IntColumn get createdAt => integer()();
+  IntColumn get updatedAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// v9: every change to stock. Stock on hand is the sum of [qtyMilli]; rows
+/// are never edited or deleted (mistakes are corrected with a new row).
+@DataClassName('StockMovementRow')
+@TableIndex(name: 'idx_stock_movements_item', columns: {#stockItemId})
+@TableIndex(name: 'idx_stock_movements_order_line', columns: {#orderLineId})
+@TableIndex(name: 'idx_stock_movements_date', columns: {#businessDate})
+class StockMovements extends Table {
+  TextColumn get id => text()();
+  TextColumn get stockItemId =>
+      text().references(StockItems, #id, onDelete: KeyAction.restrict)();
+
+  /// `StockMovementKind.name`: opening | purchase | wastage | count | sale |
+  /// saleReturn.
+  TextColumn get kind => text()();
+
+  /// Signed: positive adds stock, negative takes it away.
+  IntColumn get qtyMilli => integer()();
+
+  /// Purchases only, optional: what was paid for this quantity.
+  IntColumn get costPaise => integer().nullable()();
+  TextColumn get reason => text().withDefault(const Constant(''))();
+
+  // Sales: what used the stock.
+  TextColumn get orderId => text().nullable()();
+  TextColumn get orderLineId => text().nullable()();
+
+  /// Kitchen ticket line or bill line the deduction came from.
+  TextColumn get sourceRef => text().nullable()();
+
+  /// Units of the menu item this row covers (sales only).
+  IntColumn get units => integer().nullable()();
+
+  /// Stops the same deduction being written twice, e.g.
+  /// `KOT:<ticket line>:<stock item>` or `BILL:<bill line>:<stock item>`.
+  TextColumn get sourceKey => text().nullable().unique()();
+  TextColumn get staffId => text().nullable()();
+  TextColumn get staffName => text().withDefault(const Constant(''))();
+  TextColumn get businessDate => text()();
+  IntColumn get createdAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// v9: how much of a stock item one unit of a menu item (or one chosen
+/// variant / add-on) uses.
+@DataClassName('RecipeLineRow')
+@TableIndex(name: 'idx_recipe_lines_item', columns: {#menuItemId})
+@TableIndex(name: 'idx_recipe_lines_choice', columns: {#optionChoiceId})
+class RecipeLines extends Table {
+  TextColumn get id => text()();
+
+  /// Exactly one of [menuItemId] and [optionChoiceId] is set.
+  TextColumn get menuItemId => text().nullable().references(
+    MenuItems,
+    #id,
+    onDelete: KeyAction.cascade,
+  )();
+  TextColumn get optionChoiceId => text().nullable().references(
+    OptionChoices,
+    #id,
+    onDelete: KeyAction.cascade,
+  )();
+  TextColumn get stockItemId =>
+      text().references(StockItems, #id, onDelete: KeyAction.restrict)();
+
+  /// Thousandths of the stock item's unit, per one unit sold.
+  IntColumn get qtyMilli => integer()();
+  IntColumn get updatedAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}

@@ -17,6 +17,7 @@ import '../../models/print_job.dart';
 import '../../models/printer_device.dart';
 import '../db/app_database.dart';
 import 'audit_repository.dart';
+import 'inventory_repository.dart';
 import 'business_profile_repository.dart';
 import 'order_repository.dart';
 import 'payment_repository.dart';
@@ -61,8 +62,13 @@ class BillRepository {
     this._settings,
     this._orders,
     this._profile,
-    this._jobs,
-  );
+    this._jobs, {
+    this.inventory,
+  });
+
+  /// Takes and returns stock with bills (v9). Null in tests that don't
+  /// need it.
+  final InventoryRepository? inventory;
 
   static const String keySettings = 'billing_settings';
   static final _prefixPattern = RegExp(r'^[A-Za-z0-9/\-]{0,10}$');
@@ -308,6 +314,7 @@ class BillRepository {
         entityId: billId,
         details: {...details, 'orderId': orderId, 'orderNo': o.orderNo},
       );
+      await inventory?.onBillFinalized(billId);
       if (print) await _queuePrint(billId);
       return billId;
     });
@@ -383,6 +390,7 @@ class BillRepository {
         entityId: billId,
         details: details,
       );
+      await inventory?.onBillVoided(billId);
     });
   }
 

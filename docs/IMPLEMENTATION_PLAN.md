@@ -234,7 +234,7 @@ Baseline results (2026-11-06):
 - [x] Phase 7 — Shifts & expenses (see §16)
 - [x] Phase 8 — Reports (see §17)
 - [x] Phase 9 — Staff & permissions (see §18)
-- [ ] Phase 10 — Inventory (optional)
+- [x] Phase 10 — Inventory (optional) (see §19)
 - [ ] Phase 11 — Hardening & release
 
 Manual hardware tests are still required for every transport (BT, USB, LAN) at 58 and 80mm. None have been run as part of this audit.
@@ -959,3 +959,111 @@ No device was connected.
 - **Kitchen role** has no kitchen screen yet. It can look at the menu, tables and orders; any change asks for approval.
 - **Restore** is not built yet (Phase 11). Backups include the staff accounts and PIN hashes, so the same PINs will work after a restore.
 - **PIN security** relies on the device and on backups being kept private (see above). Backup encryption is Phase 11.
+
+---
+
+## 19. Phase 10 completion report (2026-11-07)
+
+### Commit
+- `Phase 10` — stock items, stock movements, recipes, deduction on KOT or bill, low-stock alerts, CSV export, schema v9, tests and this report.
+
+### Schema v9 (`from8To9`, data kept)
+- `stock_items`: name, unit (kg, g, litre, ml, pcs), low-stock level, note, active. Items are never deleted, only turned off.
+- `stock_movements`: one row per change to stock, never edited or deleted.
+  - **Kinds:** opening, purchase, wastage, count, sale, saleReturn.
+  - **Quantity:** a signed amount in thousandths of the unit, so 1.25 kg is 1250. There are no floating-point numbers.
+  - **Purchase cost:** optional.
+  - **For sales:** the order, the order line and the KOT line or bill line it came from.
+  - **Staff and business date.**
+  - **A unique `source_key`,** which prevents duplicates.
+- `recipe_lines`: the stock one portion uses, either for a menu item or for one variant or add-on choice.
+- **Stock on hand** = the sum of the item's movements.
+- **Permissions:** the new `manageInventory` permission is added to the manager role only. Roles the owner already changed keep their other settings (tested).
+- **Migration tests:** v1→v9, and v8→v9 with a staff account and a customised role.
+
+### Stock items and stock by hand
+- **Opening stock** works only for an item with nothing recorded yet. After that, use a count.
+- **Stock in (purchase):** has an optional amount paid and a supplier or bill note. The last cost per unit is shown for reference only.
+- **Wastage:** needs a reason.
+- **Count:** you enter what is actually there. The app records the difference and needs a reason if it differs.
+- **Retries:** each entry carries a request id, so a retried tap is saved once.
+- **Unit:** cannot change once stock is recorded.
+- **Audit:** every entry by hand is audited (`stock.*`, `recipe.changed`).
+
+### Recipes
+- Menu > item ⋮ > **Recipe (stock used)**. You enter what one portion uses, in the stock item's unit.
+- Each variant or add-on choice of the item can add more (e.g. Extra cheese +50 g).
+- Items with no recipe use no stock. The app does not treat a menu item's count as ingredient inventory.
+
+### When sales take stock (Stock > "Sales take stock")
+- **Off (default):** stock changes only by hand.
+- **When sent to the kitchen (KOT):** each kitchen ticket line takes `per portion × units`.
+  - **Items billed without a KOT:** the unsent units are taken when the bill is made.
+  - **Items voided after the KOT:** stay used, because the food may already be made. Correct with wastage or a count.
+- **When the bill is made:** the bill takes the billed units, minus any units a KOT already took. This also covers switching modes in the middle of an order.
+- **Bill void:** gives back exactly what that bill took, copied from its own rows and not worked out again from today's recipe. KOT deductions stay.
+- **No double deduction:**
+  - **Retries and reprints:** a retried KOT or bill request, a reprinted KOT or bill, and a print-queue retry never take stock again. Each deduction's key (`KOT:<ticket line>:<item>` or `BILL:<bill line>:<item>`) is unique in the database.
+  - **One transaction:** deductions run inside the same transaction as the KOT or bill, so they can't be half-saved.
+- **Sales are never blocked by stock.** Stock can go below zero, and it then shows in red with "count it".
+
+### Low stock and history
+- **Alert level:** each item can have one. The Stock screen lists items at or below it at the top, and marks each one in the list.
+- **Item screen:**
+  - expected on hand;
+  - Stock in, Wastage and Count buttons (Opening stock while nothing is recorded);
+  - full history with who did it and how many were sold.
+- **Export CSV:** stock movements for a date range. It uses UTF-8 with a BOM, plain numbers and the formula guard, and the export is audited.
+- **Where to find it:** Menu ⋮ > **Stock**, or Settings > **Stock**.
+
+### Valuation
+- Not done. No reliable costing model is in place (FIFO or average cost, purchase units, yields), so the app shows no stock value or cost of goods. Purchase amounts are only recorded and shown as "last purchase per unit".
+
+### Permissions
+- **Manage stock and recipes** (managers and owner by default) is needed for stock items, stock in, wastage, counts, recipes and the deduction setting. Anyone else is asked for approval as in Phase 9.
+- Looking at stock is open to anyone who can see the Menu tab or Settings.
+
+### Tests and commands
+| Command | Result |
+|---|---|
+| `dart format lib test` | clean |
+| `flutter analyze` | 13 infos (unchanged); no warnings or errors |
+| `flutter test` | **269/269 passed**. New tests are listed below. |
+| `flutter build apk --debug` | builds |
+
+New tests in `flutter test`:
+- **Inventory repository (9):**
+  - quantity format and parse
+  - items, retried stock in, wastage reason, counts with reason, audit
+  - deduction off
+  - on the bill:
+    - item and option recipes
+    - a retried bill and reprints are taken once
+    - a void returns the original amounts after a recipe change
+    - billed again after the void
+  - on KOT:
+    - a retried send is taken once
+    - unsent items are taken by the bill
+    - a bill void returns only the bill's part
+  - items voided after a KOT stay used
+  - switching modes mid-order
+  - low stock and below zero
+  - movements CSV
+- **Migration (1):** v8→v9.
+- **Widget (1):** low-stock alert, then stock in with a cost.
+
+### Manual tests still required
+No device was connected.
+1. Set up 5–10 real ingredients with opening stock and recipes for a few dishes.
+2. Run a service with "When sent to the kitchen". At closing, count each item and compare with the expected stock.
+3. Repeat with "When the bill is made", including a void and a re-bill.
+4. Reprint KOTs and bills, and retry a failed print. Stock must not change.
+5. Open the stock CSV in Excel or Google Sheets.
+
+### Known limitations
+- **No unit conversion:** a recipe uses the stock item's own unit (e.g. 0.150 kg, not 150 g).
+- **Purchases only:** there are no suppliers, purchase orders or purchase units (e.g. a 25 kg bag), and no automatic reorder.
+- **Voided after KOT:** items voided after the KOT, and cancelled orders that were sent, are counted as used. If the food wasn't made, correct with a count.
+- **No old orders:** recipes only affect orders billed or sent after they are set; old orders are not reprocessed.
+- **No valuation** (see above).
+- **No stock report in Reports:** stock movements are not yet part of the Reports tab, only of the stock CSV.
