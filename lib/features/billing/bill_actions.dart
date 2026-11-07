@@ -15,6 +15,8 @@ import '../../queue/print_queue_manager.dart';
 import '../../services/storage_service.dart';
 import '../menu/menu_widgets.dart';
 import '../payments/payment_actions.dart';
+import '../staff/permission_guard.dart';
+import '../../domain/staff/staff_models.dart';
 
 /// One printed row of a bill breakdown.
 class BreakdownRow {
@@ -183,6 +185,9 @@ class BreakdownView extends StatelessWidget {
 /// Shows the bill preview and, when staff confirm, finalizes the bill.
 /// Returns the new bill id, or null if nothing was saved.
 Future<String?> generateBill(BuildContext context, String orderId) async {
+  if (!await allow(context, Permission.finalizeBill) || !context.mounted) {
+    return null;
+  }
   final storage = await StorageService.getInstance();
   final BillDraft draft;
   try {
@@ -608,6 +613,9 @@ class _BillView extends StatelessWidget {
 
 /// Asks for a reason and voids the bill; the order opens again.
 Future<bool> voidBill(BuildContext context, Bill bill) async {
+  if (!await allow(context, Permission.voidBill) || !context.mounted) {
+    return false;
+  }
   final reason = TextEditingController();
   const reasons = [
     'Wrong item billed',

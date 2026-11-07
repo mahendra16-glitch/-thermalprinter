@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../domain/staff/staff_models.dart';
 import '../features/billing/billing_settings_screen.dart';
+import '../features/staff/permission_guard.dart';
+import '../features/staff/staff_screen.dart';
 import '../models/print_mode.dart';
 import '../models/printer_device.dart';
 import '../services/storage_service.dart';
@@ -29,6 +32,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String? _fallbackPrinterId;
   int _dayStartHour = 0;
 
+  /// Bumped to redraw a dropdown with its saved value when a change was
+  /// not allowed.
+  int _rev = 0;
+
   @override
   void initState() {
     super.initState();
@@ -54,6 +61,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _setFallback(String? printerId) async {
+    if (!await allow(context, Permission.changePrinterSettings)) {
+      if (mounted) setState(() => _rev++);
+      return;
+    }
     final storage = await StorageService.getInstance();
     await storage.settings.setFallbackPrinterId(printerId);
     if (mounted) setState(() => _fallbackPrinterId = printerId);
@@ -65,6 +76,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     required String title,
     required String subtitle,
     required Widget Function() page,
+    Permission? permission,
   }) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
@@ -79,6 +91,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       trailing: const Icon(Icons.chevron_right_rounded),
       onTap: () async {
+        if (permission != null && !await allow(context, permission)) return;
+        if (!mounted) return;
         await Navigator.of(context)
             .push(MaterialPageRoute(builder: (_) => page()));
         _loadFallback();
@@ -91,11 +105,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _navTile(
+          icon: Icons.badge_rounded,
+          color: const Color(0xFF0369A1),
+          title: 'Staff',
+          subtitle: 'Staff accounts, PIN sign-in, roles and activity log.',
+          page: () => const StaffScreen(),
+          permission: Permission.manageStaff,
+        ),
+        _navTile(
           icon: Icons.storefront_rounded,
           color: const Color(0xFF0F766E),
           title: 'Business Profile',
           subtitle: 'Restaurant name, address, phone, GSTIN, FSSAI, UPI ID.',
           page: () => const BusinessProfileScreen(),
+          permission: Permission.changeSettings,
         ),
         _navTile(
           icon: Icons.receipt_long_rounded,
@@ -103,6 +126,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: 'Billing & tax',
           subtitle: 'Service charge, rounding, bill numbers, tax rates.',
           page: () => const BillingSettingsScreen(),
+          permission: Permission.changeSettings,
         ),
         _navTile(
           icon: Icons.backup_rounded,
@@ -110,6 +134,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: 'Backup',
           subtitle: 'Save a verified copy of all local data and share it.',
           page: () => const BackupScreen(),
+          permission: Permission.backupRestore,
         ),
         _navTile(
           icon: Icons.print_rounded,
@@ -117,6 +142,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: 'Printers',
           subtitle: 'Bluetooth, USB and Wi-Fi/LAN printers.',
           page: () => const PrintersScreen(),
+          permission: Permission.changePrinterSettings,
         ),
         _navTile(
           icon: Icons.queue_rounded,
@@ -146,7 +172,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         const SizedBox(height: 8),
         DropdownButtonFormField<int>(
-          key: ValueKey('day-$_dayStartHour'),
+          key: ValueKey('day-$_dayStartHour-$_rev'),
           initialValue: _dayStartHour,
           decoration: const InputDecoration(border: OutlineInputBorder()),
           items: [
@@ -158,6 +184,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ],
           onChanged: (v) async {
             if (v == null) return;
+            if (!await allow(context, Permission.changeSettings)) {
+              if (mounted) setState(() => _rev++); // put the saved value back
+              return;
+            }
             final storage = await StorageService.getInstance();
             await storage.orders.setDayStartHour(v);
             if (mounted) setState(() => _dayStartHour = v);
@@ -176,7 +206,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         const SizedBox(height: 8),
         DropdownButtonFormField<String?>(
-          key: ValueKey(_fallbackPrinterId),
+          key: ValueKey('fallback-$_fallbackPrinterId-$_rev'),
           initialValue: _fallbackPrinterId,
           isExpanded: true,
           decoration: const InputDecoration(border: OutlineInputBorder()),
@@ -208,6 +238,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _setPrintMode(PrintMode mode) async {
+    if (!await allow(context, Permission.changePrinterSettings)) return;
     final storage = await StorageService.getInstance();
     await storage.setPrintMode(mode);
     setState(() => _currentMode = mode);

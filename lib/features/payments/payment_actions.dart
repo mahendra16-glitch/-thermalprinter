@@ -13,6 +13,8 @@ import '../../domain/payments/payment_models.dart';
 import '../../queue/print_queue_manager.dart';
 import '../../services/storage_service.dart';
 import '../menu/menu_widgets.dart';
+import '../staff/permission_guard.dart';
+import '../../domain/staff/staff_models.dart';
 
 const _grey = Color(0xFF64748B);
 const _red = Color(0xFFDC2626);
@@ -20,6 +22,9 @@ const _red = Color(0xFFDC2626);
 /// Opens the payment screen for a bill. Returns true when a payment was
 /// recorded.
 Future<bool> collectPayment(BuildContext context, String billId) async {
+  if (!await allow(context, Permission.recordPayment) || !context.mounted) {
+    return false;
+  }
   final storage = await StorageService.getInstance();
   final bill = await storage.bills.getBill(billId);
   if (bill == null) return false;
@@ -549,6 +554,9 @@ class PaymentHistory extends StatelessWidget {
 
 /// Asks for a reason and reverses a payment (kept on record).
 Future<bool> reversePayment(BuildContext context, LedgerEntry e) async {
+  if (!await allow(context, Permission.reversePayment) || !context.mounted) {
+    return false;
+  }
   final reason = TextEditingController();
   final requestId = newId();
   var print = false;
@@ -639,6 +647,9 @@ Future<bool> reversePayment(BuildContext context, LedgerEntry e) async {
 /// Closes a billed order with money still owed. Asks for the customer if
 /// the order has none.
 Future<bool> moveToDues(BuildContext context, Order o, Money balance) async {
+  if (!await allow(context, Permission.recordPayment) || !context.mounted) {
+    return false;
+  }
   final name = TextEditingController(text: o.customerName);
   final phone = TextEditingController(text: o.customerPhone);
   final note = TextEditingController();

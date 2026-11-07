@@ -7,6 +7,8 @@ import '../../domain/orders/order_models.dart';
 import '../../domain/orders/table_models.dart';
 import '../../services/storage_service.dart';
 import 'order_screen.dart';
+import '../staff/permission_guard.dart';
+import '../../domain/staff/staff_models.dart';
 
 /// Opens an existing order.
 Future<void> openOrder(BuildContext context, String orderId) {
@@ -21,6 +23,7 @@ Future<void> startOrder(
   required OrderType type,
   RestaurantTable? table,
 }) async {
+  if (!await allow(context, Permission.takeOrders) || !context.mounted) return;
   final messenger = ScaffoldMessenger.of(context);
   final storage = await StorageService.getInstance();
   var request = NewOrderRequest(

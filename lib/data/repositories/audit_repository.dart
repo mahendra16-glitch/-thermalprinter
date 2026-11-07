@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 
 import '../../core/util/clock.dart';
 import '../../core/util/ids.dart';
+import '../../domain/staff/staff_session.dart';
 import '../db/app_database.dart';
 
 /// Append-only audit trail. Call [record] inside the same transaction as the
@@ -11,7 +12,12 @@ import '../db/app_database.dart';
 class AuditRepository {
   final AppDatabase _db;
 
-  AuditRepository(this._db);
+  /// Who is signed in. Repositories read it to stamp records, and [record]
+  /// fills the staff id from it.
+  final StaffSession session;
+
+  AuditRepository(this._db, [StaffSession? session])
+    : session = session ?? StaffSession();
 
   Future<void> record({
     required String action,
@@ -29,7 +35,7 @@ class AuditRepository {
             action: action,
             entity: entity,
             entityId: Value(entityId),
-            staffId: Value(staffId),
+            staffId: Value(staffId ?? session.staffId),
             detailsJson: Value(details == null ? null : jsonEncode(details)),
           ),
         );

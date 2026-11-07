@@ -159,6 +159,8 @@ class OrderRepository {
               customerName: Value(r.customerName.trim()),
               customerPhone: Value(r.customerPhone.trim()),
               guests: Value(r.guests),
+              staffId: Value(_audit.session.staffId),
+              staffName: Value(_audit.session.staffName),
               status: OrderStatus.open.name,
               clientRequestId: r.clientRequestId,
               createdAt: now,

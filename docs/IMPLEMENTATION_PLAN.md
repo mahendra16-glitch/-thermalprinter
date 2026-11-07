@@ -233,7 +233,7 @@ Baseline results (2026-11-06):
 - [x] Phase 6 — Payments (see §15)
 - [x] Phase 7 — Shifts & expenses (see §16)
 - [x] Phase 8 — Reports (see §17)
-- [ ] Phase 9 — Staff & permissions
+- [x] Phase 9 — Staff & permissions (see §18)
 - [ ] Phase 10 — Inventory (optional)
 - [ ] Phase 11 — Hardening & release
 
@@ -835,3 +835,127 @@ No device or printer was connected.
 - **No charts or hourly sales**; lists and totals only.
 - **Large ranges** are built in one go on the device; very long ranges (a year of data) have not been timed.
 - **Tax summary** is what the app calculated and printed. It is not a GST return; check with an accountant before filing.
+
+---
+
+## 18. Phase 9 completion report (2026-11-07)
+
+### Commit
+- `Phase 9` — staff accounts, PIN sign-in, roles and permissions, approvals, activity log, schema v8, tests and this report.
+
+### Schema v8 (`from7To8`, data kept)
+- New `staff_users`: name, role, PIN hash, salt and iteration count, active, wrong-PIN count, locked-until, last sign-in. Accounts are never deleted, only turned off, so old records still show who did them.
+- New `role_permissions`: one row per allowed (role, permission). Seeded with the default roles during the migration and on fresh installs. The owner has no rows because an owner can always do everything.
+- `staff_id` added to `payments`, `cash_movements` and `expenses`; `opened_by_id` and `closed_by_id` added to `cash_shifts`. `orders.staff_id` already existed. Old rows stay null.
+- Settings keys: `staff.login_enabled`, `staff.auto_lock_minutes`, `staff.recovery` (a hash of the recovery code) and `staff.recovery_failures`.
+- Migration tests cover v1→v8 and v7→v8 with an existing shift and expense: data is kept, staff ids are null and default permissions are present.
+
+### Turning it on
+- **Nothing changes for an existing install until the owner sets it up.** Until then staff login is off: everything is allowed and records carry no staff, as before Phase 9.
+- To set it up: Settings > Staff > owner name > PIN (entered twice). A **recovery code** (`XXXX-XXXX-XXXX`) is shown once and must be written down. PIN sign-in is then on and the owner is signed in.
+- The owner can turn PIN sign-in off again; accounts are kept. Every change is audited.
+
+### PINs and security
+- PINs are 4–8 digits. The app refuses all-same-digit PINs and straight runs such as 1234 or 9876.
+- PINs are stored only as **PBKDF2-HMAC-SHA256** hashes: a random 16-byte salt and 60,000 iterations, using the `cryptography` package (no home-made crypto). Hashing runs on a background isolate. Each hash stores its own iteration count, so the count can be raised later. Comparison is constant-time. The recovery code is hashed the same way.
+- **Lock-out:** after 5 wrong PINs in a row the account is locked for 30 s. Each further wrong PIN doubles the lock, up to 15 min, and the lock is stored in the database so it survives a restart. A correct PIN, or a PIN reset by a manager, clears it. Wrong recovery codes have their own lock-out.
+- **Why not Android Keystore / secure storage:** a key held in the device Keystore would make PINs in a backup unusable once restored on a new phone and could lock the owner out. The hashes live in the database instead, and so they are in backups. A 4–8 digit PIN can be guessed offline by someone who has the database file, so the PIN protects against misuse at the counter, not against someone who has a copy of the data. Keep backups private; encrypted backups are planned for Phase 11.
+- Sign-in, wrong PINs, locks, sign-out (manual, auto-lock or switch user), resets, recovery, role changes and approvals are all audited.
+
+### Roles and permissions
+| Permission | Manager | Cashier | Waiter | Kitchen |
+|---|:-:|:-:|:-:|:-:|
+| View menu | ✓ | ✓ | ✓ | ✓ |
+| Edit menu | ✓ | | | |
+| Take orders (add items, send KOT, move, merge, split) | ✓ | ✓ | ✓ | |
+| Give discounts | ✓ | | | |
+| Cancel orders and sent items | ✓ | | | |
+| Make bills | ✓ | ✓ | | |
+| Void bills | ✓ | | | |
+| Take payments (and move to dues) | ✓ | ✓ | | |
+| Reverse payments / refunds | ✓ | | | |
+| View reports | ✓ | | | |
+| Open / close shift, cash in and out | ✓ | ✓ | | |
+| Record expenses | ✓ | ✓ | | |
+| Change printer settings | ✓ | | | |
+| Change business, billing and table settings | ✓ | | | |
+| Backup and restore | | | | |
+| Manage staff and permissions | | | | |
+- The owner always has everything. The other roles can be changed under Staff > Roles, and "Reset to default" puts a role back.
+- Only an owner can create, change or reset owner accounts, or give "Manage staff" to a role. The last active owner cannot be turned off or demoted.
+- **Approval:** when someone lacks a permission, the app asks for the PIN of a person who has it (for example a manager allows a cashier's discount). It works for that one action only and writes `permission.approved` with both people to the audit log. The person who asked stays signed in.
+
+### Where permissions are checked
+- **Action entry points:**
+  - Orders: new order, add item, edit a line or details, discount, move, merge, split, cancel.
+  - Kitchen: send KOT, void sent items.
+  - Bills: make, void.
+  - Payments: take, reverse, move to dues.
+  - Shifts: open, close, cash in and out, cancel entries, expenses.
+  - Menu: every editing screen, turning items on or off, favourites, reordering.
+  - Table management.
+  - Settings: Business profile, Billing & tax, Backup, Printers, print mode, fallback printer, day start, Staff.
+- **Tabs:** Reports needs *View reports*. Shift needs *Shift* or *Expenses*. Menu needs *View* or *Edit menu*. Tables, Orders and Settings are always shown.
+- Staff management is also checked inside `StaffRepository`, so it cannot be bypassed from another screen. Other repositories do not check permissions: checks happen in the screens, and the audit log records who acted.
+
+### Who did it
+- `AuditRepository.record` adds the signed-in staff id to every audit row, and repositories stamp records:
+  - **Orders:** staff id and name, which flow to the bill and to "by staff" in reports.
+  - **Payments and reversals:** staff id and name.
+  - **Shifts:** opened and closed by name and id.
+  - **Cash movements and expenses:** name and id.
+- When someone is signed in, typed "Your name" fields on the Shift screen are filled with their name and locked, and the repository uses the signed-in name.
+
+### Screens
+- **Sign-in screen:** covers the whole app, including open screens and dialogs, while PIN sign-in is on and nobody is signed in. Staff pick their name, then enter their PIN on a large PIN pad (a hardware keyboard also works). The app underneath keeps its state, so a half-taken order is not lost. If a different person signs in, the app returns to its first screen.
+- **Auto-lock:** after 10 minutes of no use by default (Never, 2, 5, 10, 15, 30 or 60 min). It is also checked when the app comes back to the front.
+- **Account bar:** under each tab, shows who is signed in, with **Change PIN** and **Lock**.
+- **Settings > Staff:** set-up, then three tabs:
+  - **Staff:** add, rename, change role, set a new PIN, turn off or on, PIN sign-in switch, auto-lock time, new recovery code.
+  - **Roles:** a permission checklist for each role.
+  - **Activity:** the last 500 audit entries with who did each; "Important only" by default; read-only.
+- **Owner recovery** (from the sign-in screen): the recovery code sets a new owner PIN and issues a new code; the old code stops working.
+
+### Tests and commands
+| Command | Result |
+|---|---|
+| `dart format lib test` | clean |
+| `flutter analyze` | 13 infos (unchanged); no warnings or errors |
+| `flutter test` | **250/250 passed**. New tests are listed below. |
+| `flutter build apk --debug` | builds |
+
+New tests in `flutter test`:
+- **Staff repository (13):**
+  - PIN rules
+  - salted hash, verify and reject
+  - hashing on an isolate
+  - lock-out steps
+  - recovery code format
+  - login off until set-up; PIN and recovery code not stored in plain text
+  - sign-in by role, permissions and approval; role changes follow the session
+  - lock-out and unlock by reset
+  - last-owner rules, and managers cannot touch owners
+  - change own PIN
+  - recovery code works once
+  - login off keeps accounts
+  - records and audit rows carry the signed-in staff, and reports group by them
+- **Migration (1):** v7→v8.
+- **Widget (4):** owner set-up with recovery code; sign-in screen with wrong then right PIN; waiter discount approval; tabs follow the role.
+
+Two widget-test failures were fixed in the code itself: the sign-in navigator shared the app's hero controller, and the staff tiles overflowed at a fixed height.
+
+### Manual tests still required
+No device was connected.
+1. On a phone or tablet, set up the owner. Add a cashier and a waiter, and sign in as each. Check which tabs show and that blocked actions ask for approval.
+2. Enter 5 wrong PINs and check the lock message and wait time. Restart the app while locked: the lock is still there.
+3. Leave the app idle past the auto-lock time, and switch away and back. Check that a half-taken order is still there after signing back in.
+4. Time PIN sign-in on the slowest target device. It should take well under a second; if not, the iteration count can be lowered for new PINs.
+5. Use the recovery code on a real device and check that the new code is shown.
+
+### Known limitations
+- **Checks are in the screens** for everything except staff management. A bug in a screen could skip a check, but the audit log still records who acted.
+- **Approval is one action at a time.** The approver's PIN is not remembered.
+- **Typed staff names** on orders, payments and shifts from before v8 are kept as they were. Reports group them by that name.
+- **Kitchen role** has no kitchen screen yet. It can look at the menu, tables and orders; any change asks for approval.
+- **Restore** is not built yet (Phase 11). Backups include the staff accounts and PIN hashes, so the same PINs will work after a restore.
+- **PIN security** relies on the device and on backups being kept private (see above). Backup encryption is Phase 11.

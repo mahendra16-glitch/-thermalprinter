@@ -9,6 +9,8 @@ import '../../domain/shifts/shift_models.dart';
 import '../../queue/print_queue_manager.dart';
 import '../../services/storage_service.dart';
 import '../menu/menu_widgets.dart';
+import '../staff/permission_guard.dart';
+import '../../domain/staff/staff_models.dart';
 
 const _grey = Color(0xFF64748B);
 const _red = Color(0xFFDC2626);
@@ -267,11 +269,17 @@ class _OpenShift extends StatelessWidget {
               label: const Text('Print running report'),
             ),
             FilledButton.icon(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => CloseShiftScreen(shift: shift, summary: s),
-                ),
-              ),
+              onPressed: () async {
+                if (!await allow(context, Permission.manageShift) ||
+                    !context.mounted) {
+                  return;
+                }
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => CloseShiftScreen(shift: shift, summary: s),
+                  ),
+                );
+              },
               icon: const Icon(Icons.lock_rounded),
               label: const Text('Close shift'),
             ),
@@ -313,6 +321,7 @@ class _OpenShift extends StatelessWidget {
                       onPressed: () => _cancel(
                         context,
                         (s, reason) => s.shifts.voidMovement(m.id, reason),
+                        permission: Permission.manageShift,
                       ),
                     ),
             ),
@@ -396,6 +405,7 @@ class _ExpenseList extends StatelessWidget {
                     onPressed: () => _cancel(
                       context,
                       (s, reason) => s.shifts.voidExpense(e.id, reason),
+                      permission: Permission.recordExpense,
                     ),
                   ),
           ),
@@ -404,10 +414,16 @@ class _ExpenseList extends StatelessWidget {
   }
 }
 
+/// The signed-in staff member's name ('' with staff login off). Name
+/// fields are filled with it and cannot be changed.
+String _signedName() => StorageService.maybeInstance?.session.staffName ?? '';
+
 Future<void> _cancel(
   BuildContext context,
-  Future<void> Function(StorageService, String reason) action,
-) async {
+  Future<void> Function(StorageService, String reason) action, {
+  required Permission permission,
+}) async {
+  if (!await allow(context, permission) || !context.mounted) return;
   final reason = TextEditingController();
   final go = await showDialog<bool>(
     context: context,
@@ -442,8 +458,9 @@ Future<void> _cancel(
 
 /// Asks for the opening cash and the staff name, then opens a shift.
 Future<void> openShift(BuildContext context) async {
+  if (!await allow(context, Permission.manageShift) || !context.mounted) return;
   final cash = TextEditingController();
-  final name = TextEditingController();
+  final name = TextEditingController(text: _signedName());
   final note = TextEditingController();
   final requestId = newId();
   final go = await showDialog<bool>(
@@ -465,6 +482,7 @@ Future<void> openShift(BuildContext context) async {
           ),
           TextField(
             controller: name,
+            readOnly: _signedName().isNotEmpty,
             decoration: const InputDecoration(labelText: 'Your name'),
           ),
           TextField(
@@ -509,9 +527,10 @@ Future<void> openShift(BuildContext context) async {
 
 /// Records cash added to or taken out of the drawer.
 Future<void> cashMovement(BuildContext context, CashMovementKind kind) async {
+  if (!await allow(context, Permission.manageShift) || !context.mounted) return;
   final amount = TextEditingController();
   final reason = TextEditingController();
-  final name = TextEditingController();
+  final name = TextEditingController(text: _signedName());
   final requestId = newId();
   final add = kind == CashMovementKind.addition;
   final go = await showDialog<bool>(
@@ -542,6 +561,7 @@ Future<void> cashMovement(BuildContext context, CashMovementKind kind) async {
           ),
           TextField(
             controller: name,
+            readOnly: _signedName().isNotEmpty,
             decoration: const InputDecoration(labelText: 'Your name'),
           ),
         ],
@@ -576,6 +596,9 @@ Future<void> cashMovement(BuildContext context, CashMovementKind kind) async {
 
 /// Records an expense. Cash expenses need an open shift.
 Future<void> addExpense(BuildContext context, bool shiftOpen) async {
+  if (!await allow(context, Permission.recordExpense) || !context.mounted) {
+    return;
+  }
   final storage = await StorageService.getInstance();
   final categories = await storage.shifts.expenseCategories();
   if (!context.mounted) return;
@@ -604,7 +627,7 @@ class _ExpenseFormState extends State<_ExpenseForm> {
   final _category = TextEditingController();
   final _amount = TextEditingController();
   final _note = TextEditingController();
-  final _name = TextEditingController();
+  final _name = TextEditingController(text: _signedName());
   late ExpenseSource _from = widget.shiftOpen
       ? ExpenseSource.cash
       : ExpenseSource.upi;
@@ -717,6 +740,7 @@ class _ExpenseFormState extends State<_ExpenseForm> {
           ),
           TextField(
             controller: _name,
+            readOnly: _signedName().isNotEmpty,
             decoration: const InputDecoration(labelText: 'Your name'),
           ),
           if (_error != null)
@@ -756,7 +780,7 @@ class _CloseShiftScreenState extends State<CloseShiftScreen> {
   };
   final _total = TextEditingController();
   final _reason = TextEditingController();
-  final _name = TextEditingController();
+  final _name = TextEditingController(text: _signedName());
   final _note = TextEditingController();
   bool _byNotes = true;
   bool _print = true;
@@ -957,6 +981,7 @@ class _CloseShiftScreenState extends State<CloseShiftScreen> {
             ),
           TextField(
             controller: _name,
+            readOnly: _signedName().isNotEmpty,
             decoration: const InputDecoration(labelText: 'Your name'),
           ),
           TextField(

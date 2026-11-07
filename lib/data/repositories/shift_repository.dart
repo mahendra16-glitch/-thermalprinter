@@ -256,6 +256,7 @@ class ShiftRepository {
               businessDate: date,
               openingCashPaise: openingCash.paise,
               openedBy: staff,
+              openedById: Value(_audit.session.staffId),
               openNote: Value(note.trim()),
               openedAt: now,
               clientRequestId: clientRequestId,
@@ -314,7 +315,8 @@ class ShiftRepository {
               kind: kind.name,
               amountPaise: amount.paise,
               reason: reason.trim(),
-              staffName: Value(staffName.trim()),
+              staffName: Value(_name(staffName)),
+              staffId: Value(_audit.session.staffId),
               createdAt: Clock.nowMs(),
               clientRequestId: clientRequestId,
             ),
@@ -327,7 +329,7 @@ class ShiftRepository {
           'shiftId': shift.id,
           'amountPaise': amount.paise,
           'reason': reason.trim(),
-          'by': staffName.trim(),
+          'by': _name(staffName),
         },
       );
       return id;
@@ -414,7 +416,8 @@ class ShiftRepository {
               amountPaise: amount.paise,
               paidFrom: paidFrom.name,
               note: Value(note.trim()),
-              staffName: Value(staffName.trim()),
+              staffName: Value(_name(staffName)),
+              staffId: Value(_audit.session.staffId),
               businessDate: date,
               createdAt: Clock.nowMs(),
               clientRequestId: clientRequestId,
@@ -430,7 +433,7 @@ class ShiftRepository {
           'paidFrom': paidFrom.name,
           'shiftId': shift?.id,
           'note': note.trim(),
-          'by': staffName.trim(),
+          'by': _name(staffName),
         },
       );
       return id;
@@ -503,6 +506,7 @@ class ShiftRepository {
           status: Value(ShiftStatus.closed.name),
           closedAt: Value(now),
           closedBy: Value(staff),
+          closedById: Value(_audit.session.staffId),
           countedCashPaise: Value(countedCash.paise),
           expectedCashPaise: Value(sum.expectedCash.paise),
           variancePaise: Value(variance.paise),
@@ -630,8 +634,15 @@ class ShiftRepository {
     }
   }
 
+  /// The signed-in staff member's name, or (with staff login off) the
+  /// name typed on the form.
+  String _name(String typed) {
+    final signed = _audit.session.staffName;
+    return signed.isNotEmpty ? signed : typed.trim();
+  }
+
   String _requireStaff(String name) {
-    final n = name.trim();
+    final n = _name(name);
     if (n.isEmpty) throw ValidationException('Enter your name.');
     return n;
   }

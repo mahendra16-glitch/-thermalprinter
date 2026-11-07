@@ -11,6 +11,8 @@ import '../common/time_format.dart';
 import '../menu/menu_widgets.dart';
 import '../orders/order_launcher.dart';
 import 'manage_tables_screen.dart';
+import '../staff/permission_guard.dart';
+import '../../domain/staff/staff_models.dart';
 
 /// Floor view: every table with its live status.
 class TablesScreen extends StatefulWidget {
@@ -234,9 +236,7 @@ class _TablesScreenState extends State<TablesScreen> {
           IconButton(
             tooltip: 'Manage areas and tables',
             icon: const Icon(Icons.edit_note_rounded),
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const ManageTablesScreen()),
-            ),
+            onPressed: () => _manageTables(context),
           ),
         ],
       ),
@@ -256,9 +256,7 @@ class _TablesScreenState extends State<TablesScreen> {
                   'Add areas (Indoor, Terrace…) and tables to take dine-in '
                   'orders. Takeaway orders work without tables.',
               action: FilledButton.icon(
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const ManageTablesScreen()),
-                ),
+                onPressed: () => _manageTables(context),
                 icon: const Icon(Icons.add),
                 label: const Text('Set up tables'),
               ),
@@ -330,4 +328,12 @@ class _TablesScreenState extends State<TablesScreen> {
             ),
     );
   }
+}
+
+Future<void> _manageTables(BuildContext context) async {
+  if (!await allow(context, Permission.changeSettings) || !context.mounted) {
+    return;
+  }
+  await Navigator.of(context)
+      .push(MaterialPageRoute(builder: (_) => const ManageTablesScreen()));
 }

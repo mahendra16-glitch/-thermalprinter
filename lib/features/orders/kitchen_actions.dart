@@ -9,9 +9,12 @@ import '../../queue/print_queue_manager.dart';
 import '../../services/storage_service.dart';
 import '../menu/menu_widgets.dart';
 import 'item_options_sheet.dart';
+import '../staff/permission_guard.dart';
+import '../../domain/staff/staff_models.dart';
 
 /// Sends all unsent items of [orderId] to the kitchen and starts printing.
 Future<void> sendToKitchen(BuildContext context, String orderId) async {
+  if (!await allow(context, Permission.takeOrders) || !context.mounted) return;
   final messenger = ScaffoldMessenger.of(context);
   final storage = await StorageService.getInstance();
   try {
@@ -44,6 +47,7 @@ Future<void> sendToKitchen(BuildContext context, String orderId) async {
 
 /// Voids units of a line that are already in the kitchen.
 Future<void> voidSentItems(BuildContext context, OrderLine line) async {
+  if (!await allow(context, Permission.cancelOrder) || !context.mounted) return;
   final reason = TextEditingController();
   var qty = line.voidableQty;
   final requestId = newId();

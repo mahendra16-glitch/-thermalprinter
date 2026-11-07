@@ -18,6 +18,8 @@ import '../menu/menu_widgets.dart';
 import 'item_options_sheet.dart';
 import 'kitchen_actions.dart';
 import 'order_actions.dart';
+import '../staff/permission_guard.dart';
+import '../../domain/staff/staff_models.dart';
 
 /// Order taking: menu on one side, the running order on the other (tabs on
 /// phones).
@@ -170,6 +172,7 @@ class _OrderScreenState extends State<OrderScreen>
   Future<void> _tapItem(MenuItem item, {bool askAlways = false}) async {
     final snap = _menu;
     if (snap == null || !_editable) return;
+    if (!await allow(context, Permission.takeOrders) || !mounted) return;
     final groups = offeredGroups(item, snap.groupById);
     final tax = item.taxProfileId == null
         ? null

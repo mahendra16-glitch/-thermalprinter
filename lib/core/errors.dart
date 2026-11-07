@@ -7,3 +7,8 @@ class ValidationException implements Exception {
   @override
   String toString() => message;
 }
+
+/// The signed-in staff member may not do this.
+class PermissionDeniedException extends ValidationException {
+  PermissionDeniedException(super.message);
+}

@@ -13,8 +13,15 @@ void main() {
     'fresh install creates the latest schema and logs every version',
     () async {
       final log = await db.select(db.migrationLog).get();
-      expect(log.map((r) => r.version), [1, 2, 3, 4, 5, 6, 7]);
-      expect(db.schemaVersion, 7);
+      expect(log.map((r) => r.version), [1, 2, 3, 4, 5, 6, 7, 8]);
+      expect(db.schemaVersion, 8);
+      expect(await db.select(db.staffUsers).get(), isEmpty);
+      final perms = await db.select(db.rolePermissions).get();
+      expect(perms.where((p) => p.role == 'owner'), isEmpty);
+      expect(
+        perms.where((p) => p.role == 'waiter').map((p) => p.permission),
+        unorderedEquals(['viewMenu', 'takeOrders']),
+      );
     },
   );
 

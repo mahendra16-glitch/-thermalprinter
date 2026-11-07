@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 import '../../core/util/clock.dart';
+import '../../domain/staff/staff_models.dart';
 import 'app_database.steps.dart';
 import 'tables.dart';
 
@@ -26,6 +27,9 @@ part 'app_database.g.dart';
 /// - v5: bills, bill_lines, bill_taxes.
 /// - v6: payments (ledger); orders.due_note.
 /// - v7: cash_shifts, cash_movements, expenses; payments.shift_id.
+/// - v8: staff_users, role_permissions (seeded with the default roles);
+///   staff_id on payments, cash_movements, expenses; opened_by_id and
+///   closed_by_id on cash_shifts.
 @DriftDatabase(
   tables: [
     MigrationLog,
@@ -57,6 +61,8 @@ part 'app_database.g.dart';
     CashShifts,
     CashMovements,
     Expenses,
+    StaffUsers,
+    RolePermissions,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -65,7 +71,7 @@ class AppDatabase extends _$AppDatabase {
   static const String fileName = 'pos.db';
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -79,6 +85,8 @@ class AppDatabase extends _$AppDatabase {
       await _logMigration(5, 'bills (fresh install)');
       await _logMigration(6, 'payments (fresh install)');
       await _logMigration(7, 'shifts and expenses (fresh install)');
+      await _seedRolePermissions();
+      await _logMigration(8, 'staff and permissions (fresh install)');
     },
     onUpgrade: stepByStep(
       from1To2: (m, schema) async {
@@ -154,6 +162,17 @@ class AppDatabase extends _$AppDatabase {
         await m.createIndex(schema.idxExpensesShift);
         await _logMigration(7, 'shifts and expenses');
       },
+      from7To8: (m, schema) async {
+        await m.addColumn(schema.payments, schema.payments.staffId);
+        await m.addColumn(schema.cashMovements, schema.cashMovements.staffId);
+        await m.addColumn(schema.expenses, schema.expenses.staffId);
+        await m.addColumn(schema.cashShifts, schema.cashShifts.openedById);
+        await m.addColumn(schema.cashShifts, schema.cashShifts.closedById);
+        await m.createTable(schema.staffUsers);
+        await m.createTable(schema.rolePermissions);
+        await _seedRolePermissions();
+        await _logMigration(8, 'staff and permissions');
+      },
     ),
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
@@ -167,6 +186,24 @@ class AppDatabase extends _$AppDatabase {
         updatedAt: Clock.nowMs(),
       ),
     );
+  }
+
+  /// Default permissions for each role except the owner (who has all).
+  Future<void> _seedRolePermissions() async {
+    final now = Clock.nowMs();
+    for (final e in defaultRolePermissions.entries) {
+      for (final perm in e.value) {
+        await customInsert(
+          'INSERT OR IGNORE INTO role_permissions (role, permission, '
+          'updated_at) VALUES (?, ?, ?)',
+          variables: [
+            Variable.withString(e.key.name),
+            Variable.withString(perm.name),
+            Variable.withInt(now),
+          ],
+        );
+      }
+    }
   }
 
   Future<void> _logMigration(int version, String notes) async {

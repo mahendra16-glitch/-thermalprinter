@@ -12,6 +12,8 @@ import 'menu_widgets.dart';
 import 'option_groups_screen.dart';
 import 'stations_screen.dart';
 import 'tax_profiles_screen.dart';
+import '../staff/permission_guard.dart';
+import '../../domain/staff/staff_models.dart';
 
 const String _all = '__all__';
 const String _favorites = '__fav__';
@@ -62,9 +64,15 @@ class _MenuScreenState extends State<MenuScreen> {
     }
   }
 
-  void _open(Widget page) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+  /// Every page opened from here edits the menu.
+  Future<void> _open(Widget page) async {
+    if (!await _canEdit()) return;
+    if (!mounted) return;
+    await Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
   }
+
+  Future<bool> _canEdit() async =>
+      await allow(context, Permission.editMenu) && mounted;
 
   /// The category whose items can be dragged into a new order, or null.
   String? get _reorderCategory {
@@ -115,6 +123,7 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 
   Future<void> _toggleActive(MenuItem item) async {
+    if (!await _canEdit()) return;
     final storage = await StorageService.getInstance();
     if (!mounted) return;
     await runMenuAction(
@@ -127,6 +136,7 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 
   Future<void> _toggleFavorite(MenuItem item) async {
+    if (!await _canEdit()) return;
     final storage = await StorageService.getInstance();
     await storage.menu.setItemFavorite(item.id, !item.isFavorite);
   }
@@ -136,6 +146,7 @@ class _MenuScreenState extends State<MenuScreen> {
     int oldIndex,
     int newIndex,
   ) async {
+    if (!await _canEdit()) return;
     final ids = items.map((i) => i.id).toList();
     ids.insert(newIndex, ids.removeAt(oldIndex));
     final storage = await StorageService.getInstance();

@@ -706,6 +706,10 @@ class Payments extends Table {
   TextColumn get reason => text().withDefault(const Constant(''))();
   TextColumn get staffName => text().withDefault(const Constant(''))();
 
+  /// v8: the signed-in staff account that recorded it (null before v8 or
+  /// when staff login is off).
+  TextColumn get staffId => text().nullable()();
+
   /// v7: the cash shift open when the money moved (null if none was open).
   TextColumn get shiftId => text().nullable()();
 
@@ -734,6 +738,10 @@ class CashShifts extends Table {
   TextColumn get businessDate => text()();
   IntColumn get openingCashPaise => integer()();
   TextColumn get openedBy => text()();
+
+  /// v8: staff account ids (null before v8 or when staff login is off).
+  TextColumn get openedById => text().nullable()();
+  TextColumn get closedById => text().nullable()();
   TextColumn get openNote => text().withDefault(const Constant(''))();
   IntColumn get openedAt => integer()();
 
@@ -773,6 +781,9 @@ class CashMovements extends Table {
   IntColumn get amountPaise => integer()();
   TextColumn get reason => text()();
   TextColumn get staffName => text().withDefault(const Constant(''))();
+
+  /// v8: staff account id (null before v8 or when staff login is off).
+  TextColumn get staffId => text().nullable()();
   IntColumn get createdAt => integer()();
 
   /// Set when cancelled (with a reason) before the shift closed.
@@ -803,6 +814,9 @@ class Expenses extends Table {
   TextColumn get paidFrom => text()();
   TextColumn get note => text().withDefault(const Constant(''))();
   TextColumn get staffName => text().withDefault(const Constant(''))();
+
+  /// v8: staff account id (null before v8 or when staff login is off).
+  TextColumn get staffId => text().nullable()();
   TextColumn get businessDate => text()();
   IntColumn get createdAt => integer()();
   IntColumn get voidedAt => integer().nullable()();
@@ -811,4 +825,49 @@ class Expenses extends Table {
 
   @override
   Set<Column> get primaryKey => {id};
+}
+
+/// v8: local staff accounts. Never deleted (old records keep pointing at
+/// them); deactivate instead. The PIN is stored only as a salted
+/// PBKDF2-HMAC-SHA256 hash.
+@DataClassName('StaffUserRow')
+class StaffUsers extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+
+  /// `StaffRole.name`: owner | manager | cashier | waiter | kitchen.
+  TextColumn get role => text()();
+
+  /// Base64 hash and salt, and the PBKDF2 iteration count used.
+  TextColumn get pinHash => text()();
+  TextColumn get pinSalt => text()();
+  IntColumn get pinIterations => integer()();
+  BoolColumn get active => boolean().withDefault(const Constant(true))();
+
+  /// Wrong PINs in a row; reset by a correct PIN.
+  IntColumn get failedAttempts => integer().withDefault(const Constant(0))();
+
+  /// No PIN is accepted for this account before this time (epoch ms).
+  IntColumn get lockedUntil => integer().nullable()();
+  IntColumn get lastLoginAt => integer().nullable()();
+  IntColumn get createdAt => integer()();
+  IntColumn get updatedAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// v8: what each role may do. A row means "allowed". The owner role always
+/// has every permission and has no rows here.
+@DataClassName('RolePermissionRow')
+class RolePermissions extends Table {
+  /// `StaffRole.name`.
+  TextColumn get role => text()();
+
+  /// `Permission.name`.
+  TextColumn get permission => text()();
+  IntColumn get updatedAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {role, permission};
 }

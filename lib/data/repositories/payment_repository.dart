@@ -279,6 +279,8 @@ class PaymentRepository {
               confirmation: Value(
                 r.method.needsStaffConfirmation ? staffConfirmed : '',
               ),
+              staffId: Value(_audit.session.staffId),
+              staffName: Value(_audit.session.staffName),
               shiftId: Value(await _openShiftId()),
               businessDate: await _orders.currentBusinessDate(),
               clientRequestId: r.clientRequestId,
@@ -371,6 +373,8 @@ class PaymentRepository {
               reference: Value(p.reference),
               reversesPaymentId: Value(paymentId),
               reason: Value(reason.trim()),
+              staffId: Value(_audit.session.staffId),
+              staffName: Value(_audit.session.staffName),
               shiftId: Value(await _openShiftId()),
               businessDate: await _orders.currentBusinessDate(),
               clientRequestId: clientRequestId,

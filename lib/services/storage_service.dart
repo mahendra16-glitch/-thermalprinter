@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../core/security/pin_hasher.dart';
 import '../data/db/app_database.dart';
 import '../data/legacy/legacy_prefs_importer.dart';
 import '../data/repositories/audit_repository.dart';
@@ -15,7 +16,9 @@ import '../data/repositories/printer_repository.dart';
 import '../data/repositories/report_repository.dart';
 import '../data/repositories/settings_repository.dart';
 import '../data/repositories/shift_repository.dart';
+import '../data/repositories/staff_repository.dart';
 import '../data/repositories/table_repository.dart';
+import '../domain/staff/staff_session.dart';
 import '../models/print_history_item.dart';
 import '../models/print_mode.dart';
 import '../models/printer_device.dart';
@@ -28,8 +31,18 @@ class StorageService {
   static Future<StorageService>? _opening;
 
   final AppDatabase db;
-  late final AuditRepository audit = AuditRepository(db);
+
+  /// Who is signed in (see [StaffRepository]).
+  final StaffSession session = StaffSession();
+  late final AuditRepository audit = AuditRepository(db, session);
   late final SettingsRepository settings = SettingsRepository(db, audit);
+  late final StaffRepository staff = StaffRepository(
+    db,
+    audit,
+    settings,
+    hasher: _pinHasher,
+  );
+  final PinHasher? _pinHasher;
   late final PrinterRepository printers = PrinterRepository(db, audit);
   late final PrintJobRepository printJobs = PrintJobRepository(db);
   late final BusinessProfileRepository businessProfile =
@@ -77,12 +90,17 @@ class StorageService {
   /// data is untouched and the import is retried on the next launch.
   String? legacyImportError;
 
-  StorageService._(this.db);
+  StorageService._(this.db, [this._pinHasher]);
 
   /// Uses [db] directly (tests). Does not run the legacy import.
   @visibleForTesting
-  factory StorageService.forTesting(AppDatabase db) {
-    final s = StorageService._(db);
+  /// PINs are hashed with a light [PinHasher] on the calling isolate so
+  /// widget tests stay fast and do not wait on isolates.
+  factory StorageService.forTesting(AppDatabase db, {PinHasher? pinHasher}) {
+    final s = StorageService._(
+      db,
+      pinHasher ?? const PinHasher(iterations: 1000, useIsolate: false),
+    );
     _instance = s;
     return s;
   }
@@ -92,6 +110,9 @@ class StorageService {
     _instance = null;
     _opening = null;
   }
+
+  /// The opened instance, or null before [getInstance] has finished.
+  static StorageService? get maybeInstance => _instance;
 
   static Future<StorageService> getInstance() {
     final existing = _instance;
@@ -108,6 +129,7 @@ class StorageService {
       s.legacyImportError = e.toString();
       debugPrint('Legacy import failed: $e');
     }
+    await s.staff.init();
     _instance = s;
     return s;
   }

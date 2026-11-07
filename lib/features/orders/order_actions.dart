@@ -13,12 +13,15 @@ import '../menu/menu_widgets.dart';
 import 'item_options_sheet.dart';
 import 'kitchen_actions.dart';
 import 'order_launcher.dart';
+import '../staff/permission_guard.dart';
+import '../../domain/staff/staff_models.dart';
 
 Future<OrderRepository> _orders() async =>
     (await StorageService.getInstance()).orders;
 
 /// Edit quantity / instructions of a line, or remove it.
 Future<void> editLine(BuildContext context, OrderLine line) async {
+  if (!await allow(context, Permission.takeOrders) || !context.mounted) return;
   final notes = TextEditingController(text: line.notes);
   var qty = line.qty;
   final minQty = line.sentQty.clamp(1, 999);
@@ -139,6 +142,7 @@ Future<void> editLine(BuildContext context, OrderLine line) async {
 }
 
 Future<void> editOrderDetails(BuildContext context, Order o) async {
+  if (!await allow(context, Permission.takeOrders) || !context.mounted) return;
   final name = TextEditingController(text: o.customerName);
   final phone = TextEditingController(text: o.customerPhone);
   final guests = TextEditingController(text: o.guests?.toString() ?? '');
@@ -204,6 +208,9 @@ Future<void> editOrderDetails(BuildContext context, Order o) async {
 }
 
 Future<void> editDiscount(BuildContext context, OrderDetail d) async {
+  if (!await allow(context, Permission.applyDiscount) || !context.mounted) {
+    return;
+  }
   var kind = d.order.discount.isNone
       ? DiscountKind.percent
       : d.order.discount.kind;
@@ -385,6 +392,7 @@ Future<void> runOrderMenuAction(
 }
 
 Future<void> _moveTable(BuildContext context, Order o) async {
+  if (!await allow(context, Permission.takeOrders) || !context.mounted) return;
   final table = await pickTable(
     context,
     title: 'Move order #${o.orderNo} to',
@@ -424,6 +432,7 @@ Future<void> _moveTable(BuildContext context, Order o) async {
 }
 
 Future<void> _merge(BuildContext context, Order o) async {
+  if (!await allow(context, Permission.takeOrders) || !context.mounted) return;
   final storage = await StorageService.getInstance();
   final tables = {for (final t in await storage.tables.listTables()) t.id: t};
   final others = (await storage.orders.listActive())
@@ -488,6 +497,7 @@ Future<void> _merge(BuildContext context, Order o) async {
 }
 
 Future<void> _split(BuildContext context, OrderDetail d) async {
+  if (!await allow(context, Permission.takeOrders) || !context.mounted) return;
   final selected = <String>{};
   var toTable = false;
   final go = await showModalBottomSheet<bool>(
@@ -616,6 +626,7 @@ Future<void> _split(BuildContext context, OrderDetail d) async {
 }
 
 Future<void> _cancel(BuildContext context, OrderDetail d) async {
+  if (!await allow(context, Permission.cancelOrder) || !context.mounted) return;
   final reason = TextEditingController();
   const reasons = [
     'Customer left',
