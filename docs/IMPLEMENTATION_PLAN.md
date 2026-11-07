@@ -235,7 +235,7 @@ Baseline results (2026-11-06):
 - [x] Phase 8 — Reports (see §17)
 - [x] Phase 9 — Staff & permissions (see §18)
 - [x] Phase 10 — Inventory (optional) (see §19)
-- [ ] Phase 11 — Hardening & release
+- [x] Phase 11 — Hardening & release (see §20)
 
 Manual hardware tests are still required for every transport (BT, USB, LAN) at 58 and 80mm. None have been run as part of this audit.
 
@@ -1067,3 +1067,98 @@ No device was connected.
 - **No old orders:** recipes only affect orders billed or sent after they are set; old orders are not reprocessed.
 - **No valuation** (see above).
 - **No stock report in Reports:** stock movements are not yet part of the Reports tab, only of the stock CSV.
+
+---
+
+## 20. Phase 11 completion report (2026-11-07)
+
+### Commit
+- `Phase 11` — restore, password-protected backups, crash handling, larger-text fixes, timing test, release signing, test checklist, release notes and this report. **No schema change** (still v9).
+
+### Backup and restore (`BackupService`, `BackupCrypto`, Backup & restore screen)
+- **Password-protected backups (`.posbak`):**
+  - The key comes from the password with PBKDF2-HMAC-SHA256 (200,000 iterations, random salt). The data is sealed with AES-256-GCM using the `cryptography` package, so there is no home-made crypto.
+  - The header is authenticated too, so any changed byte is detected.
+  - Each new backup is decrypted once to prove it opens, and the plain copy is then deleted.
+  - Without a password a backup is a plain checked copy, as before.
+- **Checks before a restore (`prepareRestore`):**
+  - decrypt if the file is protected; a wrong password is refused clearly;
+  - `PRAGMA integrity_check`, `foreign_key_check` and the required POS tables;
+  - backups from a **newer** app version are refused.
+  - It then shows what the backup holds (orders, bills, payments, menu items, staff, printers, last activity). **Nothing changes yet.**
+- **Confirmation:** you must type RESTORE. The restore is then **scheduled**: the checked copy is placed next to the live database.
+- **On the next start, before the database opens (`applyPendingRestore`):**
+  1. The backup is checked again.
+  2. The current data is saved as a **pre-restore backup** (`VACUUM INTO`, then checked). This includes anything entered after the restore was scheduled.
+  3. The live file is moved aside, the backup is put in its place, and only then is the old file deleted.
+- **If anything fails:**
+  - A failed check, a failed pre-restore backup or a failed swap leaves the current data untouched, and a red banner explains why.
+  - The audit log records `backup.restored` or `backup.restore_failed`.
+- **After the restore:** older backups are upgraded by the normal migrations, so a v1 backup becomes v9 (tested). A green banner names the pre-restore backup.
+- **Before closing the app:** the Backup screen shows the waiting restore with **Close app now** and **Cancel restore**.
+- Restore needs the *Backup and restore* permission (owner only by default).
+
+### Crash handling (`ErrorLog`, App error log screen)
+- `FlutterError.onError` and `PlatformDispatcher.onError` write every unexpected error to a local log file. The log is about 2 × 256 KB, with rotation, and nothing is sent anywhere. Errors are still printed as before; none are hidden.
+- **Release builds:** a broken widget shows a short note instead of a red screen.
+- **If the database cannot be opened at start-up,** a "The app could not start" screen shows the error and **Share error log**, instead of an empty or crashing app. Nothing is changed.
+- **Settings > App error log:** view, share or clear the log.
+
+### Larger text and layout
+- A new test opens every main tab, the sign-in screen and PIN pad, the order screen (long item names) and the payment screen. It uses a 360 dp phone with system text at 1.5×.
+- **Fixed:**
+  - Settings: the day-start dropdown and the POS-test buttons overflowed.
+  - Order screen: the menu tiles were cut off (tiles now grow with the text size), and the price row and the bottom total bar overflowed.
+
+### Performance (development PC, through the real repositories)
+| Action | Time |
+|---|---|
+| New order + 3 items + bill + payment | ~37 ms each |
+| Report for a day with 400 bills (includes the ledger check) | ~0.4 s |
+| Dues list | ~4 ms |
+- A month of a busy restaurant (about 3,000 bills) should take a few seconds on the PC. A slow phone will take longer, so the checklist asks for a timing on the target device.
+- A test in `test/perf/` fails if these numbers grow badly (more than 10 s for the report or 500 ms per order).
+
+### Release build
+- **Signing:** `android/app/build.gradle.kts` now signs release builds with `android/key.properties` when it is present. Without it the build falls back to the debug key with a Gradle warning.
+- **Builds:** `flutter build apk --release` builds: 66.5 MB, all CPU types in one APK; use an app bundle for Play.
+- **Warning:** Flutter printed a Kotlin Gradle plugin version warning (the project uses KGP 2.2.20). The build was not affected.
+- **Blockers before publishing** are listed in [RELEASE_NOTES.md](RELEASE_NOTES.md):
+  - the app ID is still `com.example.thermalprinter`;
+  - there is no upload key yet;
+  - the app name and icon are the defaults;
+  - device tests have not been run.
+
+### Documents
+- [docs/TEST_CHECKLIST.md](TEST_CHECKLIST.md): device and printer tests in 12 sections (0–11). It covers Part H of the master prompt (orders, payments, printers, offline) plus shift, reports, staff, stock, backup and restore, accessibility and crash handling.
+- [docs/RELEASE_NOTES.md](RELEASE_NOTES.md): what 1.0.0 includes, the release blockers, how to build, and known limitations.
+
+### Tests and commands
+| Command | Result |
+|---|---|
+| `dart format lib test` | clean |
+| `flutter analyze` | 13 infos (unchanged; deprecated APIs in the original printer and settings screens); no warnings or errors |
+| `flutter test` | **279/279 passed**. New tests are listed below. |
+| `flutter build apk --debug` | builds |
+| `flutter build apk --release` | builds (signed with the debug key: no `key.properties`) |
+
+New tests in `flutter test`:
+- **Backup (5):**
+  - a protected backup is encrypted, listed, refused without the password or with a wrong one, and a tampered file is detected;
+  - junk files and newer versions are refused;
+  - a scheduled restore swaps the data at start-up, and the pre-restore backup holds the old data including later entries;
+  - a damaged pending restore leaves the data unchanged;
+  - a v1 backup is restored and upgraded to v9.
+- **Error log (1).**
+- **Larger text (3).**
+- **Timing (1).**
+
+### Manual tests still required
+No device or printer was connected at any point in Phases 1–11. Run [TEST_CHECKLIST.md](TEST_CHECKLIST.md) on each target device and printer before giving the app to a restaurant. In particular, the printer, offline and restore sections cannot be tested on a PC.
+
+### Known limitations
+- **Restore:** you finish it yourself by closing and reopening the app, because the database cannot be swapped while it is open.
+- **Restore permission:** restore replaces everything, including staff accounts and permissions, with what the backup holds.
+- **Password-protected backups** are read fully into memory. This is fine for typical databases (a few MB to tens of MB). Very large databases have not been tested.
+- **Accessibility:** checked only for larger text in tests. TalkBack and contrast need checking on a device.
+- **Analyzer notes:** the 13 old infos (deprecated API use in the original printer screens) were left alone so the working printer code was not changed.

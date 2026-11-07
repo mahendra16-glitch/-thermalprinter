@@ -19,6 +19,7 @@ import '../data/repositories/settings_repository.dart';
 import '../data/repositories/shift_repository.dart';
 import '../data/repositories/staff_repository.dart';
 import '../data/repositories/table_repository.dart';
+import 'backup_service.dart';
 import '../domain/staff/staff_session.dart';
 import '../models/print_history_item.dart';
 import '../models/print_mode.dart';
@@ -99,6 +100,9 @@ class StorageService {
   /// data is untouched and the import is retried on the next launch.
   String? legacyImportError;
 
+  /// Set when a restore was applied (or failed) at this start-up.
+  RestoreOutcome? restoreOutcome;
+
   StorageService._(this.db, [this._pinHasher]);
 
   /// Uses [db] directly (tests). Does not run the legacy import.
@@ -130,7 +134,30 @@ class StorageService {
   }
 
   static Future<StorageService> _open() async {
+    // A restore chosen on the Backup screen is applied here, before the
+    // database is opened (see BackupService.applyPendingRestore).
+    RestoreOutcome? restore;
+    try {
+      restore = await BackupService.applyPendingRestore(
+        dbPath: await posDatabasePath(),
+        backupDir: await BackupService.defaultBackupDirectory(),
+        maxVersion: AppDatabase.currentSchemaVersion,
+      );
+    } catch (e) {
+      restore = RestoreOutcome(
+        false,
+        'The restore was not done ($e). Your current data is unchanged.',
+      );
+    }
     final s = StorageService._(await openPosDatabase());
+    s.restoreOutcome = restore;
+    if (restore != null) {
+      await s.audit.record(
+        action: restore.ok ? 'backup.restored' : 'backup.restore_failed',
+        entity: 'database',
+        details: {'message': restore.message, ...restore.details},
+      );
+    }
     try {
       final prefs = await SharedPreferences.getInstance();
       await LegacyPrefsImporter(s.db, prefs).run();

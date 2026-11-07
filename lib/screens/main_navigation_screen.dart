@@ -40,6 +40,8 @@ class _Destination {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   String _current = 'Tables';
   String? _startupError;
+  String? _restoreMessage;
+  bool _restoreOk = true;
   StorageService? _s;
 
   static const _destinations = [
@@ -112,7 +114,11 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       if (!mounted) return;
       _s = s;
       s.session.addListener(_onSession);
-      setState(() => _startupError = s.legacyImportError);
+      setState(() {
+        _startupError = s.legacyImportError;
+        _restoreMessage = s.restoreOutcome?.message;
+        _restoreOk = s.restoreOutcome?.ok ?? true;
+      });
     });
   }
 
@@ -137,6 +143,26 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               TextButton(
                 onPressed: () => setState(() => _startupError = null),
                 child: const Text('Dismiss'),
+              ),
+            ],
+          ),
+        if (_restoreMessage != null)
+          MaterialBanner(
+            backgroundColor: _restoreOk
+                ? Colors.green.shade50
+                : Colors.red.shade50,
+            leading: Icon(
+              _restoreOk ? Icons.restore_rounded : Icons.error_outline,
+              color: _restoreOk ? Colors.green : Colors.red,
+            ),
+            content: Text(
+              _restoreMessage!,
+              style: const TextStyle(fontSize: 13),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => setState(() => _restoreMessage = null),
+                child: const Text('OK'),
               ),
             ],
           ),

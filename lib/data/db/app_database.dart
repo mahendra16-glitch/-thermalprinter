@@ -75,8 +75,11 @@ class AppDatabase extends _$AppDatabase {
 
   static const String fileName = 'pos.db';
 
+  /// The schema this app writes (backups newer than this are refused).
+  static const int currentSchemaVersion = 9;
+
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => currentSchemaVersion;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(

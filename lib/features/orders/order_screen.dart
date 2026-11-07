@@ -288,9 +288,11 @@ class _OrderScreenState extends State<OrderScreen>
                 )
               : GridView.builder(
                   padding: const EdgeInsets.fromLTRB(12, 4, 12, 24),
-                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  // Taller tiles when the system font is larger.
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 180,
-                    mainAxisExtent: 92,
+                    mainAxisExtent:
+                        20 + 72 * MediaQuery.textScalerOf(context).scale(1),
                     crossAxisSpacing: 8,
                     mainAxisSpacing: 8,
                   ),
@@ -348,11 +350,15 @@ class _OrderScreenState extends State<OrderScreen>
               const Spacer(),
               Row(
                 children: [
-                  Text(
-                    item.basePrice.format(),
-                    style: const TextStyle(color: Color(0xFF334155)),
+                  Expanded(
+                    child: Text(
+                      item.basePrice.format(),
+                      maxLines: 1,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                      style: const TextStyle(color: Color(0xFF334155)),
+                    ),
                   ),
-                  const Spacer(),
                   if (hasOptions)
                     const Icon(
                       Icons.tune_rounded,
@@ -873,11 +879,14 @@ class _OrderScreenState extends State<OrderScreen>
                       ),
                       child: Row(
                         children: [
-                          Text(
-                            '$count item(s)',
-                            style: const TextStyle(color: Colors.white),
+                          Expanded(
+                            child: Text(
+                              '$count item(s)',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(color: Colors.white),
+                            ),
                           ),
-                          const Spacer(),
                           Text(
                             d.totals.afterDiscount.format(),
                             style: const TextStyle(

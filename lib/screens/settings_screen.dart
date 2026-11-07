@@ -12,6 +12,7 @@ import '../services/pos_integration_service.dart';
 import 'backup_screen.dart';
 import 'business_profile_screen.dart';
 import 'diagnostics_screen.dart';
+import 'error_log_screen.dart';
 import 'history_screen.dart';
 import 'printers_screen.dart';
 import 'queue_screen.dart';
@@ -139,8 +140,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _navTile(
           icon: Icons.backup_rounded,
           color: const Color(0xFF7C3AED),
-          title: 'Backup',
-          subtitle: 'Save a verified copy of all local data and share it.',
+          title: 'Backup & restore',
+          subtitle: 'Verified, optionally password-protected copies; restore.',
           page: () => const BackupScreen(),
           permission: Permission.backupRestore,
         ),
@@ -182,6 +183,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         DropdownButtonFormField<int>(
           key: ValueKey('day-$_dayStartHour-$_rev'),
           initialValue: _dayStartHour,
+          isExpanded: true,
           decoration: const InputDecoration(border: OutlineInputBorder()),
           items: [
             for (var h = 0; h <= 6; h++)
@@ -398,14 +400,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             const SizedBox(height: 12),
 
-            Row(
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.spaceBetween,
               children: [
                 OutlinedButton.icon(
                   onPressed: _loadSampleJson,
                   icon: const Icon(Icons.refresh_rounded, size: 16),
                   label: const Text('Reset Sample'),
                 ),
-                const Spacer(),
                 ElevatedButton.icon(
                   onPressed: _isSendingPosJob ? null : _sendTestPosOrder,
                   icon: _isSendingPosJob
@@ -471,6 +475,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
 
+            const Divider(height: 32),
+
+            _navTile(
+              icon: Icons.report_gmailerrorred_rounded,
+              color: const Color(0xFFB91C1C),
+              title: 'App error log',
+              subtitle:
+                  'Unexpected errors saved on this device; share or clear.',
+              page: () => const ErrorLogScreen(),
+            ),
             const Divider(height: 32),
 
             // Printer Diagnostics
