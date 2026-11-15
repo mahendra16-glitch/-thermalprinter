@@ -1,64 +1,21 @@
-name: Build iOS IPA & Android APK
+name: Build iOS IPA, ZIP & Android APK
 
 on:
   push:
     branches: [ main, master ]
+    tags:
+      - 'v*'
   pull_request:
     branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
-  build-ios:
-    name: Build iOS IPA
+  build-all:
+    name: Build iOS IPA & Android APK Release
     runs-on: macos-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+    permissions:
+      contents: write
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-
-      - name: Install Flutter Dependencies
-        run: flutter pub get
-
-      - name: Install CocoaPods
-        run: |
-          cd ios
-          pod install --repo-update || true
-          cd ..
-
-      - name: Build iOS App
-        run: flutter build ios --release --no-codesign
-
-      - name: Package IPA
-        run: |
-          mkdir -p build/ios/iphoneos/Payload
-          if [ -d "build/ios/iphoneos/Runner.app" ]; then
-            cp -r build/ios/iphoneos/Runner.app build/ios/iphoneos/Payload/
-          fi
-          cd build/ios/iphoneos
-          zip -r ThermalPrinter.ipa Payload
-
-      - name: Generate Direct 1-Click Download Link
-        run: |
-          echo "========================================================"
-          echo "  DIRECT 1-CLICK IPA DOWNLOAD LINK FOR YOUR IPHONE:     "
-          echo "========================================================"
-          curl --upload-file build/ios/iphoneos/ThermalPrinter.ipa https://transfer.sh/ThermalPrinter.ipa
-          echo ""
-          echo "========================================================"
-
-      - name: Upload iOS IPA Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ThermalPrinter-iOS-IPA
-          path: build/ios/iphoneos/ThermalPrinter.ipa
-
-  build-android:
-    name: Build Android APK
-    runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -74,16 +31,52 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Install Dependencies
+      - name: Install Flutter Dependencies
         run: flutter pub get
+
+      - name: Install CocoaPods
+        run: |
+          cd ios
+          pod install --repo-update || true
+          cd ..
+
+      - name: Build iOS App Bundle
+        run: flutter build ios --release --no-codesign
+
+      - name: Package IPA & ZIP
+        run: |
+          mkdir -p build/ios/iphoneos/Payload
+          if [ -d "build/ios/iphoneos/Runner.app" ]; then
+            cp -r build/ios/iphoneos/Runner.app build/ios/iphoneos/Payload/
+          fi
+          cd build/ios/iphoneos
+          zip -r ThermalPrinter.ipa Payload
+          zip -r ThermalPrinter.zip Payload
+          cd ../../..
 
       - name: Build Android APK
         env:
           ANDROID_USER_HOME: ${{ runner.temp }}/.android
         run: flutter build apk --debug --android-skip-build-dependency-validation
 
-      - name: Upload Android APK Artifact
+      - name: Upload Artifacts to GitHub Actions
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug-apk
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          name: ThermalPrinter-iOS-IPA-ZIP
+          path: |
+            build/ios/iphoneos/ThermalPrinter.ipa
+            build/ios/iphoneos/ThermalPrinter.zip
+            build/app/outputs/flutter-apk/app-debug.apk
+
+      - name: Create Automatic GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: "Thermal Printer Release v1.0.${{ github.run_number }}"
+          body: "Direct public download files for Thermal POS Printer app (iOS .ipa, .zip & Android .apk)."
+          files: |
+            build/ios/iphoneos/ThermalPrinter.ipa
+            build/ios/iphoneos/ThermalPrinter.zip
+            build/app/outputs/flutter-apk/app-debug.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
