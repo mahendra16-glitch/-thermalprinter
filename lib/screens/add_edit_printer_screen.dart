@@ -5,6 +5,8 @@ import '../models/printer_device.dart';
 import '../services/storage_service.dart';
 import '../printers/printer_adapter.dart';
 import '../printers/bluetooth_permissions.dart';
+import '../printers/paired_bluetooth.dart';
+import 'nearby_printers_screen.dart';
 import '../printers/usb_printer_adapter.dart';
 import '../widgets/test_print_dialog.dart';
 
@@ -27,6 +29,12 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
 
   // Bluetooth fields
   String? _macAddress;
+  final _macCtrl = TextEditingController();
+  final _nameCtrl = TextEditingController();
+
+  /// Device class of each paired device (address -> [BtMajor]).
+  Map<String, int> _pairedMajor = {};
+  bool _showAllPaired = false;
   List<BluetoothDevice> _bluetoothDevices = [];
   bool _isScanningBt = false;
 
@@ -58,11 +66,13 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
     final p = widget.printerToEdit;
 
     _name = p?.name ?? '';
+    _nameCtrl.text = _name;
     _connectionType = p?.connectionType ?? ConnectionType.bluetooth;
     _paperWidth = p?.paperWidth ?? PaperWidth.mm80;
     _role = p?.role ?? PrinterRole.bill;
 
     _macAddress = p?.macAddress;
+    _macCtrl.text = p?.macAddress ?? '';
     _vendorId = p?.vendorId;
     _productId = p?.productId;
     _usbDeviceName = p?.deviceName;
@@ -77,6 +87,14 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
 
     _scanBluetoothDevices();
     _scanUsbDevices();
+  }
+
+  @override
+  void dispose() {
+    for (final c in [_macCtrl, _nameCtrl, _dots, _chars, _threshold, _feed]) {
+      c.dispose();
+    }
+    super.dispose();
   }
 
   String? _btProblem;
@@ -97,16 +115,20 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
         }
         return;
       }
-      final bt = BlueThermalPrinter.instance;
-      final devices = await bt.getBondedDevices();
+      final paired = await pairedBluetoothDevices();
+      final devices = [
+        for (final d in paired)
+          BluetoothDevice(d.name.isEmpty ? null : d.name, d.address),
+      ];
+      _pairedMajor = {for (final d in paired) d.address: d.major};
       if (mounted) {
         setState(() {
           _bluetoothDevices = devices;
           _isScanningBt = false;
           if (devices.isEmpty) {
             _btProblem =
-                'No paired Bluetooth devices. Pair the printer in Android '
-                'Bluetooth settings first, then tap refresh.';
+                'No paired Bluetooth devices yet. Tap "Find nearby printers" '
+                'to search and pair one.';
           }
         });
       }
@@ -114,10 +136,42 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
       if (mounted) {
         setState(() {
           _isScanningBt = false;
-          _btProblem = 'Could not list Bluetooth devices: $e';
+          _btProblem = e.toString().replaceAll('Exception: ', '');
         });
       }
     }
+  }
+
+  /// Paired devices that may be printers (phones, headphones, computers
+  /// hidden unless asked for). The saved printer is always kept.
+  List<BluetoothDevice> _visiblePaired() {
+    if (_showAllPaired) return _bluetoothDevices;
+    return _bluetoothDevices
+        .where(
+          (d) =>
+              d.address == _macAddress ||
+              BtMajor.maybePrinter(_pairedMajor[d.address] ?? -1),
+        )
+        .toList();
+  }
+
+  int _printerPairedCount() => _bluetoothDevices
+      .where((d) => BtMajor.maybePrinter(_pairedMajor[d.address] ?? -1))
+      .length;
+
+  Future<void> _findNearby() async {
+    final picked = await Navigator.of(context).push<NearbyBluetoothDevice>(
+      MaterialPageRoute(builder: (_) => const NearbyPrintersScreen()),
+    );
+    if (picked == null || !mounted) return;
+    setState(() {
+      _macAddress = picked.address;
+      _macCtrl.text = picked.address;
+      if (_nameCtrl.text.trim().isEmpty && picked.name.isNotEmpty) {
+        _nameCtrl.text = picked.name;
+      }
+    });
+    await _scanBluetoothDevices();
   }
 
   Future<void> _scanUsbDevices() async {
@@ -257,7 +311,7 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
             children: [
               // Printer Name
               TextFormField(
-                initialValue: _name,
+                controller: _nameCtrl,
                 decoration: const InputDecoration(
                   labelText: 'Printer Name',
                   hintText: 'e.g. Kitchen LAN Printer',
@@ -358,10 +412,15 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
                   children: [
                     Expanded(
                       child: DropdownButtonFormField<String>(
+                        // Rebuilt when the list loads or the MAC is typed.
+                        key: ValueKey(
+                          '${_bluetoothDevices.length}-$_macAddress',
+                        ),
+                        isExpanded: true,
                         // A saved MAC that is not currently paired must not be
                         // passed as the value (the dropdown would throw).
                         initialValue:
-                            _bluetoothDevices.any(
+                            _visiblePaired().any(
                               (d) => d.address == _macAddress,
                             )
                             ? _macAddress
@@ -370,7 +429,7 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
                           labelText: 'Paired Bluetooth Printer',
                           border: OutlineInputBorder(),
                         ),
-                        items: _bluetoothDevices.map((d) {
+                        items: _visiblePaired().map((d) {
                           return DropdownMenuItem(
                             value: d.address,
                             child: Text(
@@ -378,7 +437,10 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
                             ),
                           );
                         }).toList(),
-                        onChanged: (val) => setState(() => _macAddress = val),
+                        onChanged: (val) => setState(() {
+                          _macAddress = val;
+                          _macCtrl.text = val ?? '';
+                        }),
                       ),
                     ),
                     IconButton(
@@ -393,6 +455,29 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
                     ),
                   ],
                 ),
+                if (_bluetoothDevices.length > _visiblePaired().length ||
+                    _showAllPaired)
+                  CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    title: Text(
+                      'Show all paired devices '
+                      '(${_bluetoothDevices.length - _printerPairedCount()} '
+                      'phones, headphones… hidden)',
+                    ),
+                    value: _showAllPaired,
+                    onChanged: (v) =>
+                        setState(() => _showAllPaired = v ?? false),
+                  ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.bluetooth_searching),
+                    label: const Text('Find nearby printers'),
+                    onPressed: _findNearby,
+                  ),
+                ),
                 if (_btProblem != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 6),
@@ -403,13 +488,13 @@ class _AddEditPrinterScreenState extends State<AddEditPrinterScreen> {
                   ),
                 const SizedBox(height: 8),
                 TextFormField(
-                  initialValue: _macAddress,
+                  controller: _macCtrl,
                   decoration: const InputDecoration(
                     labelText: 'Or enter MAC Address manually',
                     hintText: '00:11:22:33:44:55',
                     border: OutlineInputBorder(),
                   ),
-                  onChanged: (val) => _macAddress = val.trim(),
+                  onChanged: (val) => _macAddress = val.trim().toUpperCase(),
                 ),
               ] else if (_connectionType == ConnectionType.usb) ...[
                 Row(

@@ -1,6 +1,11 @@
 package com.example.thermalprinter
 
+import android.Manifest
+import android.bluetooth.BluetoothClass
+import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.hardware.usb.UsbConstants
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbDeviceConnection
@@ -19,14 +24,26 @@ import com.example.thermalprinter.models.ReceiptTemplate
 import com.example.thermalprinter.transports.UsbPrinterTransport
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
     private val USB_CHANNEL = "com.example.thermalprinter/usb"
     private val ENGINE_CHANNEL = "com.example.thermalprinter/engine"
+    private val BT_CHANNEL = "com.example.thermalprinter/bluetooth"
+    private val BT_SCAN_CHANNEL = "com.example.thermalprinter/bluetooth_scan"
+    private var discovery: BluetoothDiscovery? = null
 
     private var activeConnection: UsbDeviceConnection? = null
     private var activeEndpoint: UsbEndpoint? = null
+
+    private fun bluetoothDiscovery(): BluetoothDiscovery =
+        discovery ?: BluetoothDiscovery(this).also { discovery = it }
+
+    override fun onDestroy() {
+        discovery?.stop()
+        super.onDestroy()
+    }
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -163,6 +180,60 @@ class MainActivity : FlutterActivity() {
                 else -> result.notImplemented()
             }
         }
+
+        // 1b. Paired Bluetooth devices. Needs only BLUETOOTH_CONNECT on
+        // Android 12+ (the blue_thermal_printer plugin also demands location
+        // there and never answers if it has to ask for it).
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, BT_CHANNEL).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "getBondedDevices" -> {
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                            checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) !=
+                            PackageManager.PERMISSION_GRANTED
+                        ) {
+                            result.error("no_permission", "Nearby devices permission is not allowed.", null)
+                            return@setMethodCallHandler
+                        }
+                        val manager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager?
+                        val adapter = manager?.adapter
+                        if (adapter == null) {
+                            result.error("unsupported", "This device has no Bluetooth.", null)
+                            return@setMethodCallHandler
+                        }
+                        if (!adapter.isEnabled) {
+                            result.error("bt_off", "Bluetooth is turned off.", null)
+                            return@setMethodCallHandler
+                        }
+                        val list = adapter.bondedDevices.map { d ->
+                            mapOf(
+                                "name" to (d.name ?: ""),
+                                "address" to d.address,
+                                "printer" to (d.bluetoothClass?.majorDeviceClass ==
+                                    BluetoothClass.Device.Major.IMAGING),
+                                "major" to (d.bluetoothClass?.majorDeviceClass ?: -1)
+                            )
+                        }
+                        result.success(list)
+                    } catch (e: SecurityException) {
+                        result.error("no_permission", e.message, null)
+                    } catch (e: Exception) {
+                        result.error("bt_error", e.message, null)
+                    }
+                }
+                "pair" -> {
+                    val address = call.argument<String>("address")
+                    if (address == null) {
+                        result.error("bad_address", "No address given.", null)
+                    } else {
+                        bluetoothDiscovery().pair(address, result)
+                    }
+                }
+                else -> result.notImplemented()
+            }
+        }
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, BT_SCAN_CHANNEL)
+            .setStreamHandler(bluetoothDiscovery())
 
         // 2. Native Engine & Calibration Channel Handler
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, ENGINE_CHANNEL).setMethodCallHandler { call, result ->
