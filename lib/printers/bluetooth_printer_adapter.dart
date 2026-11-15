@@ -81,8 +81,21 @@ class BluetoothPrinterAdapter implements PrinterAdapter {
   Future<bool> _connectIOSBLE() async {
     try {
       final String targetId = device.macAddress ?? '';
-      
-      // Connect using FlutterBluePlus
+      if (targetId.isEmpty) {
+        throw Exception('Bluetooth Remote Identifier / UUID is required.');
+      }
+
+      // 1. Wait for CoreBluetooth adapter state to settle (prevents CBManagerStateUnknown)
+      try {
+        if (ble.FlutterBluePlus.adapterStateNow != ble.BluetoothAdapterState.on) {
+          await ble.FlutterBluePlus.adapterState
+              .where((state) => state == ble.BluetoothAdapterState.on)
+              .first
+              .timeout(const Duration(seconds: 3));
+        }
+      } catch (_) {}
+
+      // 2. Connect using FlutterBluePlus
       final bluetoothDevice = ble.BluetoothDevice.fromId(targetId);
       await bluetoothDevice.connect(timeout: const Duration(seconds: 8));
       _bleDeviceIOS = bluetoothDevice;

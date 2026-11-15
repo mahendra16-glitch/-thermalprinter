@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart' as ble;
 import 'package:permission_handler/permission_handler.dart';
 
 import 'bluetooth_permissions.dart';
@@ -74,6 +75,7 @@ class PairedBluetoothDevice {
 Future<List<PairedBluetoothDevice>> pairedBluetoothDevices({
   Duration timeout = const Duration(seconds: 10),
 }) async {
+  if (!Platform.isAndroid) return [];
   const channel = MethodChannel('com.example.thermalprinter/bluetooth');
   try {
     final raw = await channel
@@ -203,6 +205,48 @@ String _scanError(String code) => switch (code) {
 /// limit). Emits each device as it is found, then null when the search
 /// ends. Errors carry a message for staff.
 Stream<BluetoothScanEvent> scanNearbyBluetooth() async* {
+  if (Platform.isIOS) {
+    // 1. Settle adapter state on iOS
+    try {
+      if (ble.FlutterBluePlus.adapterStateNow != ble.BluetoothAdapterState.on) {
+        await ble.FlutterBluePlus.adapterState
+            .where((state) => state == ble.BluetoothAdapterState.on)
+            .first
+            .timeout(const Duration(seconds: 3));
+      }
+    } catch (_) {
+      throw Exception('Bluetooth is turned off on iOS. Turn it on in iPad/iPhone Settings.');
+    }
+
+    final Map<String, NearbyBluetoothDevice> iosDiscovered = {};
+
+    try {
+      await ble.FlutterBluePlus.startScan(timeout: const Duration(seconds: 8));
+      await for (final results in ble.FlutterBluePlus.scanResults) {
+        for (final r in results) {
+          final id = r.device.remoteId.str;
+          final name = r.device.platformName.isNotEmpty ? r.device.platformName : r.advertisementData.advName;
+          final dev = NearbyBluetoothDevice(
+            name: name.isEmpty ? 'BLE Thermal Printer' : name,
+            address: id,
+            major: BtMajor.imaging,
+            paired: true,
+            rssi: r.rssi,
+            classic: true,
+          );
+          if (!iosDiscovered.containsKey(id)) {
+            iosDiscovered[id] = dev;
+            yield dev;
+          }
+        }
+      }
+      yield null;
+      return;
+    } catch (e) {
+      throw Exception('iOS Bluetooth Scan Error: ${e.toString()}');
+    }
+  }
+
   final problem = await ensureBluetoothPermissions();
   if (problem != null) throw Exception(problem);
   const channel = EventChannel('com.example.thermalprinter/bluetooth_scan');
@@ -218,8 +262,6 @@ Stream<BluetoothScanEvent> scanNearbyBluetooth() async* {
       }
       return;
     } on PlatformException catch (e) {
-      // Android 11 and older need location for Bluetooth searches (newer
-      // versions don't: the scan permission is "never for location").
       if (e.code == 'need_location' && attempt == 0 && Platform.isAndroid) {
         final st = await Permission.locationWhenInUse.request();
         if (st.isGranted) continue;
