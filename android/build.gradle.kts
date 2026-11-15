@@ -21,18 +21,12 @@ subprojects {
 
 subprojects {
     plugins.withId("com.android.library") {
-        val android = extensions.findByName("android") as? com.android.build.gradle.BaseExtension
-        if (android != null && android.namespace == null) {
-            android.namespace = "id.kakzaki.blue_thermal_printer"
-        }
-        val manifestFile = file("src/main/AndroidManifest.xml")
-        if (manifestFile.exists()) {
-            val content = manifestFile.readText()
-            if (content.contains("package=")) {
-                val cleaned = content.replace(Regex("""package="[^"]+""""), "")
-                manifestFile.writeText(cleaned)
+        try {
+            val android = extensions.findByName("android") as? com.android.build.gradle.BaseExtension
+            if (android != null && android.namespace == null) {
+                android.namespace = "com.plugin.${project.name.replace('-', '_')}"
             }
-        }
+        } catch (_: Exception) {}
     }
 }
 
