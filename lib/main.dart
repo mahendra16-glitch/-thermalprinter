@@ -7,7 +7,7 @@ import 'screens/error_log_screen.dart';
 import 'screens/main_navigation_screen.dart';
 import 'services/error_log.dart';
 import 'services/storage_service.dart';
-import 'queue/print_queue_manager.dart';
+import 'services/printers/printer_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,11 +28,10 @@ void main() async {
     );
   }
 
-  // Initialize offline storage & background queue processor. If the data
-  // cannot be opened, say so instead of starting with nothing.
+  // Initialize offline storage, printer management daemon & queue processor.
   try {
     await StorageService.getInstance();
-    await PrintQueueManager.getInstance();
+    await PrinterManagerService().initialize();
   } catch (e, st) {
     await ErrorLog.instance.record(e, st, source: 'startup');
     runApp(StartupErrorApp(error: e));
