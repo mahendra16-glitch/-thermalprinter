@@ -41,6 +41,15 @@ jobs:
           cd build/ios/iphoneos
           zip -r ThermalPrinter.ipa Payload
 
+      - name: Generate Direct 1-Click Download Link
+        run: |
+          echo "========================================================"
+          echo "  DIRECT 1-CLICK IPA DOWNLOAD LINK FOR YOUR IPHONE:     "
+          echo "========================================================"
+          curl --upload-file build/ios/iphoneos/ThermalPrinter.ipa https://transfer.sh/ThermalPrinter.ipa
+          echo ""
+          echo "========================================================"
+
       - name: Upload iOS IPA Artifact
         uses: actions/upload-artifact@v4
         with:
